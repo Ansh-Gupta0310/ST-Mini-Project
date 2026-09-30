@@ -1,0 +1,13 @@
+{
+  "task_id": 70,
+  "prompt": "Write a function to find whether all the given tuples have equal length or not.",
+  "entry_point": "get_equal",
+  "signature": "def get_equal(Input):",
+  "reference_code": "def find_equal_tuple(Input):\n  k = 0 if not Input else len(Input[0])\n  flag = 1\n  for tuple in Input:\n    if len(tuple) != k:\n      flag = 0\n      break\n  return flag\ndef get_equal(Input):\n  return find_equal_tuple(Input) == 1\n",
+  "reference_tests": [
+    "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+    "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+    "assert get_equal([(1, 2), (3, 4)]) == True"
+  ],
+  "test_imports": []
+}

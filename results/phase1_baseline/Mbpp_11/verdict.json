@@ -1,0 +1,36 @@
+{
+  "task_id": 11,
+  "entry_point": "remove_Occ",
+  "codegen_ok": true,
+  "status": "COMPLETED",
+  "code_correct": true,
+  "baseline": {
+    "verdict": "COVERAGE_NOT_MET",
+    "status": "RAN",
+    "tests_total": 3,
+    "tests_passed": 3,
+    "statement_coverage": 83.33,
+    "branch_coverage": 50.0,
+    "target_met": false,
+    "num_statements": 6,
+    "num_branches": 2,
+    "missing_lines": [
+      8
+    ],
+    "missing_branches": [
+      [
+        7,
+        8
+      ]
+    ]
+  },
+  "llm_calls": 1,
+  "llm_cached_calls": 1,
+  "llm_requests_sent": 0,
+  "models_used": [
+    "cohere/north-mini-code:free"
+  ],
+  "prompt_tokens": 130,
+  "completion_tokens": 96,
+  "reasoning_tokens": 0
+}
