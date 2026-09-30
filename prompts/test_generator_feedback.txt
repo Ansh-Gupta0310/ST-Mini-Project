@@ -1,0 +1,17 @@
+Problem description:
+$prompt
+
+Function under test (file solution.py; the line numbers on the left are not part of the code):
+$numbered_code
+
+These tests already exist:
+$existing_tests
+
+Coverage after running them: statements $statement_coverage%, branches $branch_coverage%.
+Coverage goal: $criterion_goal
+
+Not covered yet:
+$missing_description
+
+Write only NEW test functions that make the uncovered lines and branches run.
+Do not repeat the existing tests. Start the file with: from solution import $entry_point

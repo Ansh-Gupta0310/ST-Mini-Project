@@ -1,0 +1,11 @@
+Problem description:
+$prompt
+
+Example of correct behaviour:
+$example_test
+
+Function under test (file solution.py; the line numbers on the left are not part of the code):
+$numbered_code
+
+Coverage goal: $criterion_goal
+Write between 3 and 10 tests.
