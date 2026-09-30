@@ -11,7 +11,9 @@
 > update this file in the same pull request.
 
 **Status (1 Oct 2026):** Phase 1 is implemented and verified (branch `phase-1-foundation`, PR #1). Phase 2 is
-next. Member 2: start with [§7.0 Handover notes from Phase 1](#70-handover-notes-from-phase-1).
+implemented on branch `phase-2-test-generation`: Test Generator agent, coverage feedback loop, test validation
+and `pipeline.py --mode full`, with the official run in `results/phase2_branch100/`. Where the implementation
+extends this plan, the change is recorded in place and marked **[Phase 2 decision]**.
 
 ## Contents
 
@@ -187,11 +189,16 @@ verdict.json for each problem + summary.md for the whole run
 
 - **Endpoint:** `POST https://openrouter.ai/api/v1/chat/completions`, called with `requests`.
 - **API key:** read only from the `OPENROUTER_API_KEY` environment variable. It is never printed, logged,
-  cached or committed.
+  cached or committed. **[Phase 2 decision]** `config.load_env_file()` copies `KEY=VALUE` lines from a local,
+  git-ignored `.env` into the environment at start-up, without overwriting a variable that is already set. This
+  only changes where the variable comes from; the key still never reaches the repository, the logs or the cache.
 - **Executor settings:** 30 s timeout per run; default criterion `branch`; default target `100`; default
   max rounds `3`.
 - All of these values live in `config.py`. Every run saves the values it used in `config.json`, which is
-  where report item 2 gets its numbers.
+  where report item 2 gets its numbers. **[Phase 2 decision]** `config.TESTGEN_SETTINGS` was filled in with the
+  planned values (`temperature` 0.4, `top_p` 1.0, `max_tokens` 2048, `seed` 42), and `config.criterion_goal
+  (criterion, target)` fills `$target` into the `CRITERION_GOALS` text (Appendix B) for the prompt and for
+  `config.json`.
 
 ### 3.4 Dataset and problem selection
 
@@ -324,10 +331,29 @@ def classify_tests(on_generated: dict[str, str], on_reference: dict[str, str]) -
 # agents/test_generator.py                                     (Phase 2)
 class TestGeneratorAgent:
     __test__ = False                         # same reason as TestExecutorAgent
+    def __init__(self, llm: LLMClient, settings: dict | None = None, prompts_dir: Path = config.PROMPTS_DIR)
+    def build_messages(self, problem, solution_code, criterion, target,
+                       feedback=None, existing_tests=None, retry_note=None) -> list[dict]
     def run(self, problem: Problem, solution_code: str, criterion: str, target: float,
             log_path: Path, feedback: ExecutionResult | None = None,
-            existing_tests: str | None = None) -> AgentResult
+            existing_tests: str | None = None,
+            retry_note: str | None = None) -> AgentResult    # re-raises FatalLLMError
 ```
+
+**[Phase 2 decision] `retry_note`** is an extra optional argument, appended to the user prompt after a round
+that produced nothing usable ("Attempt 1 could not be used: ..."). Without it, retrying is pointless: the cache
+key is the request body, so re-sending an unchanged prompt returns the same unusable reply and spends the round
+for nothing. `pipeline.retry_note(...)` builds it from the previous round's error.
+
+**[Phase 2 decision]** `check_test_file` enforces two more of the §3.6 rules than the three listed above: the
+file must import the module `solution` (otherwise it does not test the generated code at all), and it must not
+import a module that breaks determinism or the "no files, no network" rule
+(`agents.code_utils.FORBIDDEN_TEST_MODULES`: random, secrets, socket, subprocess, requests, urllib, http,
+httpx, shutil, tempfile). `print` is not rejected: it is harmless in a test and rejecting a whole round for it
+would waste a request.
+
+**[Phase 2 decision]** `agents/test_executor.py` also exports `count_labels(labels) -> dict[str, int]`, which
+counts each label with every label present even when it is 0, so the summary tables have stable columns.
 
 ### 3.6 File formats
 
@@ -373,6 +399,10 @@ def test_reference_2():
 Any `test_imports` from MBPP go at the top of this file.
 
 **`verdict.json`** for each problem. This is the final Phase 2 shape; the numbers are only illustrative.
+**[Phase 2 decision]** the implementation also writes `max_rounds`, `final_round` (which round produced the
+final suite, which is not the same as `rounds_used` when a round was thrown away), `round_1` (the single-shot
+result, in the same shape as `final`) and `testgen_errors` (one entry per unusable round). `rounds_used` counts
+the test-generation rounds attempted, so it is also the number of LLM calls the loop spent.
 Phase 1 writes the fields from `task_id` to `baseline`, plus the LLM usage fields (`llm_calls`,
 `llm_cached_calls`, `llm_requests_sent`, `models_used`, token counts). The `baseline` block also has `verdict`,
 `status`, `target_met`, `num_statements`, `num_branches`, `missing_lines` and `missing_branches`.
@@ -429,6 +459,10 @@ reference solution.
 | fail | fail | `INVALID_TEST` | The test's expected value is wrong |
 | pass | fail | `MISLEADING` | The test and the generated code share the same wrong behaviour |
 
+**[Phase 2 decision]** a fifth label, `NOT_RUN`, is used when the reference run reported no result for a test
+at all (for example the whole file failed to import). It is never expected, and it keeps the label counts equal
+to the number of tests instead of silently losing one.
+
 Caveat for the report: a few MBPP descriptions are ambiguous. A test can be labelled `INVALID_TEST` or
 `MISLEADING` because it follows a reasonable reading that differs from the reference.
 
@@ -447,7 +481,9 @@ repeat:
 - **Unusable round:** if a round produces nothing usable (no code block, a syntax error, rejected by
   `check_test_file`, or an `ERROR` verdict from a collection failure), that round's new tests are thrown away
   and the next round is still a feedback round. If round 1 itself is unusable, the next round uses the initial
-  prompt again.
+  prompt again. **[Phase 2 decision]** in both cases the retried prompt ends with one line saying what was
+  wrong with the previous reply, because an unchanged prompt would be answered from the cache with the same
+  unusable reply (§3.5).
 - **Single-shot results:** `--max-rounds 1` switches the loop off. Round-1 results are saved separately
   (`round_1/execution.json`), so every run reports **single-shot vs with-feedback** numbers without a second
   run.
@@ -468,6 +504,7 @@ ST-Mini-Project/
 ├── .github/pull_request_template.md                                                      P1
 ├── config.py                          models, temperatures, paths, defaults              P1 (P2 adds test-gen settings)
 ├── pipeline.py                        command-line orchestrator                          P1 baseline mode, P2 full mode
+├── verify_run.py                      re-derives every verdict in a finished run          P2 [Phase 2 decision]
 ├── agents/
 │   ├── __init__.py                                                                       P1
 │   ├── models.py                      dataclasses (§3.5)                                  P1
@@ -1019,13 +1056,16 @@ gh pr create --base main --head phase-2-test-generation --title "Phase 2: test g
 
 ### Phase 2 — definition of done
 
-- [ ] `pytest -q` passes with no API calls
-- [ ] `results/phase2_branch100/` has 12 problem folders, `summary.md` and `config.json`
-- [ ] Every final `test_solution.py` follows the §3.6 rules
-- [ ] `--max-rounds 1` works (single-shot)
-- [ ] `git grep -nE "sk-or-v1-[0-9a-f]{20}"` finds nothing
-- [ ] `report/report.md` is complete and the PDF is exported
-- [ ] Member 2's section of `Contributions.md` is filled in
+- [x] `pytest -q` passes with no API calls — 88 passed, 1 skipped (Windows-only)
+- [x] `results/phase2_branch100/` has 12 problem folders, `summary.md` and `config.json`
+- [x] Every final `test_solution.py` follows the §3.6 rules — checked by `python verify_run.py <run>`
+- [x] `--max-rounds 1` works (single-shot) — and every round-1 result is recorded anyway (`round_1` in
+      `verdict.json`), so single-shot numbers come out of the same run
+- [x] Optional second criterion also run: `results/phase2_statement100/`
+- [x] `git grep -nE "sk-or-v1-[0-9a-f]{20}"` finds nothing
+- [x] `report/report.md` is complete — **the PDF still has to be exported** (§11: right-click the file in
+      VS Code → *Markdown PDF: Export (pdf)*)
+- [x] Member 2's section of `Contributions.md` is filled in, apart from the name and roll number
 - [ ] PR #2 is approved and merged
 
 ---
@@ -1138,14 +1178,20 @@ Also include:
 Both members must be able to explain every part.
 
 1. **(1 min)** The problem and the pipeline, using the §3.1 diagram.
-2. **(3 min)** A live run of one problem that needed at least 2 rounds (pick it from `summary.md`):
-   `python pipeline.py --mode full --task-ids <id> --out runs/demo`. It comes from the cache, so there is no
-   network or quota risk.
+2. **(3 min)** A live run: `python pipeline.py --mode full --task-ids 92 --out runs/demo`. It comes from the
+   cache, so there is no network or quota risk.
+   **[Phase 2 decision]** the plan assumed we would demo a problem that needed two rounds, but in the official
+   run round 1 met the goal for all 12 problems (report §4.2), so there is no such problem. Demo problem 92
+   instead: MBPP's asserts reach 75% branch coverage and the generated suite reaches 100%. To show the loop
+   itself, run `pytest -q tests/test_pipeline.py::test_feedback_round_closes_the_coverage_gap -v`, which drives
+   a round-1 suite at 50% branch coverage and a round 2 that closes the gap.
 3. Walk through the output folder: `solution.py` → `round_1/test_solution.py` → `round_1/execution.json`
-   (below target) → `round_2/` → `verdict.json`. Then open `round_1/coverage_html/index.html` and the last
-   round's report to show the highlighted lines.
-4. `summary.md`: baseline vs generated coverage, and single-shot vs with-feedback.
-5. One `BUG_FOUND` or `INVALID_TEST` example, and what it shows about the oracle problem.
+   → `validation.json` → `verdict.json`. Then open `reference/coverage_html/index.html` and
+   `round_1/coverage_html/index.html` side by side: the same file, with the missing lines highlighted in one and
+   not the other.
+4. `summary.md`: baseline vs generated coverage (94.2% / 89.6% → 100% / 100%, goal met 7/12 → 12/12).
+5. Problem 71 `comb_sort` (3 `BUG_FOUND`) and problem 11 (4 `MISLEADING`), and what they show about the oracle
+   problem. `python verify_run.py results/phase2_branch100` shows the verdicts were not taken on trust.
 6. `llm_calls.jsonl`: the exact prompts, temperature, and `reasoning_tokens = 0`.
 
 **Questions to prepare for:**
