@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="7" time="2.680" timestamp="2026-09-30T21:53:37.548274+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_pos_count_all_positive" time="0.001" /><testcase classname="test_solution" name="test_pos_count_all_negative" time="0.001" /><testcase classname="test_solution" name="test_pos_count_mixed" time="0.000" /><testcase classname="test_solution" name="test_pos_count_empty" time="0.000" /><testcase classname="test_solution" name="test_pos_count_single_positive" time="0.001" /><testcase classname="test_solution" name="test_pos_count_single_negative" time="0.001" /><testcase classname="test_solution" name="test_pos_count_zero" time="0.001"><failure message="assert 3 == 0&#10; +  where 3 = pos_count([0, 0, 0])">def test_pos_count_zero():
+&gt;       assert pos_count([0, 0, 0]) == 0
+E       assert 3 == 0
+E        +  where 3 = pos_count([0, 0, 0])
+
+test_solution.py:22: AssertionError</failure></testcase></testsuite></testsuites>

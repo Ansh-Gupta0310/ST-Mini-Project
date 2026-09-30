@@ -1,0 +1,51 @@
+{
+  "created_at": "2026-09-30T21:54:34+00:00",
+  "request": {
+    "model": "cohere/north-mini-code:free",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a software tester who writes pytest unit tests.\nReply with exactly one Python code block containing a complete pytest file and nothing else.\nRules:\n- The function under test is in the module `solution`. Import it with: from solution import is_sublist\n- Write each test as a separate top-level function whose name starts with test_ and describes what it checks.\n- Use plain assert statements. Use pytest.raises only if the problem says an exception is raised.\n- Take every expected value from the problem description, not from the code under test.\n- Do not define or change is_sublist. Do not use randomness, files, the network, or print.\n- Use only pytest and the Python standard library."
+      },
+      {
+        "role": "user",
+        "content": "Problem description:\nWrite a function to check whether a list contains the given sublist or not.\n\nExample of correct behaviour:\nassert is_sublist([2,4,3,5,7],[3,7])==False\n\nFunction under test (file solution.py; the line numbers on the left are not part of the code):\n  1 | def is_sublist(l, s):\n  2 |     n = len(l)\n  3 |     m = len(s)\n  4 |     if m == 0:\n  5 |         return True\n  6 |     for i in range(n - m + 1):\n  7 |         if l[i:i+m] == s:\n  8 |             return True\n  9 |     return False\n\nCoverage goal: Reach 100% branch coverage: every if/elif/while condition must be True in some test and False in some test, and every loop must run its body at least once and also finish at least once.\nWrite between 3 and 10 tests."
+      }
+    ],
+    "temperature": 0.4,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "reasoning": {
+      "enabled": false
+    },
+    "seed": 42
+  },
+  "response": {
+    "content": "```python\nfrom solution import is_sublist\n\ndef test_empty_sublist():\n    assert is_sublist([1, 2, 3], []) == True\n\ndef test_sublist_at_start():\n    assert is_sublist([1, 2, 3, 4], [1, 2]) == True\n\ndef test_sublist_at_end():\n    assert is_sublist([1, 2, 3, 4], [3, 4]) == True\n\ndef test_sublist_in_middle():\n    assert is_sublist([1, 2, 3, 4, 5], [2, 3]) == True\n\ndef test_sublist_not_present():\n    assert is_sublist([1, 2, 3, 4], [5, 6]) == False\n\ndef test_sublist_wrong_order():\n    assert is_sublist([1, 2, 3, 4], [4, 3]) == False\n\ndef test_sublist_longer_than_list():\n    assert is_sublist([1, 2], [1, 2, 3]) == False\n\ndef test_single_element_sublist_present():\n    assert is_sublist([1, 2, 3], [2]) == True\n\ndef test_single_element_sublist_not_present():\n    assert is_sublist([1, 2, 3], [4]) == False\n```",
+    "model": "cohere/north-mini-code:free",
+    "usage": {
+      "prompt_tokens": 352,
+      "completion_tokens": 292,
+      "total_tokens": 644,
+      "cost": 0,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0,
+        "video_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0,
+        "upstream_inference_prompt_cost": 0,
+        "upstream_inference_completions_cost": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    }
+  },
+  "latency_s": 2.67
+}

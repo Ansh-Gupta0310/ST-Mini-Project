@@ -1,0 +1,28 @@
+{
+  "status": "RAN",
+  "tests_total": 7,
+  "tests_passed": 6,
+  "tests_failed": 1,
+  "test_outcomes": {
+    "test_single_word": "passed",
+    "test_multiple_words": "passed",
+    "test_empty_list": "failed",
+    "test_mixed_lengths": "passed",
+    "test_duplicate_longest": "passed",
+    "test_case_sensitive": "passed",
+    "test_with_spaces": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "..F....                                                                  [100%]\n=================================== FAILURES ===================================\n_______________________________ test_empty_list ________________________________\n\n    def test_empty_list():\n>       assert len_log([]) == 0\n               ^^^^^^^^^^^\n\ntest_solution.py:10: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nlist1 = []\n\n    def len_log(list1):\n>       return max(len(word) for word in list1)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       ValueError: max() iterable argument is empty\n\nsolution.py:2: ValueError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_empty_list - ValueError: max() iterable argumen...\n1 failed, 6 passed in 0.99s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 2,
+  "num_branches": 0,
+  "exit_code": 1,
+  "duration_s": 7.55
+}

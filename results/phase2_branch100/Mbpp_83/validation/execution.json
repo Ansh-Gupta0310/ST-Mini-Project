@@ -1,0 +1,27 @@
+{
+  "status": "RAN",
+  "tests_total": 6,
+  "tests_passed": 2,
+  "tests_failed": 4,
+  "test_outcomes": {
+    "test_single_char": "passed",
+    "test_multiple_chars": "passed",
+    "test_empty_string": "failed",
+    "test_all_letters": "failed",
+    "test_modulo_wrap": "failed",
+    "test_large_string": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "    def test_empty_string():\n>       assert get_Char(\"\") == \"a\"\nE       AssertionError: assert 122 == 'a'\nE        +  where 122 = get_Char('')\n\ntest_solution.py:10: AssertionError\n_______________________________ test_all_letters _______________________________\n\n    def test_all_letters():\n>       assert get_Char(\"abcdefghijklmnopqrstuvwxyz\") == \"a\"\nE       AssertionError: assert 'm' == 'a'\nE         \nE         - a\nE         + m\n\ntest_solution.py:13: AssertionError\n_______________________________ test_modulo_wrap _______________________________\n\n    def test_modulo_wrap():\n>       assert get_Char(\"z\") == \"z\"\nE       AssertionError: assert 122 == 'z'\nE        +  where 122 = get_Char('z')\n\ntest_solution.py:16: AssertionError\n______________________________ test_large_string _______________________________\n\n    def test_large_string():\n>       assert get_Char(\"a\" * 100) == \"a\"\nE       AssertionError: assert 'v' == 'a'\nE         \nE         - a\nE         + v\n\ntest_solution.py:19: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_empty_string - AssertionError: assert 122 == 'a'\nFAILED test_solution.py::test_all_letters - AssertionError: assert 'm' == 'a'\nFAILED test_solution.py::test_modulo_wrap - AssertionError: assert 122 == 'z'\nFAILED test_solution.py::test_large_string - AssertionError: assert 'v' == 'a'\n4 failed, 2 passed in 2.76s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 8,
+  "num_branches": 4,
+  "exit_code": 1,
+  "duration_s": 10.06
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="7" time="2.884" timestamp="2026-09-30T22:00:21.631156+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_remove_Occ_normal_case" time="0.001" /><testcase classname="test_solution" name="test_remove_Occ_char_not_found" time="0.001" /><testcase classname="test_solution" name="test_remove_Occ_single_occurrence" time="0.001" /><testcase classname="test_solution" name="test_remove_Occ_empty_string" time="0.001" /><testcase classname="test_solution" name="test_remove_Occ_multiple_occurrences" time="0.002"><failure message="AssertionError: assert 'bracadabr' == 'brcdbr'&#10;  &#10;  - brcdbr&#10;  + bracadabr&#10;  ?   + + +">def test_remove_Occ_multiple_occurrences():
+&gt;       assert remove_Occ("abracadabra", "a") == "brcdbr"
+E       AssertionError: assert 'bracadabr' == 'brcdbr'
+E         
+E         - brcdbr
+E         + bracadabr
+E         ?   + + +
+
+test_solution.py:16: AssertionError</failure></testcase><testcase classname="test_solution" name="test_remove_Occ_first_and_last_same_position" time="0.001" /><testcase classname="test_solution" name="test_remove_Occ_two_occurrences" time="0.001"><failure message="AssertionError: assert 'baaa' == 'banaa'&#10;  &#10;  - banaa&#10;  ?   -&#10;  + baaa">def test_remove_Occ_two_occurrences():
+&gt;       assert remove_Occ("banana", "n") == "banaa"
+E       AssertionError: assert 'baaa' == 'banaa'
+E         
+E         - banaa
+E         ?   -
+E         + baaa
+
+test_solution.py:22: AssertionError</failure></testcase></testsuite></testsuites>

@@ -118,3 +118,202 @@ def test_one_broken_problem_does_not_stop_the_run(network, tmp_path, monkeypatch
 def test_unknown_task_id_is_rejected(tmp_path):
     with pytest.raises(SystemExit):
         pipeline.main(["--mode", "baseline", "--out", str(tmp_path / "out"), "--task-ids", "9999"])
+
+
+# --- --mode full: the coverage feedback loop and validation (PROJECT_PLAN.md §7, step 2.5) ------
+
+# A solution with two decisions, so MBPP's own asserts cannot reach 100% branch coverage:
+# none of them passes a character that is absent, or one that occurs exactly once.
+SOLUTION_11 = (
+    "def remove_Occ(s, ch):\n"
+    "    if ch not in s:\n"
+    "        return s\n"
+    "    first = s.find(ch)\n"
+    "    last = s.rfind(ch)\n"
+    "    if first == last:\n"
+    "        return s[:first] + s[first + 1:]\n"
+    "    return s[:first] + s[first + 1:last] + s[last + 1:]\n"
+)
+# The same function, but it only ever removes the first occurrence: MBPP's asserts fail on it.
+BUGGY_11 = ("def remove_Occ(s, ch):\n"
+            "    if ch not in s:\n"
+            "        return s\n"
+            "    return s.replace(ch, '', 1)\n")
+ROUND_1_TESTS = ("from solution import remove_Occ\n\n\n"
+                 "def test_removes_first_and_last():\n    assert remove_Occ('hello', 'l') == 'heo'\n")
+# Round 2 reuses a test name on purpose, to exercise the rename in merge_test_files.
+ROUND_2_TESTS = ("from solution import remove_Occ\n\n\n"
+                 "def test_removes_first_and_last():\n    assert remove_Occ('abc', 'z') == 'abc'\n\n\n"
+                 "def test_single_occurrence_is_removed():\n    assert remove_Occ('abc', 'b') == 'ac'\n")
+
+
+@pytest.fixture
+def full_network(monkeypatch, tmp_path):
+    """Scripted replies chosen by which prompt arrived; the last reply of a kind is reused if needed."""
+    monkeypatch.setattr(config, "CACHE_DIR", tmp_path / "cache")
+    monkeypatch.setattr(config, "MIN_SECONDS_BETWEEN_CALLS", 0)
+    monkeypatch.setattr(config, "RETRY_WAITS_S", [0])
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-v1-FAKE-KEY-FOR-TESTS")
+    replies: dict[str, list] = {}
+    sent: list[str] = []
+
+    def fake_post(url, json=None, headers=None, timeout=None):
+        prompt = json["messages"][-1]["content"]
+        sent.append(prompt)
+        kind = ("codegen" if "Implement this function" in prompt
+                else "feedback" if "These tests already exist" in prompt else "testgen")
+        queue = replies.get(kind)
+        if not queue:
+            raise AssertionError(f"no scripted {kind} reply for this prompt")
+        return queue.pop(0) if len(queue) > 1 else queue[0]
+
+    monkeypatch.setattr(llm_client.requests, "post", fake_post)
+    return replies, sent
+
+
+def run_full(tmp_path, *task_ids, max_rounds=3, criterion="branch", target="100"):
+    out = tmp_path / "out"
+    exit_code = pipeline.main(["--mode", "full", "--out", str(out), "--criterion", criterion,
+                               "--target", target, "--max-rounds", str(max_rounds),
+                               "--task-ids", *map(str, task_ids)])
+    return exit_code, out, json.loads((out / "summary.json").read_text(encoding="utf-8"))
+
+
+def test_feedback_round_closes_the_coverage_gap(full_network, tmp_path):
+    replies, sent = full_network
+    replies.update(codegen=[code_reply(SOLUTION_11)], testgen=[code_reply(ROUND_1_TESTS)],
+                   feedback=[code_reply(ROUND_2_TESTS)])
+    exit_code, out, summary = run_full(tmp_path, 11)
+    v = summary["problems"][0]
+
+    assert exit_code == 0
+    assert (v["status"], v["code_correct"]) == ("COMPLETED", True)
+    assert (v["baseline"]["statement_coverage"], v["baseline"]["branch_coverage"]) == (75.0, 50.0)
+    assert (v["rounds_used"], v["final_round"], v["llm_calls"]) == (2, 2, 3)
+    assert (v["round_1"]["branch_coverage"], v["round_1"]["verdict"]) == (50.0, "COVERAGE_NOT_MET")
+    assert v["round_1"]["target_met"] is False
+    assert (v["final"]["statement_coverage"], v["final"]["branch_coverage"]) == (100.0, 100.0)
+    assert (v["final"]["tests_total"], v["final"]["tests_passed"], v["final"]["verdict"]) == (3, 3, "PASS")
+    assert v["final"]["target_met"] is True
+    assert v["test_labels"] == {"VALID": 3, "BUG_FOUND": 0, "INVALID_TEST": 0, "MISLEADING": 0, "NOT_RUN": 0}
+
+
+def test_feedback_prompt_reports_the_measured_gap_and_the_merge_keeps_both_rounds(full_network, tmp_path):
+    replies, sent = full_network
+    replies.update(codegen=[code_reply(SOLUTION_11)], testgen=[code_reply(ROUND_1_TESTS)],
+                   feedback=[code_reply(ROUND_2_TESTS)])
+    _, out, _ = run_full(tmp_path, 11)
+
+    feedback_prompt = next(prompt for prompt in sent if "These tests already exist" in prompt)
+    assert "statements 75%, branches 50%" in feedback_prompt
+    assert "- line 3 `return s` was never run" in feedback_prompt
+    assert "def test_removes_first_and_last():" in feedback_prompt      # round 1 is shown, not guessed at
+    assert "  1 | def remove_Occ(s, ch):" in feedback_prompt
+
+    merged = (out / "Mbpp_11" / "test_solution.py").read_text(encoding="utf-8")
+    assert merged.count("from solution import remove_Occ") == 1
+    assert merged.count("def test_") == 3
+    assert "def test_removes_first_and_last_r2():" in merged            # the duplicate name was renamed
+    labels = json.loads((out / "Mbpp_11" / "validation.json").read_text(encoding="utf-8"))
+    assert sorted(labels["labels"]) == ["test_removes_first_and_last", "test_removes_first_and_last_r2",
+                                        "test_single_occurrence_is_removed"]
+    assert labels["on_generated"] == labels["on_reference"]             # all three pass on both solutions
+
+
+def test_full_run_writes_every_file_the_plan_lists(full_network, tmp_path):
+    replies, _ = full_network
+    replies.update(codegen=[code_reply(SOLUTION_11)], testgen=[code_reply(ROUND_1_TESTS)],
+                   feedback=[code_reply(ROUND_2_TESTS)])
+    _, out, summary = run_full(tmp_path, 11)
+    for name in ("problem.json", "llm_calls.jsonl", "solution.py", "verdict.json", "reference/execution.json",
+                 "round_1/execution.json", "round_1/coverage_html/index.html", "round_2/execution.json",
+                 "test_solution.py", "validation/execution.json", "validation.json"):
+        assert (out / "Mbpp_11" / name).exists(), name
+    markdown = (out / "summary.md").read_text(encoding="utf-8")
+    assert "Test Generator settings" in markdown and "Max test-generation rounds | 3" in markdown
+    assert "| 11 | `remove_Occ` | COMPLETED | yes | 75.0% | 50.0% of 4 | 2 | 3/3 | 100.0% |" in markdown
+    assert json.loads((out / "config.json").read_text(encoding="utf-8"))["test_generator"]["temperature"] == 0.4
+
+
+def test_single_shot_switches_the_loop_off(full_network, tmp_path):
+    replies, sent = full_network
+    replies.update(codegen=[code_reply(SOLUTION_11)], testgen=[code_reply(ROUND_1_TESTS)])
+    _, out, summary = run_full(tmp_path, 11, max_rounds=1)
+    v = summary["problems"][0]
+    assert (v["rounds_used"], v["final_round"]) == (1, 1)
+    assert v["round_1"] == v["final"] and v["final"]["verdict"] == "COVERAGE_NOT_MET"
+    assert not any("These tests already exist" in prompt for prompt in sent)
+    assert not (out / "Mbpp_11" / "round_2").exists()
+    agg = summary["aggregate"]
+    assert (agg["generated_target_met_round_1"], agg["generated_target_met_final"]) == (0, 0)
+
+
+def test_validation_finds_the_bug_in_the_generated_code(full_network, tmp_path):
+    replies, _ = full_network
+    replies.update(codegen=[code_reply(BUGGY_11)], testgen=[code_reply(ROUND_1_TESTS)])
+    _, out, summary = run_full(tmp_path, 11, max_rounds=1)
+    v = summary["problems"][0]
+    assert v["code_correct"] is False
+    assert (v["final"]["tests_passed"], v["final"]["verdict"]) == (0, "TESTS_FAILED")
+    assert v["test_labels"]["BUG_FOUND"] == 1
+    labels = json.loads((out / "Mbpp_11" / "validation.json").read_text(encoding="utf-8"))
+    assert labels["labels"] == {"test_removes_first_and_last": "BUG_FOUND"}
+    agg = summary["aggregate"]
+    assert (agg["problems_with_incorrect_code"], agg["problems_with_bug_found"]) == (1, 1)
+    assert agg["fault_detection_rate"] == 100.0
+
+
+def test_unusable_round_is_thrown_away_and_the_next_round_tries_again(full_network, tmp_path):
+    replies, sent = full_network
+    replies.update(codegen=[code_reply(SOLUTION_11)],
+                   testgen=[reply_with("I cannot write tests for this."), code_reply(ROUND_1_TESTS)],
+                   feedback=[code_reply(ROUND_2_TESTS)])
+    _, out, summary = run_full(tmp_path, 11, max_rounds=3)
+    v = summary["problems"][0]
+    assert v["status"] == "COMPLETED"
+    assert (v["rounds_used"], v["final_round"]) == (3, 3)
+    assert v["round_1"] is None                                  # round 1 produced nothing to measure
+    assert [e["round"] for e in v["testgen_errors"]] == [1]
+    assert (out / "Mbpp_11" / "testgen_reply_round_1.txt").exists()
+    assert not (out / "Mbpp_11" / "round_1").exists()
+    assert v["final"]["verdict"] == "PASS"
+    # The retried prompt says what was wrong, so the cache cannot answer with the same unusable reply.
+    assert "Attempt 1 could not be used" in sent[2]
+    assert summary["aggregate"]["generated_target_met_round_1"] == 0
+
+
+def test_no_usable_test_suite_at_all_is_reported_as_testgen_failed(full_network, tmp_path):
+    replies, sent = full_network
+    replies.update(codegen=[code_reply(SOLUTION_11)], testgen=[reply_with("Sorry, I can't help.")])
+    exit_code, out, summary = run_full(tmp_path, 11, max_rounds=2)
+    v = summary["problems"][0]
+    assert exit_code == 0
+    assert (v["status"], v["rounds_used"]) == ("TESTGEN_FAILED", 2)
+    assert (v["final"], v["test_labels"], v["round_1"]) == (None, None, None)
+    assert v["code_correct"] is True                             # the baseline still holds
+    assert not (out / "Mbpp_11" / "test_solution.py").exists()
+    assert len(sent) == 3                                        # 1 code generation + 2 real attempts
+    agg = summary["aggregate"]
+    assert (agg["testgen_failed"], agg["suites_produced"], agg["testgen_problems"]) == (1, 0, 1)
+    assert agg["test_validity_rate"] is None
+
+
+def test_codegen_failure_skips_test_generation(full_network, tmp_path):
+    replies, sent = full_network
+    replies.update(codegen=[reply_with("I don't know.")])
+    _, out, summary = run_full(tmp_path, 11, max_rounds=3)
+    v = summary["problems"][0]
+    assert (v["status"], v["rounds_used"], v["final"]) == ("CODEGEN_FAILED", 0, None)
+    assert len(sent) == 1
+    assert summary["aggregate"]["testgen_problems"] == 0
+
+
+def test_statement_criterion_is_passed_through_to_the_prompt_and_the_verdict(full_network, tmp_path):
+    replies, sent = full_network
+    replies.update(codegen=[code_reply(SOLUTION_11)], testgen=[code_reply(ROUND_1_TESTS)])
+    _, _, summary = run_full(tmp_path, 11, max_rounds=1, criterion="statement", target="75")
+    v = summary["problems"][0]
+    assert "Reach 75% statement coverage" in sent[1]
+    assert (v["criterion"], v["target"]) == ("statement", 75.0)
+    assert (v["final"]["statement_coverage"], v["final"]["target_met"]) == (75.0, True)
+    assert v["final"]["verdict"] == "PASS"

@@ -1,0 +1,22 @@
+F..F.                                                                    [100%]
+=================================== FAILURES ===================================
+__________________________ test_word_len_even_length ___________________________
+
+    def test_word_len_even_length():
+>       assert word_len("Hadoop") == False
+E       AssertionError: assert True == False
+E        +  where True = word_len('Hadoop')
+
+test_solution.py:4: AssertionError
+________________________ test_word_len_single_character ________________________
+
+    def test_word_len_single_character():
+>       assert word_len("a") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('a')
+
+test_solution.py:13: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_word_len_even_length - AssertionError: assert T...
+FAILED test_solution.py::test_word_len_single_character - AssertionError: ass...
+2 failed, 3 passed in 2.79s

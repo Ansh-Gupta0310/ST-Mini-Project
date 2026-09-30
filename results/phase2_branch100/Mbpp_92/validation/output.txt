@@ -1,0 +1,13 @@
+.....F..                                                                 [100%]
+=================================== FAILURES ===================================
+____________________ test_undulating_false_all_same_digits _____________________
+
+    def test_undulating_false_all_same_digits():
+>       assert is_undulating(111) == False
+E       assert True == False
+E        +  where True = is_undulating(111)
+
+test_solution.py:19: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_undulating_false_all_same_digits - assert True ...
+1 failed, 7 passed in 2.62s

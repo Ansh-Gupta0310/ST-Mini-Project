@@ -1,0 +1,29 @@
+{
+  "status": "RAN",
+  "tests_total": 8,
+  "tests_passed": 7,
+  "tests_failed": 1,
+  "test_outcomes": {
+    "test_undulating_true": "passed",
+    "test_undulating_false_length_less_than_3": "passed",
+    "test_undulating_false_more_than_two_unique_digits": "passed",
+    "test_undulating_false_adjacent_equal_digits": "passed",
+    "test_undulating_false_single_digit": "passed",
+    "test_undulating_false_all_same_digits": "failed",
+    "test_undulating_true_minimal": "passed",
+    "test_undulating_false_three_digits_adjacent_equal": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": ".....F..                                                                 [100%]\n=================================== FAILURES ===================================\n____________________ test_undulating_false_all_same_digits _____________________\n\n    def test_undulating_false_all_same_digits():\n>       assert is_undulating(111) == False\nE       assert True == False\nE        +  where True = is_undulating(111)\n\ntest_solution.py:19: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_undulating_false_all_same_digits - assert True ...\n1 failed, 7 passed in 2.62s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 8,
+  "num_branches": 6,
+  "exit_code": 1,
+  "duration_s": 10.66
+}

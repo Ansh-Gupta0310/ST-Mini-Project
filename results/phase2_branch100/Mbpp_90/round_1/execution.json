@@ -1,0 +1,29 @@
+{
+  "status": "RAN",
+  "tests_total": 8,
+  "tests_passed": 6,
+  "tests_failed": 2,
+  "test_outcomes": {
+    "test_single_word": "passed",
+    "test_multiple_words": "passed",
+    "test_empty_string": "passed",
+    "test_all_same_length": "passed",
+    "test_longest_at_start": "passed",
+    "test_longest_at_end": "passed",
+    "test_mixed_case": "failed",
+    "test_unicode": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "......FF                                                                 [100%]\n=================================== FAILURES ===================================\n_______________________________ test_mixed_case ________________________________\n\n    def test_mixed_case():\n>       assert len_log([\"Python\", \"pYTHON\", \"PYTHON\"]) == 7\nE       AssertionError: assert 6 == 7\nE        +  where 6 = len_log(['Python', 'pYTHON', 'PYTHON'])\n\ntest_solution.py:22: AssertionError\n_________________________________ test_unicode _________________________________\n\n    def test_unicode():\n>       assert len_log([\"café\", \"coffee\", \"☕️\"]) == 4\nE       AssertionError: assert 6 == 4\nE        +  where 6 = len_log(['café', 'coffee', '☕️'])\n\ntest_solution.py:25: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_mixed_case - AssertionError: assert 6 == 7\nFAILED test_solution.py::test_unicode - AssertionError: assert 6 == 4\n2 failed, 6 passed in 2.58s",
+  "criterion": "branch",
+  "target": 100.0,
+  "num_statements": 2,
+  "num_branches": 0,
+  "exit_code": 1,
+  "duration_s": 10.29
+}

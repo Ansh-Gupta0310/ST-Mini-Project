@@ -1,0 +1,28 @@
+{
+  "status": "RAN",
+  "tests_total": 7,
+  "tests_passed": 6,
+  "tests_failed": 1,
+  "test_outcomes": {
+    "test_pos_count_all_positive": "passed",
+    "test_pos_count_all_negative": "passed",
+    "test_pos_count_mixed": "passed",
+    "test_pos_count_empty": "passed",
+    "test_pos_count_single_positive": "passed",
+    "test_pos_count_single_negative": "passed",
+    "test_pos_count_zero": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "......F                                                                  [100%]\n=================================== FAILURES ===================================\n_____________________________ test_pos_count_zero ______________________________\n\n    def test_pos_count_zero():\n>       assert pos_count([0, 0, 0]) == 0\nE       assert 3 == 0\nE        +  where 3 = pos_count([0, 0, 0])\n\ntest_solution.py:22: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_pos_count_zero - assert 3 == 0\n1 failed, 6 passed in 2.68s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 6,
+  "num_branches": 4,
+  "exit_code": 1,
+  "duration_s": 10.09
+}

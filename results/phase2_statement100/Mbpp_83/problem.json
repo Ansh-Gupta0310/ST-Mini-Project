@@ -1,0 +1,13 @@
+{
+  "task_id": 83,
+  "prompt": "Write a python function to find the character made by adding the ASCII value of all the characters of the given string modulo 26.",
+  "entry_point": "get_Char",
+  "signature": "def get_Char(strr):",
+  "reference_code": "def get_Char(strr):  \n    summ = 0\n    for i in range(len(strr)): \n        summ += (ord(strr[i]) - ord('a') + 1)  \n    if (summ % 26 == 0): \n        return ord('z') \n    else: \n        summ = summ % 26\n        return chr(ord('a') + summ - 1)\n",
+  "reference_tests": [
+    "assert get_Char(\"abc\") == \"f\"",
+    "assert get_Char(\"gfg\") == \"t\"",
+    "assert get_Char(\"ab\") == \"c\""
+  ],
+  "test_imports": []
+}

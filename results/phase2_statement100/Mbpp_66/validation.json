@@ -1,0 +1,36 @@
+{
+  "labels": {
+    "test_all_positive": "VALID",
+    "test_all_negative": "VALID",
+    "test_mixed_with_zero": "MISLEADING",
+    "test_empty_list": "VALID",
+    "test_single_positive": "VALID",
+    "test_single_negative": "VALID",
+    "test_single_zero": "MISLEADING"
+  },
+  "counts": {
+    "VALID": 5,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 0,
+    "MISLEADING": 2,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_all_positive": "passed",
+    "test_all_negative": "passed",
+    "test_mixed_with_zero": "passed",
+    "test_empty_list": "passed",
+    "test_single_positive": "passed",
+    "test_single_negative": "passed",
+    "test_single_zero": "passed"
+  },
+  "on_reference": {
+    "test_all_positive": "passed",
+    "test_all_negative": "passed",
+    "test_mixed_with_zero": "failed",
+    "test_empty_list": "passed",
+    "test_single_positive": "passed",
+    "test_single_negative": "passed",
+    "test_single_zero": "failed"
+  }
+}

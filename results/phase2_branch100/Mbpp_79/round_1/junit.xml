@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="6" time="2.692" timestamp="2026-09-30T21:56:29.092885+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_word_len_even_length" time="0.002"><failure message="AssertionError: assert True == False&#10; +  where True = word_len('Hadoop')">def test_word_len_even_length():
+&gt;       assert word_len("Hadoop") == False
+E       AssertionError: assert True == False
+E        +  where True = word_len('Hadoop')
+
+test_solution.py:4: AssertionError</failure></testcase><testcase classname="test_solution" name="test_word_len_odd_length" time="0.002"><failure message="AssertionError: assert False == True&#10; +  where False = word_len('a')">def test_word_len_odd_length():
+&gt;       assert word_len("a") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('a')
+
+test_solution.py:8: AssertionError</failure></testcase><testcase classname="test_solution" name="test_word_len_empty_string" time="0.001" /><testcase classname="test_solution" name="test_word_len_single_char" time="0.001"><failure message="AssertionError: assert False == True&#10; +  where False = word_len('x')">def test_word_len_single_char():
+&gt;       assert word_len("x") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('x')
+
+test_solution.py:15: AssertionError</failure></testcase><testcase classname="test_solution" name="test_word_len_long_even" time="0.001"><failure message="AssertionError: assert True == False&#10; +  where True = word_len('abcdefgh')">def test_word_len_long_even():
+&gt;       assert word_len("abcdefgh") == False
+E       AssertionError: assert True == False
+E        +  where True = word_len('abcdefgh')
+
+test_solution.py:18: AssertionError</failure></testcase><testcase classname="test_solution" name="test_word_len_long_odd" time="0.001"><failure message="AssertionError: assert False == True&#10; +  where False = word_len('abcdefghi')">def test_word_len_long_odd():
+&gt;       assert word_len("abcdefghi") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('abcdefghi')
+
+test_solution.py:21: AssertionError</failure></testcase></testsuite></testsuites>

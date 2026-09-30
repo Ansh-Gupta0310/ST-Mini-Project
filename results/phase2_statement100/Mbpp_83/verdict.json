@@ -1,0 +1,68 @@
+{
+  "task_id": 83,
+  "entry_point": "get_Char",
+  "codegen_ok": true,
+  "status": "COMPLETED",
+  "code_correct": false,
+  "baseline": {
+    "verdict": "TESTS_FAILED",
+    "status": "RAN",
+    "tests_total": 3,
+    "tests_passed": 0,
+    "statement_coverage": 100.0,
+    "branch_coverage": 100.0,
+    "target_met": true,
+    "num_statements": 4,
+    "num_branches": 0,
+    "missing_lines": [],
+    "missing_branches": []
+  },
+  "criterion": "statement",
+  "target": 100.0,
+  "max_rounds": 3,
+  "rounds_used": 1,
+  "final_round": 1,
+  "round_1": {
+    "verdict": "TESTS_FAILED",
+    "status": "RAN",
+    "tests_total": 6,
+    "tests_passed": 1,
+    "statement_coverage": 100.0,
+    "branch_coverage": 100.0,
+    "target_met": true,
+    "num_statements": 4,
+    "num_branches": 0,
+    "missing_lines": [],
+    "missing_branches": []
+  },
+  "final": {
+    "verdict": "TESTS_FAILED",
+    "status": "RAN",
+    "tests_total": 6,
+    "tests_passed": 1,
+    "statement_coverage": 100.0,
+    "branch_coverage": 100.0,
+    "target_met": true,
+    "num_statements": 4,
+    "num_branches": 0,
+    "missing_lines": [],
+    "missing_branches": []
+  },
+  "test_labels": {
+    "VALID": 0,
+    "BUG_FOUND": 3,
+    "INVALID_TEST": 2,
+    "MISLEADING": 1,
+    "NOT_RUN": 0
+  },
+  "testgen_errors": [],
+  "llm_calls": 2,
+  "llm_cached_calls": 1,
+  "llm_requests_sent": 1,
+  "models_used": [
+    "cohere/north-mini-code:free"
+  ],
+  "prompt_tokens": 426,
+  "completion_tokens": 157,
+  "reasoning_tokens": 0
+}

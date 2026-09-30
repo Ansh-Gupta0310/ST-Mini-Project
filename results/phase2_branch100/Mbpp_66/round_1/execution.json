@@ -1,0 +1,28 @@
+{
+  "status": "RAN",
+  "tests_total": 7,
+  "tests_passed": 7,
+  "tests_failed": 0,
+  "test_outcomes": {
+    "test_pos_count_all_positive": "passed",
+    "test_pos_count_all_negative": "passed",
+    "test_pos_count_mixed": "passed",
+    "test_pos_count_empty": "passed",
+    "test_pos_count_single_positive": "passed",
+    "test_pos_count_single_negative": "passed",
+    "test_pos_count_zero": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "PASS",
+  "output_tail": ".......                                                                  [100%]\n7 passed in 0.15s",
+  "criterion": "branch",
+  "target": 100.0,
+  "num_statements": 2,
+  "num_branches": 0,
+  "exit_code": 0,
+  "duration_s": 6.61
+}

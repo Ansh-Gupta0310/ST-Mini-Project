@@ -1,0 +1,45 @@
+{
+  "labels": {
+    "test_remove_Occ_first_and_last_occurrence": "VALID",
+    "test_remove_Occ_character_not_found": "VALID",
+    "test_remove_Occ_only_one_occurrence": "MISLEADING",
+    "test_remove_Occ_multiple_occurrences": "INVALID_TEST",
+    "test_remove_Occ_empty_string": "VALID",
+    "test_remove_Occ_character_at_start_and_end": "BUG_FOUND",
+    "test_remove_Occ_character_at_end_only": "MISLEADING",
+    "test_remove_Occ_character_at_start_only": "MISLEADING",
+    "test_remove_Occ_single_character_string": "MISLEADING",
+    "test_remove_Occ_two_characters_same": "INVALID_TEST"
+  },
+  "counts": {
+    "VALID": 3,
+    "BUG_FOUND": 1,
+    "INVALID_TEST": 2,
+    "MISLEADING": 4,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_remove_Occ_first_and_last_occurrence": "passed",
+    "test_remove_Occ_character_not_found": "passed",
+    "test_remove_Occ_only_one_occurrence": "passed",
+    "test_remove_Occ_multiple_occurrences": "failed",
+    "test_remove_Occ_empty_string": "passed",
+    "test_remove_Occ_character_at_start_and_end": "failed",
+    "test_remove_Occ_character_at_end_only": "passed",
+    "test_remove_Occ_character_at_start_only": "passed",
+    "test_remove_Occ_single_character_string": "passed",
+    "test_remove_Occ_two_characters_same": "failed"
+  },
+  "on_reference": {
+    "test_remove_Occ_first_and_last_occurrence": "passed",
+    "test_remove_Occ_character_not_found": "passed",
+    "test_remove_Occ_only_one_occurrence": "failed",
+    "test_remove_Occ_multiple_occurrences": "failed",
+    "test_remove_Occ_empty_string": "passed",
+    "test_remove_Occ_character_at_start_and_end": "passed",
+    "test_remove_Occ_character_at_end_only": "failed",
+    "test_remove_Occ_character_at_start_only": "failed",
+    "test_remove_Occ_single_character_string": "failed",
+    "test_remove_Occ_two_characters_same": "failed"
+  }
+}

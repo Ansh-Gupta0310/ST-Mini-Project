@@ -1,0 +1,28 @@
+{
+  "status": "RAN",
+  "tests_total": 7,
+  "tests_passed": 7,
+  "tests_failed": 0,
+  "test_outcomes": {
+    "test_empty_input": "passed",
+    "test_single_tuple": "passed",
+    "test_all_equal_length": "passed",
+    "test_first_tuple_longer": "passed",
+    "test_first_tuple_shorter": "passed",
+    "test_mixed_lengths": "passed",
+    "test_all_same_length_three": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "PASS",
+  "output_tail": ".......                                                                  [100%]\n7 passed in 0.23s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 10,
+  "num_branches": 4,
+  "exit_code": 0,
+  "duration_s": 7.22
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="7" time="0.759" timestamp="2026-09-30T22:07:02.113357+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_undulating_positive" time="0.001" /><testcase classname="test_solution" name="test_undulating_short_number" time="0.000" /><testcase classname="test_solution" name="test_undulating_non_two_unique_digits" time="0.000" /><testcase classname="test_solution" name="test_undulating_adjacent_equal" time="0.000" /><testcase classname="test_solution" name="test_undulating_alternating" time="0.001"><failure message="assert True == False&#10; +  where True = is_undulating(1212)">def test_undulating_alternating() -&gt; None:
+&gt;       assert is_undulating(1212) == False
+E       assert True == False
+E        +  where True = is_undulating(1212)
+
+test_solution.py:16: AssertionError</failure></testcase><testcase classname="test_solution" name="test_undulating_single_digit" time="0.000" /><testcase classname="test_solution" name="test_undulating_three_digits_valid" time="0.000" /></testsuite></testsuites>

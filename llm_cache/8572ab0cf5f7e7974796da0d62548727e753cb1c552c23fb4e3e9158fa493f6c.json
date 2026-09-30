@@ -1,0 +1,51 @@
+{
+  "created_at": "2026-09-30T22:00:57+00:00",
+  "request": {
+    "model": "cohere/north-mini-code:free",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a software tester who writes pytest unit tests.\nReply with exactly one Python code block containing a complete pytest file and nothing else.\nRules:\n- The function under test is in the module `solution`. Import it with: from solution import is_woodall\n- Write each test as a separate top-level function whose name starts with test_ and describes what it checks.\n- Use plain assert statements. Use pytest.raises only if the problem says an exception is raised.\n- Take every expected value from the problem description, not from the code under test.\n- Do not define or change is_woodall. Do not use randomness, files, the network, or print.\n- Use only pytest and the Python standard library."
+      },
+      {
+        "role": "user",
+        "content": "Problem description:\nWrite a function to check if the given number is woodball or not.\n\nExample of correct behaviour:\nassert is_woodall(383) == True\n\nFunction under test (file solution.py; the line numbers on the left are not part of the code):\n  1 | def is_woodall(x):\n  2 |     \"\"\"\n  3 |     Check if a number is a Woodall number.\n  4 | \n  5 |     A Woodall number is a number of the form n * 2^n - 1, where n is a positive integer.\n  6 | \n  7 |     Args:\n  8 |         x (int): The number to check.\n  9 | \n 10 |     Returns:\n 11 |         bool: True if x is a Woodall number, False otherwise.\n 12 |     \"\"\"\n 13 |     if x <= 0:\n 14 |         return False\n 15 |     n = 1\n 16 |     while True:\n 17 |         woodall = n * (1 << n) - 1  # n * 2^n - 1\n 18 |         if woodall == x:\n 19 |             return True\n 20 |         if woodall > x:\n 21 |             return False\n 22 |         n += 1\n\nCoverage goal: Reach 100% statement coverage: every executable line of solution.py must be run by at least one test.\nWrite between 3 and 10 tests."
+      }
+    ],
+    "temperature": 0.4,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "reasoning": {
+      "enabled": false
+    },
+    "seed": 42
+  },
+  "response": {
+    "content": "```python\nfrom solution import is_woodall\n\ndef test_is_woodall_positive_woodall():\n    assert is_woodall(383) == True\n\ndef test_is_woodall_negative_input():\n    assert is_woodall(-5) == False\n\ndef test_is_woodall_zero():\n    assert is_woodall(0) == False\n\ndef test_is_woodall_non_woodall_positive():\n    assert is_woodall(10) == False\n\ndef test_is_woodall_next_woodall():\n    assert is_woodall(2047) == True\n\ndef test_is_woodall_large_non_woodall():\n    assert is_woodall(1000000) == False\n```",
+    "model": "cohere/north-mini-code:free",
+    "usage": {
+      "prompt_tokens": 457,
+      "completion_tokens": 150,
+      "total_tokens": 607,
+      "cost": 0,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0,
+        "video_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0,
+        "upstream_inference_prompt_cost": 0,
+        "upstream_inference_completions_cost": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    }
+  },
+  "latency_s": 2.16
+}

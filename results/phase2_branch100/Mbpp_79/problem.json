@@ -1,0 +1,13 @@
+{
+  "task_id": 79,
+  "prompt": "Write a python function to check whether the length of the word is odd or not.",
+  "entry_point": "word_len",
+  "signature": "def word_len(s):",
+  "reference_code": "def word_len(s): \n    s = s.split(' ')   \n    for word in s:    \n        if len(word)%2!=0: \n            return True  \n        else:\n          return False\n",
+  "reference_tests": [
+    "assert word_len(\"Hadoop\") == False",
+    "assert word_len(\"great\") == True",
+    "assert word_len(\"structure\") == True"
+  ],
+  "test_imports": []
+}

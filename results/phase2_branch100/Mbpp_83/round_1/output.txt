@@ -1,0 +1,59 @@
+FF.FFF                                                                   [100%]
+=================================== FAILURES ===================================
+_______________________________ test_single_char _______________________________
+
+    def test_single_char():
+>       assert get_Char("a") == "a"
+E       AssertionError: assert 't' == 'a'
+E         
+E         - a
+E         + t
+
+test_solution.py:4: AssertionError
+_____________________________ test_multiple_chars ______________________________
+
+    def test_multiple_chars():
+>       assert get_Char("abc") == "f"
+E       AssertionError: assert 'i' == 'f'
+E         
+E         - f
+E         + i
+
+test_solution.py:7: AssertionError
+_______________________________ test_all_letters _______________________________
+
+    def test_all_letters():
+>       assert get_Char("abcdefghijklmnopqrstuvwxyz") == "a"
+E       AssertionError: assert 'n' == 'a'
+E         
+E         - a
+E         + n
+
+test_solution.py:13: AssertionError
+_______________________________ test_modulo_wrap _______________________________
+
+    def test_modulo_wrap():
+>       assert get_Char("z") == "z"
+E       AssertionError: assert 's' == 'z'
+E         
+E         - z
+E         + s
+
+test_solution.py:16: AssertionError
+______________________________ test_large_string _______________________________
+
+    def test_large_string():
+>       assert get_Char("a" * 100) == "a"
+E       AssertionError: assert 'c' == 'a'
+E         
+E         - a
+E         + c
+
+test_solution.py:19: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_single_char - AssertionError: assert 't' == 'a'
+FAILED test_solution.py::test_multiple_chars - AssertionError: assert 'i' == 'f'
+FAILED test_solution.py::test_all_letters - AssertionError: assert 'n' == 'a'
+FAILED test_solution.py::test_modulo_wrap - AssertionError: assert 's' == 'z'
+FAILED test_solution.py::test_large_string - AssertionError: assert 'c' == 'a'
+5 failed, 1 passed in 3.33s

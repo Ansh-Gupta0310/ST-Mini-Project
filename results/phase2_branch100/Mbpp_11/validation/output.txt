@@ -1,0 +1,72 @@
+..FF..FFFF                                                               [100%]
+=================================== FAILURES ===================================
+_____________________ test_remove_Occ_only_one_occurrence ______________________
+
+    def test_remove_Occ_only_one_occurrence():
+>       assert remove_Occ("hello", "h") == "hello"
+E       AssertionError: assert 'ello' == 'hello'
+E         
+E         - hello
+E         ? -
+E         + ello
+
+test_solution.py:10: AssertionError
+_____________________ test_remove_Occ_multiple_occurrences _____________________
+
+    def test_remove_Occ_multiple_occurrences():
+>       assert remove_Occ("abracadabra", "a") == "brcdbr"
+E       AssertionError: assert 'bracadabr' == 'brcdbr'
+E         
+E         - brcdbr
+E         + bracadabr
+E         ?   + + +
+
+test_solution.py:13: AssertionError
+____________________ test_remove_Occ_character_at_end_only _____________________
+
+    def test_remove_Occ_character_at_end_only():
+>       assert remove_Occ("abc", "c") == "abc"
+E       AssertionError: assert 'ab' == 'abc'
+E         
+E         - abc
+E         ?   -
+E         + ab
+
+test_solution.py:22: AssertionError
+___________________ test_remove_Occ_character_at_start_only ____________________
+
+    def test_remove_Occ_character_at_start_only():
+>       assert remove_Occ("abc", "a") == "abc"
+E       AssertionError: assert 'bc' == 'abc'
+E         
+E         - abc
+E         ? -
+E         + bc
+
+test_solution.py:25: AssertionError
+___________________ test_remove_Occ_single_character_string ____________________
+
+    def test_remove_Occ_single_character_string():
+>       assert remove_Occ("a", "a") == "a"
+E       AssertionError: assert '' == 'a'
+E         
+E         - a
+
+test_solution.py:28: AssertionError
+_____________________ test_remove_Occ_two_characters_same ______________________
+
+    def test_remove_Occ_two_characters_same():
+>       assert remove_Occ("aa", "a") == "aa"
+E       AssertionError: assert '' == 'aa'
+E         
+E         - aa
+
+test_solution.py:31: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_remove_Occ_only_one_occurrence - AssertionError...
+FAILED test_solution.py::test_remove_Occ_multiple_occurrences - AssertionErro...
+FAILED test_solution.py::test_remove_Occ_character_at_end_only - AssertionErr...
+FAILED test_solution.py::test_remove_Occ_character_at_start_only - AssertionE...
+FAILED test_solution.py::test_remove_Occ_single_character_string - AssertionE...
+FAILED test_solution.py::test_remove_Occ_two_characters_same - AssertionError...
+6 failed, 4 passed in 3.03s

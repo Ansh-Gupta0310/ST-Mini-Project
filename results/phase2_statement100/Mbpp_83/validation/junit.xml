@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="6" time="3.357" timestamp="2026-09-30T22:06:15.565152+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_single_char" time="0.001" /><testcase classname="test_solution" name="test_multiple_chars" time="0.000" /><testcase classname="test_solution" name="test_empty_string" time="0.001"><failure message="AssertionError: assert 122 == 'a'&#10; +  where 122 = get_Char('')">def test_empty_string():
+&gt;       assert get_Char("") == "a"
+E       AssertionError: assert 122 == 'a'
+E        +  where 122 = get_Char('')
+
+test_solution.py:10: AssertionError</failure></testcase><testcase classname="test_solution" name="test_all_lowercase" time="0.001"><failure message="AssertionError: assert 'w' == 'v'&#10;  &#10;  - v&#10;  + w">def test_all_lowercase():
+&gt;       assert get_Char("xyz") == "v"
+E       AssertionError: assert 'w' == 'v'
+E         
+E         - v
+E         + w
+
+test_solution.py:13: AssertionError</failure></testcase><testcase classname="test_solution" name="test_large_string" time="0.001"><failure message="AssertionError: assert 'v' == 'a'&#10;  &#10;  - a&#10;  + v">def test_large_string():
+&gt;       assert get_Char("a" * 100) == "a"
+E       AssertionError: assert 'v' == 'a'
+E         
+E         - a
+E         + v
+
+test_solution.py:16: AssertionError</failure></testcase><testcase classname="test_solution" name="test_mixed_length" time="0.000" /></testsuite></testsuites>

@@ -1,0 +1,51 @@
+{
+  "created_at": "2026-09-30T21:52:50+00:00",
+  "request": {
+    "model": "cohere/north-mini-code:free",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a software tester who writes pytest unit tests.\nReply with exactly one Python code block containing a complete pytest file and nothing else.\nRules:\n- The function under test is in the module `solution`. Import it with: from solution import recursive_list_sum\n- Write each test as a separate top-level function whose name starts with test_ and describes what it checks.\n- Use plain assert statements. Use pytest.raises only if the problem says an exception is raised.\n- Take every expected value from the problem description, not from the code under test.\n- Do not define or change recursive_list_sum. Do not use randomness, files, the network, or print.\n- Use only pytest and the Python standard library."
+      },
+      {
+        "role": "user",
+        "content": "Problem description:\nWrite a function to flatten a list and sum all of its elements.\n\nExample of correct behaviour:\nassert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21\n\nFunction under test (file solution.py; the line numbers on the left are not part of the code):\n  1 | def recursive_list_sum(data_list):\n  2 |     total = 0\n  3 |     for element in data_list:\n  4 |         if isinstance(element, list):\n  5 |             total += recursive_list_sum(element)\n  6 |         else:\n  7 |             total += element\n  8 |     return total\n\nCoverage goal: Reach 100% branch coverage: every if/elif/while condition must be True in some test and False in some test, and every loop must run its body at least once and also finish at least once.\nWrite between 3 and 10 tests."
+      }
+    ],
+    "temperature": 0.4,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "reasoning": {
+      "enabled": false
+    },
+    "seed": 42
+  },
+  "response": {
+    "content": "```python\nfrom solution import recursive_list_sum\n\ndef test_flat_list_sum():\n    assert recursive_list_sum([1, 2, 3]) == 6\n\ndef test_nested_lists():\n    assert recursive_list_sum([1, 2, [3, 4], [5, 6]]) == 21\n\ndef test_deeply_nested():\n    assert recursive_list_sum([[[1]], 2, [3, [4]]]) == 10\n\ndef test_empty_list():\n    assert recursive_list_sum([]) == 0\n\ndef test_single_element():\n    assert recursive_list_sum([42]) == 42\n\ndef test_mixed_types():\n    assert recursive_list_sum([1, [2, [3, 4]], 5]) == 15\n\ndef test_large_numbers():\n    assert recursive_list_sum([1000000, [2000000, [3000000]]]) == 6000000\n```",
+    "model": "cohere/north-mini-code:free",
+    "usage": {
+      "prompt_tokens": 335,
+      "completion_tokens": 191,
+      "total_tokens": 526,
+      "cost": 0,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0,
+        "video_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0,
+        "upstream_inference_prompt_cost": 0,
+        "upstream_inference_completions_cost": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    }
+  },
+  "latency_s": 1.52
+}

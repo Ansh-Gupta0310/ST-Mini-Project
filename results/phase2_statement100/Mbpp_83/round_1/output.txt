@@ -1,0 +1,59 @@
+FF.FFF                                                                   [100%]
+=================================== FAILURES ===================================
+_______________________________ test_single_char _______________________________
+
+    def test_single_char():
+>       assert get_Char("a") == "a"
+E       AssertionError: assert 't' == 'a'
+E         
+E         - a
+E         + t
+
+test_solution.py:4: AssertionError
+_____________________________ test_multiple_chars ______________________________
+
+    def test_multiple_chars():
+>       assert get_Char("abc") == "f"
+E       AssertionError: assert 'i' == 'f'
+E         
+E         - f
+E         + i
+
+test_solution.py:7: AssertionError
+______________________________ test_all_lowercase ______________________________
+
+    def test_all_lowercase():
+>       assert get_Char("xyz") == "v"
+E       AssertionError: assert 'z' == 'v'
+E         
+E         - v
+E         + z
+
+test_solution.py:13: AssertionError
+______________________________ test_large_string _______________________________
+
+    def test_large_string():
+>       assert get_Char("a" * 100) == "a"
+E       AssertionError: assert 'c' == 'a'
+E         
+E         - a
+E         + c
+
+test_solution.py:16: AssertionError
+______________________________ test_mixed_length _______________________________
+
+    def test_mixed_length():
+>       assert get_Char("ab") == "c"
+E       AssertionError: assert 'n' == 'c'
+E         
+E         - c
+E         + n
+
+test_solution.py:19: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_single_char - AssertionError: assert 't' == 'a'
+FAILED test_solution.py::test_multiple_chars - AssertionError: assert 'i' == 'f'
+FAILED test_solution.py::test_all_lowercase - AssertionError: assert 'z' == 'v'
+FAILED test_solution.py::test_large_string - AssertionError: assert 'c' == 'a'
+FAILED test_solution.py::test_mixed_length - AssertionError: assert 'n' == 'c'
+5 failed, 1 passed in 3.10s

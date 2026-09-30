@@ -1,0 +1,31 @@
+{
+  "status": "RAN",
+  "tests_total": 3,
+  "tests_passed": 3,
+  "tests_failed": 0,
+  "test_outcomes": {
+    "test_reference_1": "passed",
+    "test_reference_2": "passed",
+    "test_reference_3": "passed"
+  },
+  "statement_coverage": 83.33,
+  "branch_coverage": 50.0,
+  "missing_lines": [
+    8
+  ],
+  "missing_branches": [
+    [
+      7,
+      8
+    ]
+  ],
+  "target_met": false,
+  "verdict": "COVERAGE_NOT_MET",
+  "output_tail": "...                                                                      [100%]\n3 passed in 0.16s",
+  "criterion": "branch",
+  "target": 100.0,
+  "num_statements": 6,
+  "num_branches": 2,
+  "exit_code": 0,
+  "duration_s": 8.16
+}

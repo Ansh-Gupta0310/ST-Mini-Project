@@ -1,0 +1,28 @@
+{
+  "status": "RAN",
+  "tests_total": 7,
+  "tests_passed": 6,
+  "tests_failed": 1,
+  "test_outcomes": {
+    "test_undulating_positive": "passed",
+    "test_undulating_short_number": "passed",
+    "test_undulating_non_two_unique_digits": "passed",
+    "test_undulating_adjacent_equal": "passed",
+    "test_undulating_alternating": "failed",
+    "test_undulating_single_digit": "passed",
+    "test_undulating_three_digits_valid": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "....F..                                                                  [100%]\n=================================== FAILURES ===================================\n_________________________ test_undulating_alternating __________________________\n\n    def test_undulating_alternating() -> None:\n>       assert is_undulating(1212) == False\nE       assert True == False\nE        +  where True = is_undulating(1212)\n\ntest_solution.py:16: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_undulating_alternating - assert True == False\n1 failed, 6 passed in 0.76s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 8,
+  "num_branches": 6,
+  "exit_code": 1,
+  "duration_s": 3.42
+}

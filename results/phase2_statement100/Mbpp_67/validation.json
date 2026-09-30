@@ -1,0 +1,33 @@
+{
+  "labels": {
+    "test_bell_number_zero": "VALID",
+    "test_bell_number_one": "VALID",
+    "test_bell_number_two": "VALID",
+    "test_bell_number_three": "VALID",
+    "test_bell_number_four": "VALID",
+    "test_bell_number_five": "VALID"
+  },
+  "counts": {
+    "VALID": 6,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_bell_number_zero": "passed",
+    "test_bell_number_one": "passed",
+    "test_bell_number_two": "passed",
+    "test_bell_number_three": "passed",
+    "test_bell_number_four": "passed",
+    "test_bell_number_five": "passed"
+  },
+  "on_reference": {
+    "test_bell_number_zero": "passed",
+    "test_bell_number_one": "passed",
+    "test_bell_number_two": "passed",
+    "test_bell_number_three": "passed",
+    "test_bell_number_four": "passed",
+    "test_bell_number_five": "passed"
+  }
+}

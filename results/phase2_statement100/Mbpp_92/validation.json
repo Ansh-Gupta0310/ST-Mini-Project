@@ -1,0 +1,36 @@
+{
+  "labels": {
+    "test_undulating_positive": "VALID",
+    "test_undulating_short_number": "VALID",
+    "test_undulating_non_two_unique_digits": "VALID",
+    "test_undulating_adjacent_equal": "VALID",
+    "test_undulating_alternating": "INVALID_TEST",
+    "test_undulating_single_digit": "VALID",
+    "test_undulating_three_digits_valid": "VALID"
+  },
+  "counts": {
+    "VALID": 6,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 1,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_undulating_positive": "passed",
+    "test_undulating_short_number": "passed",
+    "test_undulating_non_two_unique_digits": "passed",
+    "test_undulating_adjacent_equal": "passed",
+    "test_undulating_alternating": "failed",
+    "test_undulating_single_digit": "passed",
+    "test_undulating_three_digits_valid": "passed"
+  },
+  "on_reference": {
+    "test_undulating_positive": "passed",
+    "test_undulating_short_number": "passed",
+    "test_undulating_non_two_unique_digits": "passed",
+    "test_undulating_adjacent_equal": "passed",
+    "test_undulating_alternating": "failed",
+    "test_undulating_single_digit": "passed",
+    "test_undulating_three_digits_valid": "passed"
+  }
+}

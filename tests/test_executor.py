@@ -7,8 +7,9 @@ import sys
 import pytest
 
 import config
-from agents.models import load_problems
-from agents.test_executor import TestExecutorAgent, reference_tests_to_pytest, remove_path
+from agents.models import Problem, load_problems
+from agents.test_executor import (TestExecutorAgent, classify_tests, count_labels,
+                                 reference_tests_to_pytest, remove_path)
 
 # The worked example from PROJECT_PLAN.md §2.3.
 SIGN = """\
@@ -140,3 +141,49 @@ def test_reference_solution_passes_its_reference_tests(executor, tmp_path):
     problem = problem_11()
     r = executor.run(problem.reference_code, reference_tests_to_pytest(problem), tmp_path)
     assert (r.status, r.tests_total, r.tests_passed) == ("RAN", 3, 3)
+
+
+# --- validation against MBPP's reference solution (PROJECT_PLAN.md §3.7, step 2.4) ---------
+
+# The generated version is buggy: it answers 1 for sign(0), where the reference answers 0.
+BUGGY_SIGN = "def sign(x):\n    if x < 0:\n        return -1\n    return 1\n"
+FOUR_LABELS = (
+    "from solution import sign\n\n\ndef test_positive():\n    assert sign(5) == 1\n"
+    "\n\ndef test_zero():\n    assert sign(0) == 0\n"          # right expectation, wrong code -> BUG_FOUND
+    "\n\ndef test_negative_wrong():\n    assert sign(-5) == 1\n"  # wrong expectation -> INVALID_TEST
+    "\n\ndef test_zero_wrong():\n    assert sign(0) == 1\n"       # agrees with the bug -> MISLEADING
+)
+
+
+def sign_problem():
+    return Problem(task_id=0, prompt="Return the sign of x.", entry_point="sign", signature="def sign(x):",
+                   reference_code=SIGN, reference_tests=[], test_imports=[])
+
+
+def test_classify_tests_applies_the_label_table():
+    labels = classify_tests({"a": "passed", "b": "failed", "c": "failed", "d": "passed"},
+                            {"a": "passed", "b": "passed", "c": "failed", "d": "failed"})
+    assert labels == {"a": "VALID", "b": "BUG_FOUND", "c": "INVALID_TEST", "d": "MISLEADING"}
+
+
+def test_classify_tests_marks_a_test_the_reference_run_never_reported():
+    assert classify_tests({"a": "passed"}, {}) == {"a": "NOT_RUN"}
+
+
+def test_count_labels_always_reports_every_label():
+    counts = count_labels({"a": "VALID", "b": "VALID", "c": "BUG_FOUND"})
+    assert counts == {"VALID": 2, "BUG_FOUND": 1, "INVALID_TEST": 0, "MISLEADING": 0, "NOT_RUN": 0}
+
+
+def test_validate_labels_each_test_against_the_reference(executor, tmp_path):
+    on_generated = executor.run(BUGGY_SIGN, FOUR_LABELS, tmp_path / "round_1").test_outcomes
+    labels = executor.validate(FOUR_LABELS, sign_problem(), tmp_path / "validation", on_generated)
+    assert labels == {"test_positive": "VALID", "test_zero": "BUG_FOUND",
+                      "test_negative_wrong": "INVALID_TEST", "test_zero_wrong": "MISLEADING"}
+    assert (tmp_path / "validation" / "execution.json").exists()  # re-runnable evidence for the report
+
+
+def test_validate_runs_the_tests_against_the_reference_not_the_generated_code(executor, tmp_path):
+    """The validation folder must contain MBPP's reference solution, not the generated one."""
+    executor.validate(FOUR_LABELS, sign_problem(), tmp_path / "validation", {})
+    assert (tmp_path / "validation" / "solution.py").read_text(encoding="utf-8") == SIGN

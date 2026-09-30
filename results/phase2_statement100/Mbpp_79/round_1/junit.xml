@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="5" time="2.789" timestamp="2026-09-30T22:05:20.248964+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_word_len_even_length" time="0.002"><failure message="AssertionError: assert True == False&#10; +  where True = word_len('Hadoop')">def test_word_len_even_length():
+&gt;       assert word_len("Hadoop") == False
+E       AssertionError: assert True == False
+E        +  where True = word_len('Hadoop')
+
+test_solution.py:4: AssertionError</failure></testcase><testcase classname="test_solution" name="test_word_len_odd_length" time="0.001" /><testcase classname="test_solution" name="test_word_len_empty_string" time="0.001" /><testcase classname="test_solution" name="test_word_len_single_character" time="0.001"><failure message="AssertionError: assert False == True&#10; +  where False = word_len('a')">def test_word_len_single_character():
+&gt;       assert word_len("a") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('a')
+
+test_solution.py:13: AssertionError</failure></testcase><testcase classname="test_solution" name="test_word_len_two_characters" time="0.001" /></testsuite></testsuites>

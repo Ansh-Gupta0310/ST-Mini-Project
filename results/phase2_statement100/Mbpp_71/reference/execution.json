@@ -1,0 +1,24 @@
+{
+  "status": "RAN",
+  "tests_total": 3,
+  "tests_passed": 2,
+  "tests_failed": 1,
+  "test_outcomes": {
+    "test_reference_1": "failed",
+    "test_reference_2": "passed",
+    "test_reference_3": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "F..                                                                      [100%]\n=================================== FAILURES ===================================\n_______________________________ test_reference_1 _______________________________\n\n    def test_reference_1():\n>       assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]\nE       assert [5, 15, 37, 25, 79] == [5, 15, 25, 37, 79]\nE         \nE         At index 2 diff: 37 != 25\nE         Use -v to get more diff\n\ntest_solution.py:5: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_reference_1 - assert [5, 15, 37, 25, 79] == [5,...\n1 failed, 2 passed in 2.20s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 13,
+  "num_branches": 6,
+  "exit_code": 1,
+  "duration_s": 10.2
+}

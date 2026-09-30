@@ -1,0 +1,22 @@
+..F....                                                                  [100%]
+=================================== FAILURES ===================================
+_______________________________ test_empty_list ________________________________
+
+    def test_empty_list():
+>       assert len_log([]) == 0
+               ^^^^^^^^^^^
+
+test_solution.py:10: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+list1 = []
+
+    def len_log(list1):
+>       return max(len(word) for word in list1)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: max() iterable argument is empty
+
+solution.py:2: ValueError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_empty_list - ValueError: max() iterable argumen...
+1 failed, 6 passed in 0.99s

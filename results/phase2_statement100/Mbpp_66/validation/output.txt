@@ -1,0 +1,22 @@
+..F...F                                                                  [100%]
+=================================== FAILURES ===================================
+_____________________________ test_mixed_with_zero _____________________________
+
+    def test_mixed_with_zero():
+>       assert pos_count([1, -1, 0, 2]) == 2
+E       assert 3 == 2
+E        +  where 3 = pos_count([1, -1, 0, 2])
+
+test_solution.py:10: AssertionError
+_______________________________ test_single_zero _______________________________
+
+    def test_single_zero():
+>       assert pos_count([0]) == 0
+E       assert 1 == 0
+E        +  where 1 = pos_count([0])
+
+test_solution.py:22: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_mixed_with_zero - assert 3 == 2
+FAILED test_solution.py::test_single_zero - assert 1 == 0
+2 failed, 5 passed in 2.66s

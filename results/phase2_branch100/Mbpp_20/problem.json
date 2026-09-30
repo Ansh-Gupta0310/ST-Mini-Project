@@ -1,0 +1,13 @@
+{
+  "task_id": 20,
+  "prompt": "Write a function to check if the given number is woodball or not.",
+  "entry_point": "is_woodall",
+  "signature": "def is_woodall(x):",
+  "reference_code": "def is_woodall(x): \n\tif (x % 2 == 0): \n\t\treturn False\n\tif (x == 1): \n\t\treturn True\n\tx = x + 1 \n\tp = 0\n\twhile (x % 2 == 0): \n\t\tx = x/2\n\t\tp = p + 1\n\t\tif (p == x): \n\t\t\treturn True\n\treturn False\n",
+  "reference_tests": [
+    "assert is_woodall(383) == True",
+    "assert is_woodall(254) == False",
+    "assert is_woodall(200) == False"
+  ],
+  "test_imports": []
+}

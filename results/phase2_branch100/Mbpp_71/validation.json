@@ -1,0 +1,36 @@
+{
+  "labels": {
+    "test_comb_sort_already_sorted": "VALID",
+    "test_comb_sort_reverse_sorted": "BUG_FOUND",
+    "test_comb_sort_with_duplicates": "VALID",
+    "test_comb_sort_single_element": "VALID",
+    "test_comb_sort_empty_list": "VALID",
+    "test_comb_sort_gap_reduction_true": "BUG_FOUND",
+    "test_comb_sort_sorted_flag_false": "BUG_FOUND"
+  },
+  "counts": {
+    "VALID": 4,
+    "BUG_FOUND": 3,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_comb_sort_already_sorted": "passed",
+    "test_comb_sort_reverse_sorted": "failed",
+    "test_comb_sort_with_duplicates": "passed",
+    "test_comb_sort_single_element": "passed",
+    "test_comb_sort_empty_list": "passed",
+    "test_comb_sort_gap_reduction_true": "failed",
+    "test_comb_sort_sorted_flag_false": "failed"
+  },
+  "on_reference": {
+    "test_comb_sort_already_sorted": "passed",
+    "test_comb_sort_reverse_sorted": "passed",
+    "test_comb_sort_with_duplicates": "passed",
+    "test_comb_sort_single_element": "passed",
+    "test_comb_sort_empty_list": "passed",
+    "test_comb_sort_gap_reduction_true": "passed",
+    "test_comb_sort_sorted_flag_false": "passed"
+  }
+}

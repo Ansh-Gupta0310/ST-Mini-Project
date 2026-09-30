@@ -1,0 +1,33 @@
+{
+  "labels": {
+    "test_single_char": "BUG_FOUND",
+    "test_multiple_chars": "BUG_FOUND",
+    "test_empty_string": "MISLEADING",
+    "test_all_letters": "INVALID_TEST",
+    "test_modulo_wrap": "INVALID_TEST",
+    "test_large_string": "INVALID_TEST"
+  },
+  "counts": {
+    "VALID": 0,
+    "BUG_FOUND": 2,
+    "INVALID_TEST": 3,
+    "MISLEADING": 1,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_single_char": "failed",
+    "test_multiple_chars": "failed",
+    "test_empty_string": "passed",
+    "test_all_letters": "failed",
+    "test_modulo_wrap": "failed",
+    "test_large_string": "failed"
+  },
+  "on_reference": {
+    "test_single_char": "passed",
+    "test_multiple_chars": "passed",
+    "test_empty_string": "failed",
+    "test_all_letters": "failed",
+    "test_modulo_wrap": "failed",
+    "test_large_string": "failed"
+  }
+}

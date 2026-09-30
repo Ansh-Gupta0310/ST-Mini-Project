@@ -1,0 +1,31 @@
+{
+  "status": "RAN",
+  "tests_total": 10,
+  "tests_passed": 7,
+  "tests_failed": 3,
+  "test_outcomes": {
+    "test_remove_Occ_first_and_last_occurrence": "passed",
+    "test_remove_Occ_character_not_found": "passed",
+    "test_remove_Occ_only_one_occurrence": "passed",
+    "test_remove_Occ_multiple_occurrences": "failed",
+    "test_remove_Occ_empty_string": "passed",
+    "test_remove_Occ_character_at_start_and_end": "failed",
+    "test_remove_Occ_character_at_end_only": "passed",
+    "test_remove_Occ_character_at_start_only": "passed",
+    "test_remove_Occ_single_character_string": "passed",
+    "test_remove_Occ_two_characters_same": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "...F.F...F                                                               [100%]\n=================================== FAILURES ===================================\n_____________________ test_remove_Occ_multiple_occurrences _____________________\n\n    def test_remove_Occ_multiple_occurrences():\n>       assert remove_Occ(\"abracadabra\", \"a\") == \"brcdbr\"\nE       AssertionError: assert 'bracadabr' == 'brcdbr'\nE         \nE         - brcdbr\nE         + bracadabr\nE         ?   + + +\n\ntest_solution.py:13: AssertionError\n__________________ test_remove_Occ_character_at_start_and_end __________________\n\n    def test_remove_Occ_character_at_start_and_end():\n>       assert remove_Occ(\"xabc\", \"x\") == \"abc\"\nE       AssertionError: assert 'xabc' == 'abc'\nE         \nE         - abc\nE         + xabc\nE         ? +\n\ntest_solution.py:19: AssertionError\n_____________________ test_remove_Occ_two_characters_same ______________________\n\n    def test_remove_Occ_two_characters_same():\n>       assert remove_Occ(\"aa\", \"a\") == \"aa\"\nE       AssertionError: assert '' == 'aa'\nE         \nE         - aa\n\ntest_solution.py:31: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_remove_Occ_multiple_occurrences - AssertionErro...\nFAILED test_solution.py::test_remove_Occ_character_at_start_and_end - Asserti...\nFAILED test_solution.py::test_remove_Occ_two_characters_same - AssertionError...\n3 failed, 7 passed in 2.75s",
+  "criterion": "branch",
+  "target": 100.0,
+  "num_statements": 6,
+  "num_branches": 2,
+  "exit_code": 1,
+  "duration_s": 10.88
+}

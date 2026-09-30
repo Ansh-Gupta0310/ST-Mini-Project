@@ -1,0 +1,28 @@
+{
+  "status": "RAN",
+  "tests_total": 7,
+  "tests_passed": 3,
+  "tests_failed": 4,
+  "test_outcomes": {
+    "test_remove_Occ_normal_case": "passed",
+    "test_remove_Occ_char_not_found": "passed",
+    "test_remove_Occ_single_occurrence": "failed",
+    "test_remove_Occ_empty_string": "passed",
+    "test_remove_Occ_multiple_occurrences": "failed",
+    "test_remove_Occ_first_and_last_same_position": "failed",
+    "test_remove_Occ_two_occurrences": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "E         + hllo\n\ntest_solution.py:10: AssertionError\n_____________________ test_remove_Occ_multiple_occurrences _____________________\n\n    def test_remove_Occ_multiple_occurrences():\n>       assert remove_Occ(\"abracadabra\", \"a\") == \"brcdbr\"\nE       AssertionError: assert 'bracadabr' == 'brcdbr'\nE         \nE         - brcdbr\nE         + bracadabr\nE         ?   + + +\n\ntest_solution.py:16: AssertionError\n_________________ test_remove_Occ_first_and_last_same_position _________________\n\n    def test_remove_Occ_first_and_last_same_position():\n>       assert remove_Occ(\"a\", \"a\") == \"a\"\nE       AssertionError: assert '' == 'a'\nE         \nE         - a\n\ntest_solution.py:19: AssertionError\n_______________________ test_remove_Occ_two_occurrences ________________________\n\n    def test_remove_Occ_two_occurrences():\n>       assert remove_Occ(\"banana\", \"n\") == \"banaa\"\nE       AssertionError: assert 'baaa' == 'banaa'\nE         \nE         - banaa\nE         ?   -\nE         + baaa\n\ntest_solution.py:22: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_remove_Occ_single_occurrence - AssertionError: ...\nFAILED test_solution.py::test_remove_Occ_multiple_occurrences - AssertionErro...\nFAILED test_solution.py::test_remove_Occ_first_and_last_same_position - Asser...\nFAILED test_solution.py::test_remove_Occ_two_occurrences - AssertionError: as...\n4 failed, 3 passed in 2.85s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 10,
+  "num_branches": 8,
+  "exit_code": 1,
+  "duration_s": 11.5
+}

@@ -1,0 +1,22 @@
+......FF                                                                 [100%]
+=================================== FAILURES ===================================
+_______________________________ test_mixed_case ________________________________
+
+    def test_mixed_case():
+>       assert len_log(["Python", "pYTHON", "PYTHON"]) == 7
+E       AssertionError: assert 6 == 7
+E        +  where 6 = len_log(['Python', 'pYTHON', 'PYTHON'])
+
+test_solution.py:22: AssertionError
+_________________________________ test_unicode _________________________________
+
+    def test_unicode():
+>       assert len_log(["café", "coffee", "☕️"]) == 4
+E       AssertionError: assert 6 == 4
+E        +  where 6 = len_log(['café', 'coffee', '☕️'])
+
+test_solution.py:25: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_mixed_case - AssertionError: assert 6 == 7
+FAILED test_solution.py::test_unicode - AssertionError: assert 6 == 4
+2 failed, 6 passed in 2.58s
