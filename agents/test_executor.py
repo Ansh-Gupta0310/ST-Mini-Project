@@ -4,6 +4,9 @@ No LLM is involved: the verdict is computed from what pytest and coverage.py mea
 (PROJECT_PLAN.md §3.2, §3.7). Every execution happens in its own folder, which keeps everything
 needed to re-run it by hand:   cd <folder>;  python -m pytest test_solution.py
 
+`validate` runs the same tests a second time against MBPP's reference solution, so that each test can be
+labelled VALID / BUG_FOUND / INVALID_TEST / MISLEADING instead of being trusted (Phase 2, §3.7).
+
 Command line:
     python -m agents.test_executor --self-check    run each reference solution against its reference tests
 """
@@ -31,6 +34,11 @@ TEST_FILE = "test_solution.py"
 OLD_ARTIFACTS = ("junit.xml", "coverage.json", ".coverage", "output.txt", "execution.json", "coverage_html")
 PYTEST_INI = "[pytest]\n# Keeps pytest from picking up the repository's own pytest.ini.\n"
 TOOL_TIMEOUT_S = 60  # for `coverage json` / `coverage html`
+
+# Labels a generated test can get in validation (PROJECT_PLAN.md §3.7). NOT_RUN is not in the plan's
+# table: it covers the case where the reference run reported no result for a test at all (for example
+# the whole file failed to import), so that the label counts always add up to the number of tests.
+TEST_LABELS = ("VALID", "BUG_FOUND", "INVALID_TEST", "MISLEADING", "NOT_RUN")
 
 
 def reference_tests_to_pytest(problem: Problem) -> str:
@@ -126,6 +134,45 @@ class TestExecutorAgent:
         (work_dir / "execution.json").write_text(json.dumps(asdict(result), indent=2, ensure_ascii=False),
                                                  encoding="utf-8")
         return result
+
+
+    def validate(self, test_code: str, problem: Problem, work_dir: Path | str,
+                 on_generated: dict[str, str]) -> dict[str, str]:
+        """Re-run the final tests against MBPP's reference solution and label each test (§3.7).
+
+        This is the project's answer to the oracle problem: a test that only agrees with the generated
+        code proves nothing. Only the per-test outcomes matter here, so the coverage numbers that
+        validation/execution.json also records are a by-product, not a verdict on the suite.
+        """
+        reference = self.run(problem.reference_code, test_code, work_dir, criterion="statement", target=100.0)
+        return classify_tests(on_generated, reference.test_outcomes)
+
+
+def classify_tests(on_generated: dict[str, str], on_reference: dict[str, str]) -> dict[str, str]:
+    """Label each test from how it behaved on the generated code and on MBPP's reference (§3.7).
+
+    | generated | reference | label         | meaning                                            |
+    |-----------|-----------|---------------|----------------------------------------------------|
+    | passed    | passed    | VALID         | correct test                                        |
+    | failed    | passed    | BUG_FOUND     | the test caught a real bug in the generated code    |
+    | failed    | failed    | INVALID_TEST  | the test's expected value is wrong                  |
+    | passed    | failed    | MISLEADING    | test and generated code share the same wrong answer |
+    """
+    labels = {}
+    for name, generated in on_generated.items():
+        reference = on_reference.get(name)
+        if reference is None:
+            labels[name] = "NOT_RUN"
+        elif generated == "passed":
+            labels[name] = "VALID" if reference == "passed" else "MISLEADING"
+        else:
+            labels[name] = "BUG_FOUND" if reference == "passed" else "INVALID_TEST"
+    return labels
+
+
+def count_labels(labels: dict[str, str]) -> dict[str, int]:
+    """How many tests got each label, with every label present even when it is 0 (stable table columns)."""
+    return {label: sum(1 for value in labels.values() if value == label) for label in TEST_LABELS}
 
 
 def remove_path(path: Path) -> None:
