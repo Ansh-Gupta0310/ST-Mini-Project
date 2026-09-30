@@ -1,0 +1,29 @@
+{
+  "task_id": 67,
+  "entry_point": "bell_number",
+  "codegen_ok": true,
+  "status": "COMPLETED",
+  "code_correct": true,
+  "baseline": {
+    "verdict": "PASS",
+    "status": "RAN",
+    "tests_total": 3,
+    "tests_passed": 3,
+    "statement_coverage": 100.0,
+    "branch_coverage": 100.0,
+    "target_met": true,
+    "num_statements": 12,
+    "num_branches": 6,
+    "missing_lines": [],
+    "missing_branches": []
+  },
+  "llm_calls": 1,
+  "llm_cached_calls": 1,
+  "llm_requests_sent": 0,
+  "models_used": [
+    "cohere/north-mini-code:free"
+  ],
+  "prompt_tokens": 119,
+  "completion_tokens": 196,
+  "reasoning_tokens": 0
+}

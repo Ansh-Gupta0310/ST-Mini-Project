@@ -1,0 +1,51 @@
+{
+  "created_at": "2026-09-30T19:00:35+00:00",
+  "request": {
+    "model": "cohere/north-mini-code:free",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a Python code generator.\nWrite a correct Python 3 function that solves the problem you are given.\nReply with exactly one Python code block and nothing else.\nUse only the Python standard library.\nDo not include explanations, example usage, print statements, input() calls,\nor an `if __name__ == \"__main__\":` block."
+      },
+      {
+        "role": "user",
+        "content": "Problem:\nWrite a function to sort a list of elements.\n\nImplement this function, keeping exactly this name and these parameters:\ndef comb_sort(nums):\n\nYour function must satisfy this example:\nassert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]"
+      }
+    ],
+    "temperature": 0.2,
+    "top_p": 1.0,
+    "max_tokens": 1024,
+    "reasoning": {
+      "enabled": false
+    },
+    "seed": 42
+  },
+  "response": {
+    "content": "```python\ndef comb_sort(nums):\n    n = len(nums)\n    gap = n\n    shrink = 1.3\n    sorted_flag = False\n\n    while not sorted_flag:\n        sorted_flag = True\n        gap = max(1, int(gap / shrink))\n        for i in range(n - gap):\n            if nums[i] > nums[i + gap]:\n                nums[i], nums[i + gap] = nums[i + gap], nums[i]\n                sorted_flag = False\n    return nums\n```",
+    "model": "cohere/north-mini-code:free",
+    "usage": {
+      "prompt_tokens": 139,
+      "completion_tokens": 107,
+      "total_tokens": 246,
+      "cost": 0,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0,
+        "video_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0,
+        "upstream_inference_prompt_cost": 0,
+        "upstream_inference_completions_cost": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    }
+  },
+  "latency_s": 2.44
+}

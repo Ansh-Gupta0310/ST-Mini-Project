@@ -1,0 +1,36 @@
+{
+  "task_id": 70,
+  "entry_point": "get_equal",
+  "codegen_ok": true,
+  "status": "COMPLETED",
+  "code_correct": true,
+  "baseline": {
+    "verdict": "COVERAGE_NOT_MET",
+    "status": "RAN",
+    "tests_total": 3,
+    "tests_passed": 3,
+    "statement_coverage": 87.5,
+    "branch_coverage": 83.33,
+    "target_met": false,
+    "num_statements": 8,
+    "num_branches": 6,
+    "missing_lines": [
+      3
+    ],
+    "missing_branches": [
+      [
+        2,
+        3
+      ]
+    ]
+  },
+  "llm_calls": 1,
+  "llm_cached_calls": 1,
+  "llm_requests_sent": 0,
+  "models_used": [
+    "cohere/north-mini-code:free"
+  ],
+  "prompt_tokens": 134,
+  "completion_tokens": 51,
+  "reasoning_tokens": 0
+}

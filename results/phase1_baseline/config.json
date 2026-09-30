@@ -1,0 +1,65 @@
+{
+  "mode": "baseline",
+  "criterion": "branch",
+  "target": 100.0,
+  "max_rounds": null,
+  "task_ids": [
+    11,
+    20,
+    65,
+    66,
+    67,
+    69,
+    70,
+    71,
+    79,
+    83,
+    90,
+    92
+  ],
+  "started_at": "2026-09-30T19:05:07+00:00",
+  "models": {
+    "primary": "cohere/north-mini-code:free",
+    "fallbacks": [
+      "nvidia/nemotron-3-super-120b-a12b:free",
+      "google/gemma-4-31b-it:free"
+    ]
+  },
+  "code_generator": {
+    "temperature": 0.2,
+    "top_p": 1.0,
+    "max_tokens": 1024,
+    "seed": 42,
+    "reasoning": {
+      "enabled": false
+    }
+  },
+  "executor": {
+    "timeout_s": 30
+  },
+  "llm_client": {
+    "min_seconds_between_calls": 3,
+    "max_retries": 4,
+    "retry_waits_s": [
+      5,
+      15,
+      30,
+      60
+    ],
+    "request_timeout_s": 120
+  },
+  "dataset": {
+    "file": "data/mbpp_subset.json",
+    "sha256": "8897b57ef9637a46515f3f6b2fdb467757f28c02fd21a08e9160f7e3aa52cb52"
+  },
+  "prompts": {
+    "code_generator_system.txt": "41a2a415a22e2f5e267d7ea7559b388129f758e2b896e1ed7a26de2ebb436bfd",
+    "code_generator_user.txt": "edd9a5fb2b6f3eaf25697e3d3c02671b18203d5402f114ea96b8afdbd741c668"
+  },
+  "environment": {
+    "python": "3.12.10",
+    "pytest": "9.1.1",
+    "coverage": "7.16.2",
+    "requests": "2.34.2"
+  }
+}

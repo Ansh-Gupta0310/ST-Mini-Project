@@ -1,0 +1,158 @@
+[
+  {
+    "task_id": 11,
+    "prompt": "Write a python function to remove first and last occurrence of a given character from the string.",
+    "entry_point": "remove_Occ",
+    "signature": "def remove_Occ(s, ch):",
+    "reference_code": "def remove_Occ(s,ch): \n    for i in range(len(s)): \n        if (s[i] == ch): \n            s = s[0 : i] + s[i + 1:] \n            break\n    for i in range(len(s) - 1,-1,-1):  \n        if (s[i] == ch): \n            s = s[0 : i] + s[i + 1:] \n            break\n    return s\n",
+    "reference_tests": [
+      "assert remove_Occ(\"hello\",\"l\") == \"heo\"",
+      "assert remove_Occ(\"abcda\",\"a\") == \"bcd\"",
+      "assert remove_Occ(\"PHP\",\"P\") == \"H\""
+    ],
+    "test_imports": []
+  },
+  {
+    "task_id": 20,
+    "prompt": "Write a function to check if the given number is woodball or not.",
+    "entry_point": "is_woodall",
+    "signature": "def is_woodall(x):",
+    "reference_code": "def is_woodall(x): \n\tif (x % 2 == 0): \n\t\treturn False\n\tif (x == 1): \n\t\treturn True\n\tx = x + 1 \n\tp = 0\n\twhile (x % 2 == 0): \n\t\tx = x/2\n\t\tp = p + 1\n\t\tif (p == x): \n\t\t\treturn True\n\treturn False\n",
+    "reference_tests": [
+      "assert is_woodall(383) == True",
+      "assert is_woodall(254) == False",
+      "assert is_woodall(200) == False"
+    ],
+    "test_imports": []
+  },
+  {
+    "task_id": 65,
+    "prompt": "Write a function to flatten a list and sum all of its elements.",
+    "entry_point": "recursive_list_sum",
+    "signature": "def recursive_list_sum(data_list):",
+    "reference_code": "def recursive_list_sum(data_list):\n\ttotal = 0\n\tfor element in data_list:\n\t\tif type(element) == type([]):\n\t\t\ttotal = total + recursive_list_sum(element)\n\t\telse:\n\t\t\ttotal = total + element\n\treturn total\n",
+    "reference_tests": [
+      "assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21",
+      "assert recursive_list_sum(([7, 10, [15,14],[19,41]]))==106",
+      "assert recursive_list_sum(([10, 20, [30,40],[50,60]]))==210"
+    ],
+    "test_imports": []
+  },
+  {
+    "task_id": 66,
+    "prompt": "Write a python function to count the number of positive numbers in a list.",
+    "entry_point": "pos_count",
+    "signature": "def pos_count(list):",
+    "reference_code": "def pos_count(list):\n  pos_count= 0\n  for num in list: \n    if num >= 0: \n      pos_count += 1\n  return pos_count\n",
+    "reference_tests": [
+      "assert pos_count([1,-2,3,-4]) == 2",
+      "assert pos_count([3,4,5,-1]) == 3",
+      "assert pos_count([1,2,3,4]) == 4"
+    ],
+    "test_imports": []
+  },
+  {
+    "task_id": 67,
+    "prompt": "Write a function to find the number of ways to partition a set of Bell numbers.",
+    "entry_point": "bell_number",
+    "signature": "def bell_number(n):",
+    "reference_code": "def bell_number(n):   \n    bell = [[0 for i in range(n+1)] for j in range(n+1)] \n    bell[0][0] = 1\n    for i in range(1, n+1): \n        bell[i][0] = bell[i-1][i-1]  \n        for j in range(1, i+1): \n            bell[i][j] = bell[i-1][j-1] + bell[i][j-1]   \n    return bell[n][0]\n",
+    "reference_tests": [
+      "assert bell_number(2)==2",
+      "assert bell_number(10)==115975",
+      "assert bell_number(56)==6775685320645824322581483068371419745979053216268760300"
+    ],
+    "test_imports": []
+  },
+  {
+    "task_id": 69,
+    "prompt": "Write a function to check whether a list contains the given sublist or not.",
+    "entry_point": "is_sublist",
+    "signature": "def is_sublist(l, s):",
+    "reference_code": "def is_sublist(l, s):\n\tsub_set = False\n\tif s == []:\n\t\tsub_set = True\n\telif s == l:\n\t\tsub_set = True\n\telif len(s) > len(l):\n\t\tsub_set = False\n\telse:\n\t\tfor i in range(len(l)):\n\t\t\tif l[i] == s[0]:\n\t\t\t\tn = 1\n\t\t\t\twhile (n < len(s)) and (l[i+n] == s[n]):\n\t\t\t\t\tn += 1\t\t\t\t\n\t\t\t\tif n == len(s):\n\t\t\t\t\tsub_set = True\n\treturn sub_set\n",
+    "reference_tests": [
+      "assert is_sublist([2,4,3,5,7],[3,7])==False",
+      "assert is_sublist([2,4,3,5,7],[4,3])==True",
+      "assert is_sublist([2,4,3,5,7],[1,6])==False"
+    ],
+    "test_imports": []
+  },
+  {
+    "task_id": 70,
+    "prompt": "Write a function to find whether all the given tuples have equal length or not.",
+    "entry_point": "get_equal",
+    "signature": "def get_equal(Input):",
+    "reference_code": "def find_equal_tuple(Input):\n  k = 0 if not Input else len(Input[0])\n  flag = 1\n  for tuple in Input:\n    if len(tuple) != k:\n      flag = 0\n      break\n  return flag\ndef get_equal(Input):\n  return find_equal_tuple(Input) == 1\n",
+    "reference_tests": [
+      "assert get_equal([(11, 22, 33), (44, 55, 66)]) == True",
+      "assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False",
+      "assert get_equal([(1, 2), (3, 4)]) == True"
+    ],
+    "test_imports": []
+  },
+  {
+    "task_id": 71,
+    "prompt": "Write a function to sort a list of elements.",
+    "entry_point": "comb_sort",
+    "signature": "def comb_sort(nums):",
+    "reference_code": "def comb_sort(nums):\n    shrink_fact = 1.3\n    gaps = len(nums)\n    swapped = True\n    i = 0\n    while gaps > 1 or swapped:\n        gaps = int(float(gaps) / shrink_fact)\n        swapped = False\n        i = 0\n        while gaps + i < len(nums):\n            if nums[i] > nums[i+gaps]:\n                nums[i], nums[i+gaps] = nums[i+gaps], nums[i]\n                swapped = True\n            i += 1\n    return nums\n",
+    "reference_tests": [
+      "assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]",
+      "assert comb_sort([41, 32, 15, 19, 22]) == [15, 19, 22, 32, 41]",
+      "assert comb_sort([99, 15, 13, 47]) == [13, 15, 47, 99]"
+    ],
+    "test_imports": []
+  },
+  {
+    "task_id": 79,
+    "prompt": "Write a python function to check whether the length of the word is odd or not.",
+    "entry_point": "word_len",
+    "signature": "def word_len(s):",
+    "reference_code": "def word_len(s): \n    s = s.split(' ')   \n    for word in s:    \n        if len(word)%2!=0: \n            return True  \n        else:\n          return False\n",
+    "reference_tests": [
+      "assert word_len(\"Hadoop\") == False",
+      "assert word_len(\"great\") == True",
+      "assert word_len(\"structure\") == True"
+    ],
+    "test_imports": []
+  },
+  {
+    "task_id": 83,
+    "prompt": "Write a python function to find the character made by adding the ASCII value of all the characters of the given string modulo 26.",
+    "entry_point": "get_Char",
+    "signature": "def get_Char(strr):",
+    "reference_code": "def get_Char(strr):  \n    summ = 0\n    for i in range(len(strr)): \n        summ += (ord(strr[i]) - ord('a') + 1)  \n    if (summ % 26 == 0): \n        return ord('z') \n    else: \n        summ = summ % 26\n        return chr(ord('a') + summ - 1)\n",
+    "reference_tests": [
+      "assert get_Char(\"abc\") == \"f\"",
+      "assert get_Char(\"gfg\") == \"t\"",
+      "assert get_Char(\"ab\") == \"c\""
+    ],
+    "test_imports": []
+  },
+  {
+    "task_id": 90,
+    "prompt": "Write a python function to find the length of the longest word.",
+    "entry_point": "len_log",
+    "signature": "def len_log(list1):",
+    "reference_code": "def len_log(list1):\n    max=len(list1[0])\n    for i in list1:\n        if len(i)>max:\n            max=len(i)\n    return max\n",
+    "reference_tests": [
+      "assert len_log([\"python\",\"PHP\",\"bigdata\"]) == 7",
+      "assert len_log([\"a\",\"ab\",\"abc\"]) == 3",
+      "assert len_log([\"small\",\"big\",\"tall\"]) == 5"
+    ],
+    "test_imports": []
+  },
+  {
+    "task_id": 92,
+    "prompt": "Write a function to check whether the given number is undulating or not.",
+    "entry_point": "is_undulating",
+    "signature": "def is_undulating(n):",
+    "reference_code": "def is_undulating(n): \n\tn = str(n)\n\tif (len(n) <= 2): \n\t\treturn False\n\tfor i in range(2, len(n)): \n\t\tif (n[i - 2] != n[i]): \n\t\t\treturn False\n\treturn True\n",
+    "reference_tests": [
+      "assert is_undulating(1212121) == True",
+      "assert is_undulating(1991) == False",
+      "assert is_undulating(121) == True"
+    ],
+    "test_imports": []
+  }
+]

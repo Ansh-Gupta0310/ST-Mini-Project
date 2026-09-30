@@ -1,0 +1,24 @@
+{
+  "status": "RAN",
+  "tests_total": 3,
+  "tests_passed": 0,
+  "tests_failed": 3,
+  "test_outcomes": {
+    "test_reference_1": "failed",
+    "test_reference_2": "failed",
+    "test_reference_3": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "FFF                                                                      [100%]\n================================== FAILURES ===================================\n______________________________ test_reference_1 _______________________________\n\n    def test_reference_1():\n>       assert get_Char(\"abc\") == \"f\"\nE       AssertionError: assert 'i' == 'f'\nE         \nE         - f\nE         + i\n\ntest_solution.py:5: AssertionError\n______________________________ test_reference_2 _______________________________\n\n    def test_reference_2():\n>       assert get_Char(\"gfg\") == \"t\"\nE       AssertionError: assert 'w' == 't'\nE         \nE         - t\nE         + w\n\ntest_solution.py:8: AssertionError\n______________________________ test_reference_3 _______________________________\n\n    def test_reference_3():\n>       assert get_Char(\"ab\") == \"c\"\nE       AssertionError: assert 'n' == 'c'\nE         \nE         - c\nE         + n\n\ntest_solution.py:11: AssertionError\n=========================== short test summary info ===========================\nFAILED test_solution.py::test_reference_1 - AssertionError: assert 'i' == 'f'\nFAILED test_solution.py::test_reference_2 - AssertionError: assert 'w' == 't'\nFAILED test_solution.py::test_reference_3 - AssertionError: assert 'n' == 'c'\n3 failed in 0.17s",
+  "criterion": "branch",
+  "target": 100.0,
+  "num_statements": 4,
+  "num_branches": 0,
+  "exit_code": 1,
+  "duration_s": 1.11
+}
