@@ -1,0 +1,26 @@
+{
+  "status": "RAN",
+  "tests_total": 5,
+  "tests_passed": 3,
+  "tests_failed": 2,
+  "test_outcomes": {
+    "test_word_len_even_length": "failed",
+    "test_word_len_odd_length": "passed",
+    "test_word_len_empty_string": "passed",
+    "test_word_len_single_character": "failed",
+    "test_word_len_two_characters": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "F..F.                                                                    [100%]\n=================================== FAILURES ===================================\n__________________________ test_word_len_even_length ___________________________\n\n    def test_word_len_even_length():\n>       assert word_len(\"Hadoop\") == False\nE       AssertionError: assert True == False\nE        +  where True = word_len('Hadoop')\n\ntest_solution.py:4: AssertionError\n________________________ test_word_len_single_character ________________________\n\n    def test_word_len_single_character():\n>       assert word_len(\"a\") == True\nE       AssertionError: assert False == True\nE        +  where False = word_len('a')\n\ntest_solution.py:13: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_word_len_even_length - AssertionError: assert T...\nFAILED test_solution.py::test_word_len_single_character - AssertionError: ass...\n2 failed, 3 passed in 2.79s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 2,
+  "num_branches": 0,
+  "exit_code": 1,
+  "duration_s": 10.59
+}

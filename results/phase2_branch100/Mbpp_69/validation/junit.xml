@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="9" time="2.616" timestamp="2026-09-30T21:54:54.578125+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_empty_sublist" time="0.001" /><testcase classname="test_solution" name="test_sublist_at_start" time="0.001" /><testcase classname="test_solution" name="test_sublist_at_end" time="0.001" /><testcase classname="test_solution" name="test_sublist_in_middle" time="0.001" /><testcase classname="test_solution" name="test_sublist_not_present" time="0.001" /><testcase classname="test_solution" name="test_sublist_wrong_order" time="0.001"><failure message="IndexError: list index out of range">def test_sublist_wrong_order():
+&gt;       assert is_sublist([1, 2, 3, 4], [4, 3]) == False
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_solution.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+l = [1, 2, 3, 4], s = [4, 3]
+
+    def is_sublist(l, s):
+    	sub_set = False
+    	if s == []:
+    		sub_set = True
+    	elif s == l:
+    		sub_set = True
+    	elif len(s) &gt; len(l):
+    		sub_set = False
+    	else:
+    		for i in range(len(l)):
+    			if l[i] == s[0]:
+    				n = 1
+&gt;   				while (n &lt; len(s)) and (l[i+n] == s[n]):
+                                ^^^^^^
+E       IndexError: list index out of range
+
+solution.py:13: IndexError</failure></testcase><testcase classname="test_solution" name="test_sublist_longer_than_list" time="0.001" /><testcase classname="test_solution" name="test_single_element_sublist_present" time="0.002" /><testcase classname="test_solution" name="test_single_element_sublist_not_present" time="0.001" /></testsuite></testsuites>

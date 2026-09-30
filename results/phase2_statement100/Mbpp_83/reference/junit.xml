@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="2.202" timestamp="2026-09-30T22:05:46.098297+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_reference_1" time="0.002"><failure message="AssertionError: assert 'i' == 'f'&#10;  &#10;  - f&#10;  + i">def test_reference_1():
+&gt;       assert get_Char("abc") == "f"
+E       AssertionError: assert 'i' == 'f'
+E         
+E         - f
+E         + i
+
+test_solution.py:5: AssertionError</failure></testcase><testcase classname="test_solution" name="test_reference_2" time="0.001"><failure message="AssertionError: assert 'w' == 't'&#10;  &#10;  - t&#10;  + w">def test_reference_2():
+&gt;       assert get_Char("gfg") == "t"
+E       AssertionError: assert 'w' == 't'
+E         
+E         - t
+E         + w
+
+test_solution.py:8: AssertionError</failure></testcase><testcase classname="test_solution" name="test_reference_3" time="0.001"><failure message="AssertionError: assert 'n' == 'c'&#10;  &#10;  - c&#10;  + n">def test_reference_3():
+&gt;       assert get_Char("ab") == "c"
+E       AssertionError: assert 'n' == 'c'
+E         
+E         - c
+E         + n
+
+test_solution.py:11: AssertionError</failure></testcase></testsuite></testsuites>

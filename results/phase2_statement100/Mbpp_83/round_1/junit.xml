@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="6" time="3.103" timestamp="2026-09-30T22:06:00.966835+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_single_char" time="0.002"><failure message="AssertionError: assert 't' == 'a'&#10;  &#10;  - a&#10;  + t">def test_single_char():
+&gt;       assert get_Char("a") == "a"
+E       AssertionError: assert 't' == 'a'
+E         
+E         - a
+E         + t
+
+test_solution.py:4: AssertionError</failure></testcase><testcase classname="test_solution" name="test_multiple_chars" time="0.002"><failure message="AssertionError: assert 'i' == 'f'&#10;  &#10;  - f&#10;  + i">def test_multiple_chars():
+&gt;       assert get_Char("abc") == "f"
+E       AssertionError: assert 'i' == 'f'
+E         
+E         - f
+E         + i
+
+test_solution.py:7: AssertionError</failure></testcase><testcase classname="test_solution" name="test_empty_string" time="0.001" /><testcase classname="test_solution" name="test_all_lowercase" time="0.002"><failure message="AssertionError: assert 'z' == 'v'&#10;  &#10;  - v&#10;  + z">def test_all_lowercase():
+&gt;       assert get_Char("xyz") == "v"
+E       AssertionError: assert 'z' == 'v'
+E         
+E         - v
+E         + z
+
+test_solution.py:13: AssertionError</failure></testcase><testcase classname="test_solution" name="test_large_string" time="0.001"><failure message="AssertionError: assert 'c' == 'a'&#10;  &#10;  - a&#10;  + c">def test_large_string():
+&gt;       assert get_Char("a" * 100) == "a"
+E       AssertionError: assert 'c' == 'a'
+E         
+E         - a
+E         + c
+
+test_solution.py:16: AssertionError</failure></testcase><testcase classname="test_solution" name="test_mixed_length" time="0.001"><failure message="AssertionError: assert 'n' == 'c'&#10;  &#10;  - c&#10;  + n">def test_mixed_length():
+&gt;       assert get_Char("ab") == "c"
+E       AssertionError: assert 'n' == 'c'
+E         
+E         - c
+E         + n
+
+test_solution.py:19: AssertionError</failure></testcase></testsuite></testsuites>

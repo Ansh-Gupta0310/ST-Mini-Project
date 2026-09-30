@@ -1,0 +1,35 @@
+..FFF.                                                                   [100%]
+=================================== FAILURES ===================================
+______________________________ test_empty_string _______________________________
+
+    def test_empty_string():
+>       assert get_Char("") == "a"
+E       AssertionError: assert 122 == 'a'
+E        +  where 122 = get_Char('')
+
+test_solution.py:10: AssertionError
+______________________________ test_all_lowercase ______________________________
+
+    def test_all_lowercase():
+>       assert get_Char("xyz") == "v"
+E       AssertionError: assert 'w' == 'v'
+E         
+E         - v
+E         + w
+
+test_solution.py:13: AssertionError
+______________________________ test_large_string _______________________________
+
+    def test_large_string():
+>       assert get_Char("a" * 100) == "a"
+E       AssertionError: assert 'v' == 'a'
+E         
+E         - a
+E         + v
+
+test_solution.py:16: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_empty_string - AssertionError: assert 122 == 'a'
+FAILED test_solution.py::test_all_lowercase - AssertionError: assert 'w' == 'v'
+FAILED test_solution.py::test_large_string - AssertionError: assert 'v' == 'a'
+3 failed, 3 passed in 3.35s

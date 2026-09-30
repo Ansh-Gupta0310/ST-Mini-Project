@@ -1,0 +1,13 @@
+{
+  "task_id": 92,
+  "prompt": "Write a function to check whether the given number is undulating or not.",
+  "entry_point": "is_undulating",
+  "signature": "def is_undulating(n):",
+  "reference_code": "def is_undulating(n): \n\tn = str(n)\n\tif (len(n) <= 2): \n\t\treturn False\n\tfor i in range(2, len(n)): \n\t\tif (n[i - 2] != n[i]): \n\t\t\treturn False\n\treturn True\n",
+  "reference_tests": [
+    "assert is_undulating(1212121) == True",
+    "assert is_undulating(1991) == False",
+    "assert is_undulating(121) == True"
+  ],
+  "test_imports": []
+}

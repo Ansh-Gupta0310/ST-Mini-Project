@@ -1,0 +1,23 @@
+.FF...                                                                   [100%]
+=================================== FAILURES ===================================
+___________________________ test_word_len_odd_length ___________________________
+
+    def test_word_len_odd_length():
+        assert word_len("a") == True
+>       assert word_len("ab") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('ab')
+
+test_solution.py:9: AssertionError
+__________________________ test_word_len_empty_string __________________________
+
+    def test_word_len_empty_string():
+>       assert word_len("") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('')
+
+test_solution.py:12: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_word_len_odd_length - AssertionError: assert Fa...
+FAILED test_solution.py::test_word_len_empty_string - AssertionError: assert ...
+2 failed, 4 passed in 2.56s

@@ -1,0 +1,31 @@
+{
+  "status": "RAN",
+  "tests_total": 5,
+  "tests_passed": 2,
+  "tests_failed": 3,
+  "test_outcomes": {
+    "test_word_len_even_length": "passed",
+    "test_word_len_odd_length": "failed",
+    "test_word_len_empty_string": "failed",
+    "test_word_len_single_character": "passed",
+    "test_word_len_two_characters": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 75.0,
+  "missing_lines": [],
+  "missing_branches": [
+    [
+      3,
+      -1
+    ]
+  ],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": ".FF.F                                                                    [100%]\n=================================== FAILURES ===================================\n___________________________ test_word_len_odd_length ___________________________\n\n    def test_word_len_odd_length():\n>       assert word_len(\"Python\") == True\nE       AssertionError: assert False == True\nE        +  where False = word_len('Python')\n\ntest_solution.py:7: AssertionError\n__________________________ test_word_len_empty_string __________________________\n\n    def test_word_len_empty_string():\n>       assert word_len(\"\") == True\nE       AssertionError: assert False == True\nE        +  where False = word_len('')\n\ntest_solution.py:10: AssertionError\n_________________________ test_word_len_two_characters _________________________\n\n    def test_word_len_two_characters():\n>       assert word_len(\"ab\") == True\nE       AssertionError: assert False == True\nE        +  where False = word_len('ab')\n\ntest_solution.py:16: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_word_len_odd_length - AssertionError: assert Fa...\nFAILED test_solution.py::test_word_len_empty_string - AssertionError: assert ...\nFAILED test_solution.py::test_word_len_two_characters - AssertionError: asser...\n3 failed, 2 passed in 2.56s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 6,
+  "num_branches": 4,
+  "exit_code": 1,
+  "duration_s": 10.35
+}

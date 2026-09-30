@@ -1,0 +1,27 @@
+{
+  "status": "RAN",
+  "tests_total": 6,
+  "tests_passed": 3,
+  "tests_failed": 3,
+  "test_outcomes": {
+    "test_single_char": "passed",
+    "test_multiple_chars": "passed",
+    "test_empty_string": "failed",
+    "test_all_lowercase": "failed",
+    "test_large_string": "failed",
+    "test_mixed_length": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "..FFF.                                                                   [100%]\n=================================== FAILURES ===================================\n______________________________ test_empty_string _______________________________\n\n    def test_empty_string():\n>       assert get_Char(\"\") == \"a\"\nE       AssertionError: assert 122 == 'a'\nE        +  where 122 = get_Char('')\n\ntest_solution.py:10: AssertionError\n______________________________ test_all_lowercase ______________________________\n\n    def test_all_lowercase():\n>       assert get_Char(\"xyz\") == \"v\"\nE       AssertionError: assert 'w' == 'v'\nE         \nE         - v\nE         + w\n\ntest_solution.py:13: AssertionError\n______________________________ test_large_string _______________________________\n\n    def test_large_string():\n>       assert get_Char(\"a\" * 100) == \"a\"\nE       AssertionError: assert 'v' == 'a'\nE         \nE         - a\nE         + v\n\ntest_solution.py:16: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_empty_string - AssertionError: assert 122 == 'a'\nFAILED test_solution.py::test_all_lowercase - AssertionError: assert 'w' == 'v'\nFAILED test_solution.py::test_large_string - AssertionError: assert 'v' == 'a'\n3 failed, 3 passed in 3.35s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 8,
+  "num_branches": 4,
+  "exit_code": 1,
+  "duration_s": 11.93
+}

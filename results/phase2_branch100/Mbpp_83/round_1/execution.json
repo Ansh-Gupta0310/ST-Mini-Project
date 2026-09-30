@@ -1,0 +1,27 @@
+{
+  "status": "RAN",
+  "tests_total": 6,
+  "tests_passed": 1,
+  "tests_failed": 5,
+  "test_outcomes": {
+    "test_single_char": "failed",
+    "test_multiple_chars": "failed",
+    "test_empty_string": "passed",
+    "test_all_letters": "failed",
+    "test_modulo_wrap": "failed",
+    "test_large_string": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "E         + i\n\ntest_solution.py:7: AssertionError\n_______________________________ test_all_letters _______________________________\n\n    def test_all_letters():\n>       assert get_Char(\"abcdefghijklmnopqrstuvwxyz\") == \"a\"\nE       AssertionError: assert 'n' == 'a'\nE         \nE         - a\nE         + n\n\ntest_solution.py:13: AssertionError\n_______________________________ test_modulo_wrap _______________________________\n\n    def test_modulo_wrap():\n>       assert get_Char(\"z\") == \"z\"\nE       AssertionError: assert 's' == 'z'\nE         \nE         - z\nE         + s\n\ntest_solution.py:16: AssertionError\n______________________________ test_large_string _______________________________\n\n    def test_large_string():\n>       assert get_Char(\"a\" * 100) == \"a\"\nE       AssertionError: assert 'c' == 'a'\nE         \nE         - a\nE         + c\n\ntest_solution.py:19: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_single_char - AssertionError: assert 't' == 'a'\nFAILED test_solution.py::test_multiple_chars - AssertionError: assert 'i' == 'f'\nFAILED test_solution.py::test_all_letters - AssertionError: assert 'n' == 'a'\nFAILED test_solution.py::test_modulo_wrap - AssertionError: assert 's' == 'z'\nFAILED test_solution.py::test_large_string - AssertionError: assert 'c' == 'a'\n5 failed, 1 passed in 3.33s",
+  "criterion": "branch",
+  "target": 100.0,
+  "num_statements": 4,
+  "num_branches": 0,
+  "exit_code": 1,
+  "duration_s": 11.62
+}

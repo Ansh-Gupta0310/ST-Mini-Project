@@ -1,0 +1,33 @@
+{
+  "labels": {
+    "test_comb_sort_already_sorted": "VALID",
+    "test_comb_sort_reverse_sorted": "BUG_FOUND",
+    "test_comb_sort_with_duplicates": "VALID",
+    "test_comb_sort_single_element": "VALID",
+    "test_comb_sort_empty_list": "VALID",
+    "test_comb_sort_random_order": "BUG_FOUND"
+  },
+  "counts": {
+    "VALID": 4,
+    "BUG_FOUND": 2,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_comb_sort_already_sorted": "passed",
+    "test_comb_sort_reverse_sorted": "failed",
+    "test_comb_sort_with_duplicates": "passed",
+    "test_comb_sort_single_element": "passed",
+    "test_comb_sort_empty_list": "passed",
+    "test_comb_sort_random_order": "failed"
+  },
+  "on_reference": {
+    "test_comb_sort_already_sorted": "passed",
+    "test_comb_sort_reverse_sorted": "passed",
+    "test_comb_sort_with_duplicates": "passed",
+    "test_comb_sort_single_element": "passed",
+    "test_comb_sort_empty_list": "passed",
+    "test_comb_sort_random_order": "passed"
+  }
+}

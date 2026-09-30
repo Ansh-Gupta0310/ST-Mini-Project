@@ -1,0 +1,29 @@
+{
+  "status": "RAN",
+  "tests_total": 8,
+  "tests_passed": 8,
+  "tests_failed": 0,
+  "test_outcomes": {
+    "test_empty_sublist": "passed",
+    "test_sublist_at_start": "passed",
+    "test_sublist_at_end": "passed",
+    "test_sublist_middle": "passed",
+    "test_sublist_not_present": "passed",
+    "test_sublist_longer_than_list": "passed",
+    "test_single_element_sublist_present": "passed",
+    "test_single_element_sublist_not_present": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "PASS",
+  "output_tail": "........                                                                 [100%]\n8 passed in 0.12s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 9,
+  "num_branches": 6,
+  "exit_code": 0,
+  "duration_s": 8.31
+}

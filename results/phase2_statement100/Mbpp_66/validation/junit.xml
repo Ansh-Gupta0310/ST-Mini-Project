@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="7" time="2.660" timestamp="2026-09-30T22:02:23.497057+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_all_positive" time="0.001" /><testcase classname="test_solution" name="test_all_negative" time="0.002" /><testcase classname="test_solution" name="test_mixed_with_zero" time="0.002"><failure message="assert 3 == 2&#10; +  where 3 = pos_count([1, -1, 0, 2])">def test_mixed_with_zero():
+&gt;       assert pos_count([1, -1, 0, 2]) == 2
+E       assert 3 == 2
+E        +  where 3 = pos_count([1, -1, 0, 2])
+
+test_solution.py:10: AssertionError</failure></testcase><testcase classname="test_solution" name="test_empty_list" time="0.001" /><testcase classname="test_solution" name="test_single_positive" time="0.001" /><testcase classname="test_solution" name="test_single_negative" time="0.001" /><testcase classname="test_solution" name="test_single_zero" time="0.001"><failure message="assert 1 == 0&#10; +  where 1 = pos_count([0])">def test_single_zero():
+&gt;       assert pos_count([0]) == 0
+E       assert 1 == 0
+E        +  where 1 = pos_count([0])
+
+test_solution.py:22: AssertionError</failure></testcase></testsuite></testsuites>

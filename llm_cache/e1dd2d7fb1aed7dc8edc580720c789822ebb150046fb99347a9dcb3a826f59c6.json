@@ -1,0 +1,51 @@
+{
+  "created_at": "2026-09-30T22:03:55+00:00",
+  "request": {
+    "model": "cohere/north-mini-code:free",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a software tester who writes pytest unit tests.\nReply with exactly one Python code block containing a complete pytest file and nothing else.\nRules:\n- The function under test is in the module `solution`. Import it with: from solution import get_equal\n- Write each test as a separate top-level function whose name starts with test_ and describes what it checks.\n- Use plain assert statements. Use pytest.raises only if the problem says an exception is raised.\n- Take every expected value from the problem description, not from the code under test.\n- Do not define or change get_equal. Do not use randomness, files, the network, or print.\n- Use only pytest and the Python standard library."
+      },
+      {
+        "role": "user",
+        "content": "Problem description:\nWrite a function to find whether all the given tuples have equal length or not.\n\nExample of correct behaviour:\nassert get_equal([(11, 22, 33), (44, 55, 66)]) == True\n\nFunction under test (file solution.py; the line numbers on the left are not part of the code):\n  1 | def get_equal(Input):\n  2 |     if not Input:\n  3 |         return True\n  4 |     first_len = len(Input[0])\n  5 |     for tup in Input:\n  6 |         if len(tup) != first_len:\n  7 |             return False\n  8 |     return True\n\nCoverage goal: Reach 100% statement coverage: every executable line of solution.py must be run by at least one test.\nWrite between 3 and 10 tests."
+      }
+    ],
+    "temperature": 0.4,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "reasoning": {
+      "enabled": false
+    },
+    "seed": 42
+  },
+  "response": {
+    "content": "```python\nfrom solution import get_equal\n\ndef test_empty_input():\n    assert get_equal([]) == True\n\ndef test_single_tuple():\n    assert get_equal([(1, 2, 3)]) == True\n\ndef test_all_equal_lengths():\n    assert get_equal([(1, 2), (3, 4), (5, 6)]) == True\n\ndef test_first_tuple_longer():\n    assert get_equal([(1, 2, 3), (4, 5)]) == False\n\ndef test_middle_tuple_longer():\n    assert get_equal([(1,), (2, 3), (4,)]) == False\n\ndef test_last_tuple_longer():\n    assert get_equal([(1,), (2,), (3, 4)]) == False\n\ndef test_all_different_lengths():\n    assert get_equal([(1,), (2, 3), (4, 5, 6)]) == False\n\ndef test_nested_tuples():\n    assert get_equal([((1, 2),), ((3, 4),)]) == True\n\ndef test_mixed_types():\n    assert get_equal([(1, 2, 3), (4.5, 6.7, 8.9)]) == True\n```",
+    "model": "cohere/north-mini-code:free",
+    "usage": {
+      "prompt_tokens": 315,
+      "completion_tokens": 253,
+      "total_tokens": 568,
+      "cost": 0,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0,
+        "video_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0,
+        "upstream_inference_prompt_cost": 0,
+        "upstream_inference_completions_cost": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    }
+  },
+  "latency_s": 2.28
+}

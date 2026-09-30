@@ -1,0 +1,33 @@
+.....F...                                                                [100%]
+=================================== FAILURES ===================================
+___________________________ test_sublist_wrong_order ___________________________
+
+    def test_sublist_wrong_order():
+>       assert is_sublist([1, 2, 3, 4], [4, 3]) == False
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_solution.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+l = [1, 2, 3, 4], s = [4, 3]
+
+    def is_sublist(l, s):
+    	sub_set = False
+    	if s == []:
+    		sub_set = True
+    	elif s == l:
+    		sub_set = True
+    	elif len(s) > len(l):
+    		sub_set = False
+    	else:
+    		for i in range(len(l)):
+    			if l[i] == s[0]:
+    				n = 1
+>   				while (n < len(s)) and (l[i+n] == s[n]):
+                                ^^^^^^
+E       IndexError: list index out of range
+
+solution.py:13: IndexError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_sublist_wrong_order - IndexError: list index ou...
+1 failed, 8 passed in 2.62s

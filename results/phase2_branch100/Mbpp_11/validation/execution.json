@@ -1,0 +1,31 @@
+{
+  "status": "RAN",
+  "tests_total": 10,
+  "tests_passed": 4,
+  "tests_failed": 6,
+  "test_outcomes": {
+    "test_remove_Occ_first_and_last_occurrence": "passed",
+    "test_remove_Occ_character_not_found": "passed",
+    "test_remove_Occ_only_one_occurrence": "failed",
+    "test_remove_Occ_multiple_occurrences": "failed",
+    "test_remove_Occ_empty_string": "passed",
+    "test_remove_Occ_character_at_start_and_end": "passed",
+    "test_remove_Occ_character_at_end_only": "failed",
+    "test_remove_Occ_character_at_start_only": "failed",
+    "test_remove_Occ_single_character_string": "failed",
+    "test_remove_Occ_two_characters_same": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "E         + ab\n\ntest_solution.py:22: AssertionError\n___________________ test_remove_Occ_character_at_start_only ____________________\n\n    def test_remove_Occ_character_at_start_only():\n>       assert remove_Occ(\"abc\", \"a\") == \"abc\"\nE       AssertionError: assert 'bc' == 'abc'\nE         \nE         - abc\nE         ? -\nE         + bc\n\ntest_solution.py:25: AssertionError\n___________________ test_remove_Occ_single_character_string ____________________\n\n    def test_remove_Occ_single_character_string():\n>       assert remove_Occ(\"a\", \"a\") == \"a\"\nE       AssertionError: assert '' == 'a'\nE         \nE         - a\n\ntest_solution.py:28: AssertionError\n_____________________ test_remove_Occ_two_characters_same ______________________\n\n    def test_remove_Occ_two_characters_same():\n>       assert remove_Occ(\"aa\", \"a\") == \"aa\"\nE       AssertionError: assert '' == 'aa'\nE         \nE         - aa\n\ntest_solution.py:31: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_remove_Occ_only_one_occurrence - AssertionError...\nFAILED test_solution.py::test_remove_Occ_multiple_occurrences - AssertionErro...\nFAILED test_solution.py::test_remove_Occ_character_at_end_only - AssertionErr...\nFAILED test_solution.py::test_remove_Occ_character_at_start_only - AssertionE...\nFAILED test_solution.py::test_remove_Occ_single_character_string - AssertionE...\nFAILED test_solution.py::test_remove_Occ_two_characters_same - AssertionError...\n6 failed, 4 passed in 3.03s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 10,
+  "num_branches": 8,
+  "exit_code": 1,
+  "duration_s": 11.03
+}

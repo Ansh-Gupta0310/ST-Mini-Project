@@ -1,0 +1,34 @@
+{
+  "status": "RAN",
+  "tests_total": 6,
+  "tests_passed": 6,
+  "tests_failed": 0,
+  "test_outcomes": {
+    "test_is_woodall_positive_woodall": "passed",
+    "test_is_woodall_negative_input": "passed",
+    "test_is_woodall_zero": "passed",
+    "test_is_woodall_non_woodall_positive": "passed",
+    "test_is_woodall_next_woodall": "passed",
+    "test_is_woodall_large_non_woodall": "passed"
+  },
+  "statement_coverage": 92.31,
+  "branch_coverage": 87.5,
+  "missing_lines": [
+    5
+  ],
+  "missing_branches": [
+    [
+      4,
+      5
+    ]
+  ],
+  "target_met": false,
+  "verdict": "COVERAGE_NOT_MET",
+  "output_tail": "......                                                                   [100%]\n6 passed in 0.19s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 13,
+  "num_branches": 8,
+  "exit_code": 0,
+  "duration_s": 7.7
+}

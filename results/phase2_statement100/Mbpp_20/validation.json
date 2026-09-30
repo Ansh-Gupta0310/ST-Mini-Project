@@ -1,0 +1,33 @@
+{
+  "labels": {
+    "test_is_woodall_positive_woodall": "VALID",
+    "test_is_woodall_negative_input": "VALID",
+    "test_is_woodall_zero": "VALID",
+    "test_is_woodall_non_woodall_positive": "VALID",
+    "test_is_woodall_next_woodall": "VALID",
+    "test_is_woodall_large_non_woodall": "VALID"
+  },
+  "counts": {
+    "VALID": 6,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_is_woodall_positive_woodall": "passed",
+    "test_is_woodall_negative_input": "passed",
+    "test_is_woodall_zero": "passed",
+    "test_is_woodall_non_woodall_positive": "passed",
+    "test_is_woodall_next_woodall": "passed",
+    "test_is_woodall_large_non_woodall": "passed"
+  },
+  "on_reference": {
+    "test_is_woodall_positive_woodall": "passed",
+    "test_is_woodall_negative_input": "passed",
+    "test_is_woodall_zero": "passed",
+    "test_is_woodall_non_woodall_positive": "passed",
+    "test_is_woodall_next_woodall": "passed",
+    "test_is_woodall_large_non_woodall": "passed"
+  }
+}

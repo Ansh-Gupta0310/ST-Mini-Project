@@ -1,0 +1,36 @@
+{
+  "labels": {
+    "test_flat_list_sum": "VALID",
+    "test_nested_lists": "VALID",
+    "test_deeply_nested": "VALID",
+    "test_empty_list": "VALID",
+    "test_single_element": "VALID",
+    "test_mixed_types": "VALID",
+    "test_large_numbers": "VALID"
+  },
+  "counts": {
+    "VALID": 7,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_flat_list_sum": "passed",
+    "test_nested_lists": "passed",
+    "test_deeply_nested": "passed",
+    "test_empty_list": "passed",
+    "test_single_element": "passed",
+    "test_mixed_types": "passed",
+    "test_large_numbers": "passed"
+  },
+  "on_reference": {
+    "test_flat_list_sum": "passed",
+    "test_nested_lists": "passed",
+    "test_deeply_nested": "passed",
+    "test_empty_list": "passed",
+    "test_single_element": "passed",
+    "test_mixed_types": "passed",
+    "test_large_numbers": "passed"
+  }
+}

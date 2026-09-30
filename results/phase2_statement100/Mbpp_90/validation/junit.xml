@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="7" time="0.662" timestamp="2026-09-30T22:06:48.676225+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_single_word" time="0.001" /><testcase classname="test_solution" name="test_multiple_words" time="0.000" /><testcase classname="test_solution" name="test_empty_list" time="0.001"><failure message="IndexError: list index out of range">def test_empty_list():
+&gt;       assert len_log([]) == 0
+               ^^^^^^^^^^^
+
+test_solution.py:10: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+list1 = []
+
+    def len_log(list1):
+&gt;       max=len(list1[0])
+                ^^^^^^^^
+E       IndexError: list index out of range
+
+solution.py:2: IndexError</failure></testcase><testcase classname="test_solution" name="test_mixed_lengths" time="0.000" /><testcase classname="test_solution" name="test_duplicate_longest" time="0.000" /><testcase classname="test_solution" name="test_case_sensitive" time="0.000" /><testcase classname="test_solution" name="test_with_spaces" time="0.000" /></testsuite></testsuites>

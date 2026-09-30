@@ -1,0 +1,31 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_______________________________ test_reference_1 _______________________________
+
+    def test_reference_1():
+>       assert word_len("Hadoop") == False
+E       AssertionError: assert True == False
+E        +  where True = word_len('Hadoop')
+
+test_solution.py:5: AssertionError
+_______________________________ test_reference_2 _______________________________
+
+    def test_reference_2():
+>       assert word_len("great") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('great')
+
+test_solution.py:8: AssertionError
+_______________________________ test_reference_3 _______________________________
+
+    def test_reference_3():
+>       assert word_len("structure") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('structure')
+
+test_solution.py:11: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_reference_1 - AssertionError: assert True == False
+FAILED test_solution.py::test_reference_2 - AssertionError: assert False == True
+FAILED test_solution.py::test_reference_3 - AssertionError: assert False == True
+3 failed in 2.24s

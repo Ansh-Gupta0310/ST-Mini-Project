@@ -1,0 +1,41 @@
+.F...FF                                                                  [100%]
+=================================== FAILURES ===================================
+________________________ test_comb_sort_reverse_sorted _________________________
+
+    def test_comb_sort_reverse_sorted():
+>       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]
+E       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:7: AssertionError
+______________________ test_comb_sort_gap_reduction_true _______________________
+
+    def test_comb_sort_gap_reduction_true():
+        # Ensure gap reduction path is exercised by using a list that requires multiple passes
+        result = comb_sort([5, 15, 37, 25, 79])
+>       assert result == [5, 15, 25, 37, 79]
+E       assert [5, 15, 37, 25, 79] == [5, 15, 25, 37, 79]
+E         
+E         At index 2 diff: 37 != 25
+E         Use -v to get more diff
+
+test_solution.py:21: AssertionError
+_______________________ test_comb_sort_sorted_flag_false _______________________
+
+    def test_comb_sort_sorted_flag_false():
+        # Trigger the sorted_flag = False branch by providing an unsorted list
+        result = comb_sort([10, 3, 7, 1, 9])
+>       assert result == [1, 3, 7, 9, 10]
+E       assert [1, 3, 7, 10, 9] == [1, 3, 7, 9, 10]
+E         
+E         At index 3 diff: 10 != 9
+E         Use -v to get more diff
+
+test_solution.py:26: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_comb_sort_reverse_sorted - assert [2, 1, 3, 5, ...
+FAILED test_solution.py::test_comb_sort_gap_reduction_true - assert [5, 15, 3...
+FAILED test_solution.py::test_comb_sort_sorted_flag_false - assert [1, 3, 7, ...
+3 failed, 4 passed in 2.46s

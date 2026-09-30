@@ -1,0 +1,38 @@
+...F.F...F                                                               [100%]
+=================================== FAILURES ===================================
+_____________________ test_remove_Occ_multiple_occurrences _____________________
+
+    def test_remove_Occ_multiple_occurrences():
+>       assert remove_Occ("abracadabra", "a") == "brcdbr"
+E       AssertionError: assert 'bracadabr' == 'brcdbr'
+E         
+E         - brcdbr
+E         + bracadabr
+E         ?   + + +
+
+test_solution.py:13: AssertionError
+__________________ test_remove_Occ_character_at_start_and_end __________________
+
+    def test_remove_Occ_character_at_start_and_end():
+>       assert remove_Occ("xabc", "x") == "abc"
+E       AssertionError: assert 'xabc' == 'abc'
+E         
+E         - abc
+E         + xabc
+E         ? +
+
+test_solution.py:19: AssertionError
+_____________________ test_remove_Occ_two_characters_same ______________________
+
+    def test_remove_Occ_two_characters_same():
+>       assert remove_Occ("aa", "a") == "aa"
+E       AssertionError: assert '' == 'aa'
+E         
+E         - aa
+
+test_solution.py:31: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_remove_Occ_multiple_occurrences - AssertionErro...
+FAILED test_solution.py::test_remove_Occ_character_at_start_and_end - Asserti...
+FAILED test_solution.py::test_remove_Occ_two_characters_same - AssertionError...
+3 failed, 7 passed in 2.75s

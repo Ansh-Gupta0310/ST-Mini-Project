@@ -1,0 +1,36 @@
+{
+  "labels": {
+    "test_pos_count_all_positive": "VALID",
+    "test_pos_count_all_negative": "VALID",
+    "test_pos_count_mixed": "VALID",
+    "test_pos_count_empty": "VALID",
+    "test_pos_count_single_positive": "VALID",
+    "test_pos_count_single_negative": "VALID",
+    "test_pos_count_zero": "MISLEADING"
+  },
+  "counts": {
+    "VALID": 6,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 0,
+    "MISLEADING": 1,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_pos_count_all_positive": "passed",
+    "test_pos_count_all_negative": "passed",
+    "test_pos_count_mixed": "passed",
+    "test_pos_count_empty": "passed",
+    "test_pos_count_single_positive": "passed",
+    "test_pos_count_single_negative": "passed",
+    "test_pos_count_zero": "passed"
+  },
+  "on_reference": {
+    "test_pos_count_all_positive": "passed",
+    "test_pos_count_all_negative": "passed",
+    "test_pos_count_mixed": "passed",
+    "test_pos_count_empty": "passed",
+    "test_pos_count_single_positive": "passed",
+    "test_pos_count_single_negative": "passed",
+    "test_pos_count_zero": "failed"
+  }
+}

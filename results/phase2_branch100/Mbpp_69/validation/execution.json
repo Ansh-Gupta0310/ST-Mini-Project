@@ -1,0 +1,41 @@
+{
+  "status": "RAN",
+  "tests_total": 9,
+  "tests_passed": 8,
+  "tests_failed": 1,
+  "test_outcomes": {
+    "test_empty_sublist": "passed",
+    "test_sublist_at_start": "passed",
+    "test_sublist_at_end": "passed",
+    "test_sublist_in_middle": "passed",
+    "test_sublist_not_present": "passed",
+    "test_sublist_wrong_order": "failed",
+    "test_sublist_longer_than_list": "passed",
+    "test_single_element_sublist_present": "passed",
+    "test_single_element_sublist_not_present": "passed"
+  },
+  "statement_coverage": 93.75,
+  "branch_coverage": 85.71,
+  "missing_lines": [
+    6
+  ],
+  "missing_branches": [
+    [
+      5,
+      6
+    ],
+    [
+      15,
+      10
+    ]
+  ],
+  "target_met": false,
+  "verdict": "TESTS_FAILED",
+  "output_tail": ".....F...                                                                [100%]\n=================================== FAILURES ===================================\n___________________________ test_sublist_wrong_order ___________________________\n\n    def test_sublist_wrong_order():\n>       assert is_sublist([1, 2, 3, 4], [4, 3]) == False\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntest_solution.py:19: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nl = [1, 2, 3, 4], s = [4, 3]\n\n    def is_sublist(l, s):\n    \tsub_set = False\n    \tif s == []:\n    \t\tsub_set = True\n    \telif s == l:\n    \t\tsub_set = True\n    \telif len(s) > len(l):\n    \t\tsub_set = False\n    \telse:\n    \t\tfor i in range(len(l)):\n    \t\t\tif l[i] == s[0]:\n    \t\t\t\tn = 1\n>   \t\t\t\twhile (n < len(s)) and (l[i+n] == s[n]):\n                                ^^^^^^\nE       IndexError: list index out of range\n\nsolution.py:13: IndexError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_sublist_wrong_order - IndexError: list index ou...\n1 failed, 8 passed in 2.62s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 16,
+  "num_branches": 14,
+  "exit_code": 1,
+  "duration_s": 10.85
+}

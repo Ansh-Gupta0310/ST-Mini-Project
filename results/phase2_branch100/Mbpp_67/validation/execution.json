@@ -1,0 +1,28 @@
+{
+  "status": "RAN",
+  "tests_total": 7,
+  "tests_passed": 7,
+  "tests_failed": 0,
+  "test_outcomes": {
+    "test_bell_number_zero": "passed",
+    "test_bell_number_one": "passed",
+    "test_bell_number_two": "passed",
+    "test_bell_number_three": "passed",
+    "test_bell_number_four": "passed",
+    "test_bell_number_five": "passed",
+    "test_bell_number_six": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "PASS",
+  "output_tail": ".......                                                                  [100%]\n7 passed in 0.18s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 8,
+  "num_branches": 4,
+  "exit_code": 0,
+  "duration_s": 8.88
+}

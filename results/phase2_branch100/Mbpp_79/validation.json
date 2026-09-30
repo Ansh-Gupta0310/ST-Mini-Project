@@ -1,0 +1,33 @@
+{
+  "labels": {
+    "test_word_len_even_length": "BUG_FOUND",
+    "test_word_len_odd_length": "INVALID_TEST",
+    "test_word_len_empty_string": "MISLEADING",
+    "test_word_len_single_char": "BUG_FOUND",
+    "test_word_len_long_even": "BUG_FOUND",
+    "test_word_len_long_odd": "BUG_FOUND"
+  },
+  "counts": {
+    "VALID": 0,
+    "BUG_FOUND": 4,
+    "INVALID_TEST": 1,
+    "MISLEADING": 1,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_word_len_even_length": "failed",
+    "test_word_len_odd_length": "failed",
+    "test_word_len_empty_string": "passed",
+    "test_word_len_single_char": "failed",
+    "test_word_len_long_even": "failed",
+    "test_word_len_long_odd": "failed"
+  },
+  "on_reference": {
+    "test_word_len_even_length": "passed",
+    "test_word_len_odd_length": "failed",
+    "test_word_len_empty_string": "failed",
+    "test_word_len_single_char": "passed",
+    "test_word_len_long_even": "passed",
+    "test_word_len_long_odd": "passed"
+  }
+}

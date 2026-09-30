@@ -1,0 +1,36 @@
+{
+  "labels": {
+    "test_single_word": "VALID",
+    "test_multiple_words": "VALID",
+    "test_empty_list": "INVALID_TEST",
+    "test_mixed_lengths": "VALID",
+    "test_duplicate_longest": "VALID",
+    "test_case_sensitive": "VALID",
+    "test_with_spaces": "VALID"
+  },
+  "counts": {
+    "VALID": 6,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 1,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_single_word": "passed",
+    "test_multiple_words": "passed",
+    "test_empty_list": "failed",
+    "test_mixed_lengths": "passed",
+    "test_duplicate_longest": "passed",
+    "test_case_sensitive": "passed",
+    "test_with_spaces": "passed"
+  },
+  "on_reference": {
+    "test_single_word": "passed",
+    "test_multiple_words": "passed",
+    "test_empty_list": "failed",
+    "test_mixed_lengths": "passed",
+    "test_duplicate_longest": "passed",
+    "test_case_sensitive": "passed",
+    "test_with_spaces": "passed"
+  }
+}

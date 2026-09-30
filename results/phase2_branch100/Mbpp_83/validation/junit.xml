@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="6" time="2.754" timestamp="2026-09-30T21:57:25.264324+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_single_char" time="0.001" /><testcase classname="test_solution" name="test_multiple_chars" time="0.001" /><testcase classname="test_solution" name="test_empty_string" time="0.001"><failure message="AssertionError: assert 122 == 'a'&#10; +  where 122 = get_Char('')">def test_empty_string():
+&gt;       assert get_Char("") == "a"
+E       AssertionError: assert 122 == 'a'
+E        +  where 122 = get_Char('')
+
+test_solution.py:10: AssertionError</failure></testcase><testcase classname="test_solution" name="test_all_letters" time="0.002"><failure message="AssertionError: assert 'm' == 'a'&#10;  &#10;  - a&#10;  + m">def test_all_letters():
+&gt;       assert get_Char("abcdefghijklmnopqrstuvwxyz") == "a"
+E       AssertionError: assert 'm' == 'a'
+E         
+E         - a
+E         + m
+
+test_solution.py:13: AssertionError</failure></testcase><testcase classname="test_solution" name="test_modulo_wrap" time="0.002"><failure message="AssertionError: assert 122 == 'z'&#10; +  where 122 = get_Char('z')">def test_modulo_wrap():
+&gt;       assert get_Char("z") == "z"
+E       AssertionError: assert 122 == 'z'
+E        +  where 122 = get_Char('z')
+
+test_solution.py:16: AssertionError</failure></testcase><testcase classname="test_solution" name="test_large_string" time="0.002"><failure message="AssertionError: assert 'v' == 'a'&#10;  &#10;  - a&#10;  + v">def test_large_string():
+&gt;       assert get_Char("a" * 100) == "a"
+E       AssertionError: assert 'v' == 'a'
+E         
+E         - a
+E         + v
+
+test_solution.py:19: AssertionError</failure></testcase></testsuite></testsuites>
