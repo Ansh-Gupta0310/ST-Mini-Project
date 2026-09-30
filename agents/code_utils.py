@@ -14,6 +14,13 @@ _FENCED_PYTHON = re.compile(r"```[ \t]*(?:python3?|py)[ \t]*\r?\n(.*?)```", re.D
 _FENCED_ANY = re.compile(r"```[^\n`]*\r?\n(.*?)```", re.DOTALL)
 _OPEN_FENCE = re.compile(r"```[^\n`]*\r?\n(.*)", re.DOTALL)  # reply cut off before its closing fence
 
+SOLUTION_MODULE = "solution"
+# Modules a unit test of a pure function has no business importing: they break either determinism
+# (random) or the "no files, no network" rule in PROJECT_PLAN.md §3.6.
+FORBIDDEN_TEST_MODULES = frozenset({
+    "random", "secrets", "socket", "subprocess", "requests", "urllib", "http", "httpx", "shutil", "tempfile",
+})
+
 
 def _parse(code: str) -> ast.Module | None:
     try:
@@ -87,3 +94,141 @@ def number_lines(code: str) -> str:
     lines = code.splitlines()
     width = max(3, len(str(len(lines))))
     return "\n".join(f"{number:>{width}} | {line}" for number, line in enumerate(lines, start=1))
+
+
+# --- Phase 2 helpers ---------------------------------------------------------------------
+
+def describe_missing(code: str, missing_lines: list[int], missing_branches: list[list[int]]) -> str:
+    """Turn coverage.py's numbers into plain sentences the Test Generator can act on.
+
+    Example (the sign() function of PROJECT_PLAN.md §2.3, covered by sign(5) only):
+
+        - line 4 `elif x < 0:` was never run
+        - line 2 `if x > 0:` never went to line 4 `elif x < 0:`
+
+    A negative `to_line` in missing_branches means "never left the function from that line".
+    """
+    lines = code.splitlines()
+
+    def text(number: int) -> str:
+        return lines[number - 1].strip() if 1 <= number <= len(lines) else "?"
+
+    out = [f"- line {number} `{text(number)}` was never run" for number in missing_lines]
+    for branch in missing_branches:
+        if len(branch) != 2:
+            continue
+        source, target = branch
+        if target < 0:
+            out.append(f"- line {source} `{text(source)}` never exited the function from there")
+        else:
+            out.append(f"- line {source} `{text(source)}` never went to line {target} `{text(target)}`")
+    return "\n".join(out) or "- nothing: every line and branch is already covered"
+
+
+def merge_test_files(existing: str, new: str, round_no: int) -> str:
+    """Join two pytest files: every import once, then the existing tests, then the new ones.
+
+    A new top-level function or class whose name already exists is renamed to `<name>_r<round_no>`, so a
+    feedback round can never silently replace a test from an earlier round. Comments between top-level
+    statements are not carried over; the merged file is machine-made and every round is also kept
+    unmerged in its own round_<k>/ folder.
+    """
+    existing_tree, new_tree = _parse(existing), _parse(new)
+    if new_tree is None:
+        return existing
+    if existing_tree is None:
+        return new
+
+    imports: list[str] = []
+    seen_imports: set[str] = set()
+    body: list[str] = []
+    taken = _top_level_names(existing_tree)
+
+    for tree, source, rename in ((existing_tree, existing, False), (new_tree, new, True)):
+        for node in tree.body:
+            text = _source_of(node, source)
+            if not text.strip():
+                continue
+            if isinstance(node, (ast.Import, ast.ImportFrom)):
+                key = " ".join(text.split())
+                if key not in seen_imports:
+                    seen_imports.add(key)
+                    imports.append(text)
+            elif rename and isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                name = node.name
+                if name in taken:
+                    name = f"{node.name}_r{round_no}"
+                    while name in taken:
+                        name += "x"
+                    text = re.sub(rf"\b(def|class)\s+{re.escape(node.name)}\b", rf"\1 {name}", text, count=1)
+                taken.add(name)
+                body.append(text)
+            else:
+                body.append(text)
+
+    parts = ["\n".join(imports)] if imports else []
+    return "\n\n\n".join(parts + body) + "\n"
+
+
+def check_test_file(test_code: str, entry_point: str) -> str | None:
+    """Check a generated pytest file against the rules in PROJECT_PLAN.md §3.6.
+
+    Returns an error message for the first rule broken, or None if the file is usable.
+    """
+    tree = _parse(test_code)
+    if tree is None:
+        return "the test file does not parse as Python"
+
+    tests = [node for node in tree.body
+             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name.startswith("test_")]
+    if not tests:
+        return "the file has no top-level function whose name starts with test_"
+
+    if _redefines(tree, entry_point):
+        return (f"the file defines {entry_point} itself, so it would test its own copy "
+                "instead of the code in solution.py")
+
+    imported = {module for node in ast.walk(tree) for module in _imported_modules(node)}
+    if SOLUTION_MODULE not in imported:
+        return f"the file never imports the module `{SOLUTION_MODULE}`, so it does not test the generated code"
+
+    forbidden = sorted(imported & FORBIDDEN_TEST_MODULES)
+    if forbidden:
+        return f"the file imports {', '.join(forbidden)}; tests must use only pytest and the standard library"
+    return None
+
+
+def _top_level_names(tree: ast.Module) -> set[str]:
+    names: set[str] = set()
+    for node in tree.body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            names.add(node.name)
+        elif isinstance(node, ast.Assign):
+            names.update(target.id for target in node.targets if isinstance(target, ast.Name))
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+            names.add(node.target.id)
+    return names
+
+
+def _source_of(node: ast.stmt, code: str) -> str:
+    """The exact source lines of one top-level statement, including any decorators."""
+    lines = code.splitlines()
+    start = min([node.lineno, *(item.lineno for item in getattr(node, "decorator_list", []))])
+    return "\n".join(lines[start - 1:node.end_lineno]).rstrip()
+
+
+def _redefines(tree: ast.Module, name: str) -> bool:
+    """True if the file defines `name` anywhere, or binds it at the top level (e.g. name = lambda ...)."""
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node.name == name:
+            return True
+    return name in _top_level_names(tree)
+
+
+def _imported_modules(node: ast.AST) -> set[str]:
+    """The top-level package names a single import statement brings in."""
+    if isinstance(node, ast.Import):
+        return {alias.name.split(".")[0] for alias in node.names}
+    if isinstance(node, ast.ImportFrom) and node.module and not node.level:
+        return {node.module.split(".")[0]}
+    return set()
