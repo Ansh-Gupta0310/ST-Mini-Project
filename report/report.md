@@ -3,7 +3,9 @@
 **Course:** CSE731 Software Testing, IIIT Bangalore · Mid-term Project, Term I (2026-27)
 **Team:** `<Ansh Gupta, IMT2023540>` · `<Satyam Dewangan, IMT2023545>`
 **Repository:** https://github.com/Ansh-Gupta0310/ST-Mini-Project
-**Requirement chosen:** (1) test cases that achieve a **user-specified coverage criterion** (statement or branch coverage)
+**Requirement chosen:** (1) test cases that achieve a **user-specified coverage criterion**. The assignment's
+own examples are *"cover all statements, cover all loops, cover all decision statements"*, and all three are
+implemented: `--criterion statement|branch|loops`.
 
 > Every number in this report comes from a committed run folder under `results/`: `phase1_baseline/` (Phase 1,
 > the dataset's own tests), `phase2_branch100/` (the main Phase 2 experiment) and `phase2_statement100/` (the
@@ -70,8 +72,30 @@ line arguments, not constants:
 
 ```
 python pipeline.py --mode full --criterion branch --target 100 --max-rounds 3 --out results/phase2_branch100
+python pipeline.py --mode full --criterion loops --target 100 --max-rounds 3 --out results/phase2_loops100
 python pipeline.py --mode full --criterion statement --target 90 --max-rounds 1 --out runs/statement90
 ```
+
+The three criteria are the three the assignment names, and they are the bottom three levels of the standard
+subsumption hierarchy:
+
+| `--criterion` | What a test suite must achieve | Course name | Measured by |
+|---|---|---|---|
+| `statement` | every executable line runs | node coverage | coverage.py |
+| `branch` | every decision goes both ways; every loop body runs and the loop exits | edge coverage | coverage.py |
+| `loops` | every pair of consecutive edges `a → b → c`; at a loop header this means the body must be skipped in some test, run once in some test, and run twice in some test | **edge-pair coverage** | `agents/path_coverage.py` |
+
+`prime path ⊃ edge-pair ⊃ edge ⊃ node`. Prime path coverage is not implemented (§6).
+
+**How `loops` is measured.** coverage.py reports *which* arcs ran but not the *order* they ran in, and an edge
+pair is an ordering. So two things happen. The set of required pairs comes from coverage.py's own parser
+(`PythonParser.arcs()` gives every possible arc, loop back-edges included), which means the control-flow graph
+is not ours to get wrong. The covered pairs come from running the tests a **second time** with a
+`sys.settrace` hook that records each test's line sequence; the consecutive triples of those sequences are the
+pairs that were covered. The second pass cannot be merged into the first: `coverage run` and our tracer both
+install a trace hook and the second one to install wins — measured, coverage.py dropped to 16.7% statements and
+0% branches. The traced pass therefore runs without coverage.py, and only for `--criterion loops`, so the other
+two criteria are measured exactly as before.
 
 **What the generator sees.** The prompt is white-box, because the goal is stated in terms of the code: to cover
 a branch you have to know it is there. The Test Generator receives the problem description, one example assert,
@@ -248,6 +272,7 @@ target filled in):
 |---|---|
 | `statement` | Reach $target% statement coverage: every executable line of solution.py must be run by at least one test. |
 | `branch` | Reach $target% branch coverage: every if/elif/while condition must be True in some test and False in some test, and every loop must run its body at least once and also finish at least once. |
+| `loops` | Reach $target% loop coverage: for every loop there must be a test that skips its body completely, a test that runs exactly one iteration, and a test that runs two or more iterations; and every pair of consecutive decision outcomes must occur in that order in some test. |
 
 **Example of a first-round prompt as actually sent** (problem 11, from
 `results/phase2_branch100/Mbpp_11/llm_calls.jsonl`):
@@ -367,9 +392,11 @@ missing lines and branches), and writes `execution.json`. The verdict rules are 
 | `PASS` | All tests passed and coverage is at or above the target |
 
 - **Statement criterion:** statement coverage ≥ target.
-- **Branch criterion:** branch coverage ≥ target **and** statement coverage ≥ target. Branch coverage subsumes
-  statement coverage, but coverage.py reports 100% branch coverage for a function with no decisions even when
-  no test calls it.
+- **Branch criterion:** branch coverage ≥ target **and** statement coverage ≥ target.
+- **Loops criterion:** edge-pair coverage ≥ target **and** branch ≥ target **and** statement ≥ target.
+- Each criterion also demands the weaker ones it subsumes, for a measurement reason rather than a pedantic one:
+  a function with no decisions has no branches and no edge pairs, and 0 of 0 reads as 100%, so either criterion
+  on its own would pass code that no test ever calls.
 - **Test assertion failures and coverage are reported separately:** coverage also counts lines run by a test
   whose assertion fails.
 
@@ -689,28 +716,123 @@ second time against MBPP's reference solution (§1.3).
 - `verify_run.py results/phase2_branch100` re-derives every verdict from the measured numbers, checks the
   labels against the two runs they come from, and checks every final test file against the §3.2 rules.
 
-### 4.3 The other criterion: statement coverage
+### 4.3 The three criteria compared
 
-Because the criterion is a user-specified argument, the same experiment was repeated with
-`--criterion statement --target 100` (`results/phase2_statement100/`). Only the goal sentence in the prompt
-changes, so the model is asked for a weaker guarantee; code generation again came from the cache, so the code
-under test is identical.
+The criterion is a command-line argument, so the whole experiment was run three times over the same 12
+generated solutions (code generation came from the cache every time, so the code under test is identical):
 
-| | Baseline (MBPP's asserts) | `--criterion statement` | `--criterion branch` |
-|---|---|---|---|
-| Mean statement coverage | 94.2% | 100.0% | 100.0% |
-| Mean branch coverage | 89.6% | 100.0% | 100.0% |
-| Goal reached | 7/12 | 12/12 | 12/12 |
-| Tests generated | 36 | 80 | 88 |
-| Test validity rate | — | 73.8% | 69.3% |
-| Fault detection | — | 3/3 | 3/3 |
+| | Baseline: MBPP's 3 asserts | `--criterion statement` | `--criterion branch` | `--criterion loops` |
+|---|---|---|---|---|
+| Mean statement coverage | 94.2% | 100.0% | 100.0% | 100.0% |
+| Mean branch coverage | 89.6% | 100.0% | 100.0% | 100.0% |
+| Mean edge-pair coverage | 89.0% | 97.1% | 97.1% | 97.1% |
+| **Its own goal reached** | 4/12 | **12/12** | **12/12** | **8/12** |
+| Tests generated | 36 | 80 | 88 | **140** |
+| Tests passing on the generated code | 33/36 | 83.8% | 79.5% | 83.6% |
+| **Test validity rate** | — | 73.8% | 69.3% | **80.0%** |
+| `MISLEADING` tests | — | 8 | 9 | **5** |
+| Mean rounds used | — | 1.0 | 1.0 | **1.67** |
+| Fault detection | — | 3/3 | 3/3 | 3/3 |
 
-Two things are worth noting. First, the criterion does change the suite: asking for statement coverage produced
-8 fewer tests (80 vs 88) and a different set of tests per problem. Second, it did not change the *coverage
-achieved* — the statement-criterion suites happen to reach 100% branch coverage as well. On functions of this
-size a test that runs a line usually also takes both ways out of the decision above it, so the stronger
-criterion has little left to add. The criterion would separate the two on larger functions, where reaching a
-line and covering the decision that guards it are different problems.
+Three findings, and the third one is the only honest headline:
+
+**1. Every criterion beats the dataset's own tests.** MBPP's 3 asserts per problem reach 94.2% / 89.6% / 89.0%;
+every generated suite reaches 100% / 100% / 97.1%. That is the result the project set out to measure.
+
+**2. The criterion changes the suite, not the coverage reached.** Asking for statement coverage produced 80
+tests, branch coverage 88, and loop coverage 140 — and the per-problem test sets differ throughout. But all
+three suites end at the *same* coverage: 100% statement, 100% branch, 97.1% edge pairs. On functions of 25
+lines or fewer, a test that runs a line usually also takes both ways out of the decision above it and exercises
+the orderings around it, so the stronger criteria have little left to ask for. The criteria would come apart on
+larger functions, where reaching a line, covering the decision that guards it, and covering the order in which
+decisions combine are three different problems.
+
+**3. Only the `loops` criterion reveals that 97.1% is a ceiling.** Under `statement` and `branch` the verdict is
+a clean 12/12, which quietly hides the fact that four of the twelve functions contain orderings that no input
+can execute. Under `loops` those four come back as `COVERAGE_NOT_MET` with the exact missing requirement named
+in `verdict.json` (§4.4). Put the other way round: **all three criteria met every requirement that was
+reachable** — the 2.9% shortfall is entirely infeasible requirements, not missing tests.
+
+A fourth observation worth reporting, though we cannot prove the cause from one run: the `loops` suites were
+the **most valid** (80.0% `VALID`, 5 `MISLEADING`) despite being the largest, where the `branch` suites were the
+least valid (69.3%, 9 `MISLEADING`). Asking for orderings seems to push the model towards ordinary edge cases —
+an empty list, a single element, a value that fails on the last iteration — where asking for branches pushed it
+towards contrived inputs chosen to flip a condition, which is where it tended to read the expected value off
+the code.
+
+**The feedback loop finally ran.** `loops` is the first criterion whose goal round 1 did not already meet, so
+the loop fired for 5 problems and used 1.67 rounds on average (against 1.0 for the other two). It could not
+raise coverage, because what was missing was infeasible — but it did keep adding usable tests: problem 92 grew
+from 7 tests in round 1 to 25 after round 3, and **all 25 are labelled `VALID`**. So the loop improved the size
+and the quality of the suite even where it could not improve the number it was aiming at.
+
+Per-problem edge-pair coverage, measured with
+`python -m agents.path_coverage --run <folder>` (which replays a finished run's suite under the tracer in a
+temporary folder, without touching the run):
+
+| Task | Edge pairs | MBPP's 3 asserts | Generated (`loops`) | Rounds | Verdict |
+|---|---|---|---|---|---|
+| 11 `remove_Occ` | 3 | 66.7% | **100%** | 1 | TESTS_FAILED (3 `INVALID_TEST`) |
+| 20 `is_woodall` | 9 | 100% | 100% | 1 | TESTS_FAILED (3 `INVALID_TEST`) |
+| 65 `recursive_list_sum` | 10 | 90.0% | **100%** | 1 | PASS |
+| 66 `pos_count` | 0 | — | — | 1 | PASS (no decisions, so no pairs) |
+| 67 `bell_number` | 18 | 88.9% | 94.4% | 3 | COVERAGE_NOT_MET — infeasible |
+| 69 `is_sublist` | 9 | 77.8% | **100%** | 1 | PASS |
+| 70 `get_equal` | 7 | 85.7% | 85.7% | 3 | COVERAGE_NOT_MET — infeasible |
+| 71 `comb_sort` | 19 | 89.5% | 94.7% | 3 | COVERAGE_NOT_MET — infeasible |
+| 79 `word_len` | 0 | — | — | 1 | TESTS_FAILED (6 `BUG_FOUND`) |
+| 83 `get_Char` | 1 | 100% | 100% | 1 | TESTS_FAILED (2 `BUG_FOUND`) |
+| 90 `len_log` | 0 | — | — | 1 | TESTS_FAILED (1 `INVALID_TEST`) |
+| 92 `is_undulating` | 10 | 70.0% | 90.0% | 3 | COVERAGE_NOT_MET — infeasible |
+| **Mean** | | **89.0%** | **97.1%** | 1.67 | 8/12 met the goal |
+
+### 4.4 Infeasible test requirements
+
+Every shortfall above is a requirement **no input can satisfy**. All four have the same shape — a loop whose
+body cannot be skipped, because a guard above it has already established that the loop has work to do — and the
+proof is short in each case.
+
+```python
+# problem 70, missing 4 -> 5 -> 8  ("reach the loop, skip the body, return")
+1  def get_equal(Input):
+2      if not Input:
+3          return True            # <- an empty Input returns here
+4      first_len = len(Input[0])
+5      for tup in Input:          # <- so by line 5, Input is non-empty
+6          if len(tup) != first_len:
+7              return False
+8      return True                # <- reaching line 8 directly from line 5 is impossible
+```
+
+| Task | Missing pair | Why no input can reach it |
+|---|---|---|
+| 67 `bell_number` | `9→10→17` | the inner `range(i)` is entered with `i ≥ 1`, so it always iterates at least once |
+| 70 `get_equal` | `4→5→8` | the `if not Input` guard above means the loop always has an element |
+| 71 `comb_sort` | `5→7→14` | `sorted_flag = False` is set immediately above, so `while not sorted_flag` always enters |
+| 92 `is_undulating` | `5→7→10` | line 3 guarantees `len(s) ≥ 3`, so `range(len(s) - 2)` is never empty |
+
+This is the classic **infeasible test requirement** of structural coverage: the stronger the criterion, the more
+of its requirements no input can satisfy, and 100% stops being a meaningful target. It is also why the three
+rounds of feedback for these four problems could not help — the model was being asked, in plain language, for
+something impossible, and it responded by adding more tests of other cases (which is why problem 92 ends with
+25 valid tests and the same 90% coverage).
+
+The pipeline handles this the only honest way available to it: the goal is not met after the last round, so the
+verdict is `COVERAGE_NOT_MET` and the unmet requirement is named in `verdict.json` for a human to judge. We
+deliberately did **not** lower the target to make the table green. The remedy used in the literature — best
+effort touring with sidetrips — requires a judgement about which requirements to excuse, and we had no way to
+make that judgement automatically and still call the verdict a measurement.
+
+**A note on validating the measurement itself.** The first `loops` run reported 70% for problem 65 with three
+missing pairs. Problem 65 is recursive, and the tracer was recording one line sequence per *test*: when line 5
+calls the function again, the inner call's lines were spliced into the outer call's sequence, so the line after
+5 was never the loop header. Those three pairs were unobservable by construction rather than untested. The
+tracer now keeps **one sequence per call frame**, which is also how coverage.py tracks arcs, and problem 65 went
+to 100% with exactly the same tests. Two regression tests pin this down
+(`test_covered_pairs_keeps_call_frames_apart`,
+`test_edge_pairs_of_a_recursive_function_are_measured_per_call_frame`). The lesson generalises: a new coverage
+metric is only as trustworthy as the instrument that measures it, which is the reason the other two criteria are
+read straight out of coverage.py rather than computed by us.
 
 ---
 
@@ -719,7 +841,7 @@ line and covering the decision that guards it are different problems.
 | Member | Contribution |
 |---|---|
 | `<Member 1>` | Phase 1 (PR #1): project plan; OpenRouter client with cache, retries, model fallback and logging; dataset selection; Code Generator agent and prompts; Test Executor agent (pytest + coverage.py, verdict rules, sandboxing); baseline pipeline and run; offline test suite for the pipeline code; report sections 1.1–1.2, 2.1–2.2, 3.1–3.4, 4.1 |
-| `<Member 2>` | Phase 2 (PR #2): Test Generator agent and its three prompts (system, first round, feedback); the coverage helpers `describe_missing`, `merge_test_files` and `check_test_file`; test validation against MBPP's reference solution (`validate`, `classify_tests`); `pipeline.py --mode full` with the coverage feedback loop and the Phase 2 metrics; `verify_run.py`; the two official experiments (`results/phase2_branch100/`, `results/phase2_statement100/`); 35 further offline tests; report sections 1.3, 2.3, 3.2, 3.5, 4.2, 4.3 and the limitations |
+| `<Member 2>` | Phase 2 (PR #2): Test Generator agent and its three prompts (system, first round, feedback); the coverage helpers `describe_missing`, `merge_test_files` and `check_test_file`; test validation against MBPP's reference solution (`validate`, `classify_tests`); `pipeline.py --mode full` with the coverage feedback loop and the Phase 2 metrics; `verify_run.py`; the two official experiments (`results/phase2_branch100/`, `results/phase2_statement100/`); the third coverage criterion `--criterion loops` (edge-pair coverage, `agents/path_coverage.py`) with its infeasibility analysis; 58 further offline tests; report sections 1.3, 2.3, 3.2, 3.5, 4.2, 4.3, 4.4 and the limitations |
 
 The steps, files and checks of each member are listed in detail in [`Contributions.md`](../Contributions.md).
 
@@ -733,12 +855,24 @@ The steps, files and checks of each member are listed in detail in [`Contributio
 - **Unreachable code:** some branches in generated code may be impossible to reach, which makes a 100% target
   impossible. This did not happen in our runs, but it is the reason the pipeline reports `COVERAGE_NOT_MET`
   after the last round instead of retrying for ever.
-- **The feedback loop is unmeasured on this dataset.** One prompt already reached 100% coverage for all 12
-  problems, so the loop never ran in either experiment (§4.2). Its effect is demonstrated only by the offline
-  test that drives a deliberately incomplete first round. A benchmark with larger functions would be needed to
-  measure what the loop is worth.
-- **The two criteria could not be told apart by their results.** Statement and branch coverage both ended at
-  100% for these small functions (§4.3).
+- **The feedback loop could not be shown to improve coverage.** Round 1 already met the goal for every
+  problem under `statement` and `branch`, so the loop never ran there (§4.2). Under `loops` it did run, for 5
+  problems and 1.67 rounds on average — but all 5 were short by an *infeasible* requirement, so the extra
+  rounds added tests without adding coverage (§4.4). That the mechanism works is shown by an offline test,
+  `tests/test_pipeline.py::test_loops_criterion_needs_a_second_round_where_branch_coverage_would_stop`, which
+  drives a suite at 100% statement and 100% branch coverage but 83.3% edge-pair coverage and closes it to 100%
+  in round 2. On this benchmark we cannot put a number on what the loop is worth.
+- **The three criteria could not be told apart by the coverage they reached** — all three suites ended at
+  100% statement, 100% branch and 97.1% edge-pair coverage (§4.3). They differ in the number of tests (80 / 88
+  / 140) and in test validity (73.8% / 69.3% / 80.0%), but on functions of 25 lines or fewer the stronger
+  criteria had nothing extra to reach. Larger functions would be needed to separate them.
+- **100% edge-pair coverage is not reachable on this benchmark.** Four of the 12 problems contain a provably
+  infeasible pair (§4.4), so for them the criterion can only ever report `COVERAGE_NOT_MET`. That is a property
+  of structural coverage, not a defect of the pipeline, but it does mean a 100% target is the wrong instrument
+  for grading a suite under this criterion.
+- **Prime path coverage is not implemented.** It would need path enumeration on top of the control-flow graph
+  and a policy for sidetrips around infeasible paths; no standard Python tool measures it, so unlike the other
+  three it could not be reduced to a measurement we trust.
 - **Validation depends on MBPP's reference being right.** The labels compare two implementations. When the
   reference itself is questionable — problem 92, where it calls `111` undulating, or problem 83, where it
   returns the integer `122` instead of `"z"` — a reasonable test is labelled `MISLEADING` or `INVALID_TEST`.
@@ -754,7 +888,9 @@ The steps, files and checks of each member are listed in detail in [`Contributio
 ## 7. Tools used
 
 - **LLM:** `cohere/north-mini-code:free` via OpenRouter (free tier).
-- **Testing tools:** pytest 9.1.1, coverage.py 7.16.2, Python 3.12.
+- **Testing tools:** pytest 9.1.1, coverage.py 7.16.2, Python 3.12. Statement and branch coverage come from
+  `coverage json`; edge-pair coverage is computed in `agents/path_coverage.py` from coverage.py's own
+  control-flow graph plus per-test line traces recorded with `sys.settrace`.
 - **AI assistance during development:** Claude Code (Anthropic's CLI coding assistant) was used by both
   members for planning, writing the pipeline code and its tests, and drafting this report. Every number quoted
   here was produced by running the committed code, not by the assistant.

@@ -4,8 +4,8 @@ CSE731 Software Testing (IIIT Bangalore), mid-term project. A small agentic pipe
 with no agent framework, that:
 
 1. asks an LLM to write a function for an MBPP problem (**Code Generator agent**),
-2. asks an LLM to write pytest tests aimed at a user-chosen **coverage criterion**, such as 100% branch coverage
-   (**Test Generator agent**, Phase 2),
+2. asks an LLM to write pytest tests aimed at a user-chosen **coverage criterion** — statement, branch or
+   loops (edge-pair) coverage, with a target percentage (**Test Generator agent**),
 3. runs the tests with coverage.py and gives a verdict (**Test Executor agent**).
 
 The full design, the work split and every decision are in **[PROJECT_PLAN.md](PROJECT_PLAN.md)**.
@@ -67,11 +67,25 @@ All commands run from the repository folder with the venv active.
 | Full run, one problem (smoke test) | `python pipeline.py --mode full --task-ids 11 --out runs/smoke2` | up to 3, or 0 if cached |
 | Full run, all 12 problems (the Phase 2 experiment) | `python pipeline.py --mode full --criterion branch --target 100 --max-rounds 3 --out results/phase2_branch100` | up to 36, or 0 if cached |
 | Full run without the feedback loop (single-shot) | `python pipeline.py --mode full --max-rounds 1 --out runs/single_shot` | up to 12, or 0 if cached |
-| Full run with the other criterion | `python pipeline.py --mode full --criterion statement --target 100 --out results/phase2_statement100` | 0 if cached |
+| Full run, statement criterion | `python pipeline.py --mode full --criterion statement --target 100 --out results/phase2_statement100` | 0 if cached |
+| Full run, loops criterion (edge pairs) | `python pipeline.py --mode full --criterion loops --target 100 --out results/phase2_loops100` | up to 36, or 0 if cached |
+| Edge-pair coverage of a finished run | `python -m agents.path_coverage --run results/phase2_branch100` | 0 |
 | Check a finished run (verdicts vs measured numbers, test-file rules) | `python verify_run.py results/phase2_branch100` | 0 |
 
-Other `pipeline.py` options: `--task-ids 11 20`, `--limit N`, `--criterion statement|branch`, `--target 100`,
-`--max-rounds N` (`--mode full` only; `1` switches the feedback loop off).
+Other `pipeline.py` options: `--task-ids 11 20`, `--limit N`, `--criterion statement|branch|loops`,
+`--target 100`, `--max-rounds N` (`--mode full` only; `1` switches the feedback loop off).
+
+**The three coverage criteria** (the assignment's own examples: "cover all statements, cover all loops,
+cover all decision statements"):
+
+| `--criterion` | Requires | In the course's terms |
+|---|---|---|
+| `statement` | every executable line runs | node coverage |
+| `branch` (default) | every decision goes both ways, every loop body runs and exits | edge coverage |
+| `loops` | every pair of consecutive edges `a -> b -> c`: each loop must be skipped, run once, and run twice | edge-pair coverage |
+
+`loops` is the strictest and needs a second, untraced pytest pass to record the order lines ran in
+(`agents/path_coverage.py`); the other two are measured by coverage.py alone.
 
 **The two modes**
 
@@ -118,7 +132,7 @@ config.py            all settings (models, temperatures, timeouts, coverage defa
 pipeline.py          orchestrator (command line)
 verify_run.py        re-checks a finished run: every verdict against the numbers it was computed from
 agents/              llm_client.py, code_generator.py, test_generator.py, test_executor.py,
-                     code_utils.py, models.py
+                     path_coverage.py, code_utils.py, models.py
 prompts/             prompt templates ($placeholders, filled with string.Template)
 data/                prepare_dataset.py and mbpp_subset.json (the 12 problems)
 tests/               offline tests for our own code (no API calls)
