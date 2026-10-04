@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 
@@ -55,6 +55,11 @@ class ExecutionResult:
     num_branches: int = 0
     exit_code: int | None = None
     duration_s: float = 0.0
+    # Edge-pair ("loops") coverage. Measured only for criterion="loops", which needs a second, untraced
+    # pytest pass (agents/path_coverage.py); the defaults keep every other run exactly as it was.
+    edge_pair_coverage: float = 0.0        # 0-100 (100 if the code has no decisions at all)
+    num_edge_pairs: int = 0
+    missing_edge_pairs: list[list[int]] = field(default_factory=list)   # [line_a, line_b, line_c]
 
 
 def load_problems(path: Path | str) -> list[Problem]:

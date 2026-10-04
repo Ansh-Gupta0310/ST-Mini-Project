@@ -22,7 +22,7 @@ for task_id, v in problems.items():
     for execution in sorted(folder.glob("*/execution.json")):
         r = json.loads(execution.read_text(encoding="utf-8"))
         expected_met = coverage_target_met(r["criterion"], r["target"], r["statement_coverage"],
-                                          r["branch_coverage"])
+                                          r["branch_coverage"], r.get("edge_pair_coverage", 100.0))
         expected = decide_verdict(r["status"], r["tests_total"], r["tests_failed"], expected_met)
         if (expected_met, expected) != (r["target_met"], r["verdict"]):
             errors.append(f"{execution}: verdict {r['verdict']}/{r['target_met']} but the numbers give "
@@ -36,8 +36,11 @@ for task_id, v in problems.items():
             continue
         if sub:
             r = json.loads((folder / sub / "execution.json").read_text(encoding="utf-8"))
-            for field in ("verdict", "tests_total", "tests_passed", "statement_coverage", "branch_coverage",
-                          "target_met"):
+            fields = ["verdict", "tests_total", "tests_passed", "statement_coverage", "branch_coverage",
+                      "target_met"]
+            if criterion == "loops":
+                fields += ["edge_pair_coverage", "num_edge_pairs"]
+            for field in fields:
                 if block[field] != r[field]:
                     errors.append(f"Mbpp_{task_id} {key}.{field}: {block[field]} != {sub}/{r[field]}")
     if v.get("final_round"):

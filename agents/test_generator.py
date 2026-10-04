@@ -62,7 +62,8 @@ class TestGeneratorAgent:
                 statement_coverage=f"{feedback.statement_coverage:g}",
                 branch_coverage=f"{feedback.branch_coverage:g}",
                 missing_description=describe_missing(solution_code, feedback.missing_lines,
-                                                    feedback.missing_branches),
+                                                    feedback.missing_branches,
+                                                    feedback.missing_edge_pairs),
             )
         if retry_note:
             user = f"{user}\n\n{retry_note}"

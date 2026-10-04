@@ -40,7 +40,7 @@ RETRY_WAITS_S = [5, 15, 30, 60]    # wait before retry 1, 2, 3, 4
 
 # --- Test execution ----------------------------------------------------------------------
 EXECUTOR_TIMEOUT_S = 30
-CRITERIA = ("statement", "branch")
+CRITERIA = ("statement", "branch", "loops")
 DEFAULT_CRITERION = "branch"
 DEFAULT_TARGET = 100.0
 DEFAULT_MAX_ROUNDS = 3             # used by --mode full (Phase 2)
@@ -52,6 +52,11 @@ CRITERION_GOALS = {
     "branch": "Reach $target% branch coverage: every if/elif/while condition must be True in some test "
               "and False in some test, and every loop must run its body at least once and also finish "
               "at least once.",
+    # The assignment's "cover all loops", measured as edge-pair coverage (agents/path_coverage.py).
+    "loops": "Reach $target% loop coverage: for every loop there must be a test that skips its body "
+             "completely, a test that runs exactly one iteration, and a test that runs two or more "
+             "iterations; and every pair of consecutive decision outcomes must occur in that order in "
+             "some test.",
 }
 
 
