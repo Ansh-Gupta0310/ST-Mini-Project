@@ -1,0 +1,42 @@
+{
+  "labels": {
+    "test_empty_list": "VALID",
+    "test_single_element": "VALID",
+    "test_multiple_elements": "VALID",
+    "test_nested_list": "VALID",
+    "test_deeply_nested": "VALID",
+    "test_skip_loop_body": "VALID",
+    "test_one_iteration": "VALID",
+    "test_two_or_more_iterations": "VALID",
+    "test_consecutive_decision_outcomes": "VALID"
+  },
+  "counts": {
+    "VALID": 9,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_empty_list": "passed",
+    "test_single_element": "passed",
+    "test_multiple_elements": "passed",
+    "test_nested_list": "passed",
+    "test_deeply_nested": "passed",
+    "test_skip_loop_body": "passed",
+    "test_one_iteration": "passed",
+    "test_two_or_more_iterations": "passed",
+    "test_consecutive_decision_outcomes": "passed"
+  },
+  "on_reference": {
+    "test_empty_list": "passed",
+    "test_single_element": "passed",
+    "test_multiple_elements": "passed",
+    "test_nested_list": "passed",
+    "test_deeply_nested": "passed",
+    "test_skip_loop_body": "passed",
+    "test_one_iteration": "passed",
+    "test_two_or_more_iterations": "passed",
+    "test_consecutive_decision_outcomes": "passed"
+  }
+}

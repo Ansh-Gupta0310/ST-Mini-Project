@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="7" time="0.638" timestamp="2026-10-04T16:17:51.035857+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_word_len_even_length" time="0.001" /><testcase classname="test_solution" name="test_word_len_odd_length" time="0.001" /><testcase classname="test_solution" name="test_word_len_empty_string" time="0.001"><failure message="AssertionError: assert False == True&#10; +  where False = word_len('')">def test_word_len_empty_string():
+&gt;       assert word_len("") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('')
+
+test_solution.py:10: AssertionError</failure></testcase><testcase classname="test_solution" name="test_word_len_single_char" time="0.000" /><testcase classname="test_solution" name="test_word_len_two_chars" time="0.000" /><testcase classname="test_solution" name="test_word_len_long_even" time="0.000" /><testcase classname="test_solution" name="test_word_len_long_odd" time="0.000" /></testsuite></testsuites>

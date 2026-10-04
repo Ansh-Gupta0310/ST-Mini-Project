@@ -1,0 +1,27 @@
+{
+  "status": "RAN",
+  "tests_total": 3,
+  "tests_passed": 0,
+  "tests_failed": 3,
+  "test_outcomes": {
+    "test_reference_1": "failed",
+    "test_reference_2": "failed",
+    "test_reference_3": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "FFF                                                                      [100%]\n=================================== FAILURES ===================================\n_______________________________ test_reference_1 _______________________________\n\n    def test_reference_1():\n>       assert word_len(\"Hadoop\") == False\nE       AssertionError: assert True == False\nE        +  where True = word_len('Hadoop')\n\ntest_solution.py:5: AssertionError\n_______________________________ test_reference_2 _______________________________\n\n    def test_reference_2():\n>       assert word_len(\"great\") == True\nE       AssertionError: assert False == True\nE        +  where False = word_len('great')\n\ntest_solution.py:8: AssertionError\n_______________________________ test_reference_3 _______________________________\n\n    def test_reference_3():\n>       assert word_len(\"structure\") == True\nE       AssertionError: assert False == True\nE        +  where False = word_len('structure')\n\ntest_solution.py:11: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_reference_1 - AssertionError: assert True == False\nFAILED test_solution.py::test_reference_2 - AssertionError: assert False == True\nFAILED test_solution.py::test_reference_3 - AssertionError: assert False == True\n3 failed in 0.56s",
+  "criterion": "loops",
+  "target": 100.0,
+  "num_statements": 2,
+  "num_branches": 0,
+  "exit_code": 1,
+  "duration_s": 2.61,
+  "edge_pair_coverage": 100.0,
+  "num_edge_pairs": 0,
+  "missing_edge_pairs": []
+}

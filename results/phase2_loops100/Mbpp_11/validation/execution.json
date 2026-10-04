@@ -1,0 +1,33 @@
+{
+  "status": "RAN",
+  "tests_total": 9,
+  "tests_passed": 5,
+  "tests_failed": 4,
+  "test_outcomes": {
+    "test_remove_Occ_no_occurrence": "passed",
+    "test_remove_Occ_single_occurrence": "failed",
+    "test_remove_Occ_two_occurrences": "passed",
+    "test_remove_Occ_multiple_occurrences_more_than_two": "failed",
+    "test_remove_Occ_empty_string": "passed",
+    "test_remove_Occ_character_at_start_and_end": "passed",
+    "test_remove_Occ_character_at_start_only": "failed",
+    "test_remove_Occ_character_at_end_only": "failed",
+    "test_remove_Occ_all_same_characters": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "test_solution.py:7: AssertionError\n______________ test_remove_Occ_multiple_occurrences_more_than_two ______________\n\n    def test_remove_Occ_multiple_occurrences_more_than_two():\n>       assert remove_Occ(\"abracadabra\", \"a\") == \"brcdbr\"\nE       AssertionError: assert 'bracadabr' == 'brcdbr'\nE         \nE         - brcdbr\nE         + bracadabr\nE         ?   + + +\n\ntest_solution.py:13: AssertionError\n___________________ test_remove_Occ_character_at_start_only ____________________\n\n    def test_remove_Occ_character_at_start_only():\n>       assert remove_Occ(\"abca\", \"a\") == \"bca\"\nE       AssertionError: assert 'bc' == 'bca'\nE         \nE         - bca\nE         ?   -\nE         + bc\n\ntest_solution.py:22: AssertionError\n____________________ test_remove_Occ_character_at_end_only _____________________\n\n    def test_remove_Occ_character_at_end_only():\n>       assert remove_Occ(\"abca\", \"a\") == \"bca\"\nE       AssertionError: assert 'bc' == 'bca'\nE         \nE         - bca\nE         ?   -\nE         + bc\n\ntest_solution.py:25: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_remove_Occ_single_occurrence - AssertionError: ...\nFAILED test_solution.py::test_remove_Occ_multiple_occurrences_more_than_two\nFAILED test_solution.py::test_remove_Occ_character_at_start_only - AssertionE...\nFAILED test_solution.py::test_remove_Occ_character_at_end_only - AssertionErr...\n4 failed, 5 passed in 0.98s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 10,
+  "num_branches": 8,
+  "exit_code": 1,
+  "duration_s": 3.41,
+  "edge_pair_coverage": 0.0,
+  "num_edge_pairs": 0,
+  "missing_edge_pairs": []
+}

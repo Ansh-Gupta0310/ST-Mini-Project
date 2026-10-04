@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="7" time="0.666" timestamp="2026-10-04T16:17:59.835535+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_empty_string" time="0.000" /><testcase classname="test_solution" name="test_single_char" time="0.001"><failure message="AssertionError: assert 't' == 'b'&#10;  &#10;  - b&#10;  + t">def test_single_char():
+&gt;       assert get_Char("a") == "b"
+E       AssertionError: assert 't' == 'b'
+E         
+E         - b
+E         + t
+
+test_solution.py:7: AssertionError</failure></testcase><testcase classname="test_solution" name="test_two_chars" time="0.001"><failure message="AssertionError: assert 'n' == 'c'&#10;  &#10;  - c&#10;  + n">def test_two_chars():
+&gt;       assert get_Char("ab") == "c"
+E       AssertionError: assert 'n' == 'c'
+E         
+E         - c
+E         + n
+
+test_solution.py:10: AssertionError</failure></testcase><testcase classname="test_solution" name="test_three_chars" time="0.001"><failure message="AssertionError: assert 'i' == 'f'&#10;  &#10;  - f&#10;  + i">def test_three_chars():
+&gt;       assert get_Char("abc") == "f"
+E       AssertionError: assert 'i' == 'f'
+E         
+E         - f
+E         + i
+
+test_solution.py:13: AssertionError</failure></testcase><testcase classname="test_solution" name="test_loop_skip_body" time="0.001"><failure message="AssertionError: assert 'y' == 'a'&#10;  &#10;  - a&#10;  + y">def test_loop_skip_body():
+&gt;       assert get_Char("aaaa") == "a"
+E       AssertionError: assert 'y' == 'a'
+E         
+E         - a
+E         + y
+
+test_solution.py:16: AssertionError</failure></testcase><testcase classname="test_solution" name="test_loop_one_iteration" time="0.001"><failure message="AssertionError: assert 's' == 'z'&#10;  &#10;  - z&#10;  + s">def test_loop_one_iteration():
+&gt;       assert get_Char("z") == "z"
+E       AssertionError: assert 's' == 'z'
+E         
+E         - z
+E         + s
+
+test_solution.py:19: AssertionError</failure></testcase><testcase classname="test_solution" name="test_loop_multiple_iterations" time="0.001"><failure message="AssertionError: assert 'z' == 'd'&#10;  &#10;  - d&#10;  + z">def test_loop_multiple_iterations():
+&gt;       assert get_Char("xyz") == "d"
+E       AssertionError: assert 'z' == 'd'
+E         
+E         - d
+E         + z
+
+test_solution.py:22: AssertionError</failure></testcase></testsuite></testsuites>

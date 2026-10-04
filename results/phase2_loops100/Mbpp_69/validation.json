@@ -1,0 +1,36 @@
+{
+  "labels": {
+    "test_empty_sublist": "VALID",
+    "test_sublist_at_start": "VALID",
+    "test_sublist_at_end": "VALID",
+    "test_sublist_middle": "VALID",
+    "test_sublist_not_present": "VALID",
+    "test_sublist_exact_match": "VALID",
+    "test_sublist_longer_than_list": "VALID"
+  },
+  "counts": {
+    "VALID": 7,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_empty_sublist": "passed",
+    "test_sublist_at_start": "passed",
+    "test_sublist_at_end": "passed",
+    "test_sublist_middle": "passed",
+    "test_sublist_not_present": "passed",
+    "test_sublist_exact_match": "passed",
+    "test_sublist_longer_than_list": "passed"
+  },
+  "on_reference": {
+    "test_empty_sublist": "passed",
+    "test_sublist_at_start": "passed",
+    "test_sublist_at_end": "passed",
+    "test_sublist_middle": "passed",
+    "test_sublist_not_present": "passed",
+    "test_sublist_exact_match": "passed",
+    "test_sublist_longer_than_list": "passed"
+  }
+}

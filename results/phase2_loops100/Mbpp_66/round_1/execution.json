@@ -1,0 +1,33 @@
+{
+  "status": "RAN",
+  "tests_total": 9,
+  "tests_passed": 9,
+  "tests_failed": 0,
+  "test_outcomes": {
+    "test_empty_list": "passed",
+    "test_all_negative": "passed",
+    "test_all_positive": "passed",
+    "test_mixed_one_positive": "passed",
+    "test_mixed_two_positives": "passed",
+    "test_single_positive": "passed",
+    "test_single_negative": "passed",
+    "test_single_zero": "passed",
+    "test_large_list": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "PASS",
+  "output_tail": ".........                                                                [100%]\n9 passed in 0.07s",
+  "criterion": "loops",
+  "target": 100.0,
+  "num_statements": 2,
+  "num_branches": 0,
+  "exit_code": 0,
+  "duration_s": 2.43,
+  "edge_pair_coverage": 100.0,
+  "num_edge_pairs": 0,
+  "missing_edge_pairs": []
+}

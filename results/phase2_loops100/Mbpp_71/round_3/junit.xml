@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="18" time="0.742" timestamp="2026-10-04T16:17:32.147357+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_comb_sort_already_sorted" time="0.001" /><testcase classname="test_solution" name="test_comb_sort_reverse_sorted" time="0.001"><failure message="assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]&#10;  &#10;  At index 0 diff: 2 != 1&#10;  Use -v to get more diff">def test_comb_sort_reverse_sorted():
+&gt;       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]
+E       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:9: AssertionError</failure></testcase><testcase classname="test_solution" name="test_comb_sort_single_element" time="0.000" /><testcase classname="test_solution" name="test_comb_sort_empty_list" time="0.000" /><testcase classname="test_solution" name="test_comb_sort_two_elements" time="0.000" /><testcase classname="test_solution" name="test_comb_sort_three_elements_one_iteration" time="0.000" /><testcase classname="test_solution" name="test_comb_sort_large_gap" time="0.001"><failure message="assert [2, 1, 5, 4, 3, 7, ...] == [1, 2, 3, 4, 5, 6, ...]&#10;  &#10;  At index 0 diff: 2 != 1&#10;  Use -v to get more diff">def test_comb_sort_large_gap():
+        # Use a list where the initial gap is large enough to cause multiple swaps in one pass.
+        # For n=7, initial gap=7, after shrink gap=5 (int(7/1.3)=5), for loop runs 2 times.
+        # So this test ensures the for loop runs at least two iterations.
+&gt;       assert comb_sort([7, 6, 5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5, 6, 7]
+E       assert [2, 1, 5, 4, 3, 7, ...] == [1, 2, 3, 4, 5, 6, ...]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:60: AssertionError</failure></testcase><testcase classname="test_solution" name="test_comb_sort_partial_order" time="0.000" /><testcase classname="test_solution" name="test_comb_sort_sorted_flag_false_to_true" time="0.001" /><testcase classname="test_solution" name="test_comb_sort_sorted_flag_false_to_true_with_swap" time="0.000" /><testcase classname="test_solution" name="test_comb_sort_sorted_flag_false_to_true_multiple_passes" time="0.001"><failure message="assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]&#10;  &#10;  At index 0 diff: 2 != 1&#10;  Use -v to get more diff">def test_comb_sort_sorted_flag_false_to_true_multiple_passes() -&gt; None:
+        """Test that sorted_flag transitions from False to True over multiple passes."""
+        # A list that needs multiple passes (e.g., reverse order) to ensure
+        # sorted_flag is toggled multiple times before finally becoming True.
+&gt;       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]
+E       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:87: AssertionError</failure></testcase><testcase classname="test_solution" name="test_comb_sort_sorted_flag_false_to_true_empty" time="0.000" /><testcase classname="test_solution" name="test_comb_sort_sorted_flag_false_to_true_single_element" time="0.000" /><testcase classname="test_solution" name="test_comb_sort_sorted_flag_false_to_true_order" time="0.000" /><testcase classname="test_solution" name="test_comb_sort_sorted_flag_false_to_true_order_with_swap" time="0.000" /><testcase classname="test_solution" name="test_comb_sort_sorted_flag_false_to_true_order_multiple_passes" time="0.000"><failure message="assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]&#10;  &#10;  At index 0 diff: 2 != 1&#10;  Use -v to get more diff">def test_comb_sort_sorted_flag_false_to_true_order_multiple_passes() -&gt; None:
+        """
+        Test the sequence across multiple passes. A reverse-sorted list ensures that
+        sorted_flag is set to False multiple times before finally becoming True,
+        covering the branch where the while condition is true multiple times.
+        """
+&gt;       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]
+E       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:129: AssertionError</failure></testcase><testcase classname="test_solution" name="test_comb_sort_sorted_flag_false_to_true_order_empty" time="0.000" /><testcase classname="test_solution" name="test_comb_sort_sorted_flag_false_to_true_order_single_element" time="0.000" /></testsuite></testsuites>

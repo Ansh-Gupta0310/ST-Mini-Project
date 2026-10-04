@@ -1,0 +1,117 @@
+{
+  "task_id": 92,
+  "entry_point": "is_undulating",
+  "codegen_ok": true,
+  "status": "COMPLETED",
+  "code_correct": true,
+  "baseline": {
+    "verdict": "COVERAGE_NOT_MET",
+    "status": "RAN",
+    "tests_total": 3,
+    "tests_passed": 3,
+    "statement_coverage": 80.0,
+    "branch_coverage": 75.0,
+    "edge_pair_coverage": 70.0,
+    "target_met": false,
+    "num_statements": 10,
+    "num_branches": 8,
+    "num_edge_pairs": 10,
+    "missing_lines": [
+      4,
+      6
+    ],
+    "missing_branches": [
+      [
+        3,
+        4
+      ],
+      [
+        5,
+        6
+      ]
+    ],
+    "missing_edge_pairs": [
+      [
+        2,
+        3,
+        4
+      ],
+      [
+        3,
+        5,
+        6
+      ],
+      [
+        5,
+        7,
+        10
+      ]
+    ]
+  },
+  "criterion": "loops",
+  "target": 100.0,
+  "max_rounds": 3,
+  "rounds_used": 3,
+  "final_round": 3,
+  "round_1": {
+    "verdict": "COVERAGE_NOT_MET",
+    "status": "RAN",
+    "tests_total": 7,
+    "tests_passed": 7,
+    "statement_coverage": 100.0,
+    "branch_coverage": 100.0,
+    "edge_pair_coverage": 90.0,
+    "target_met": false,
+    "num_statements": 10,
+    "num_branches": 8,
+    "num_edge_pairs": 10,
+    "missing_lines": [],
+    "missing_branches": [],
+    "missing_edge_pairs": [
+      [
+        5,
+        7,
+        10
+      ]
+    ]
+  },
+  "final": {
+    "verdict": "COVERAGE_NOT_MET",
+    "status": "RAN",
+    "tests_total": 25,
+    "tests_passed": 25,
+    "statement_coverage": 100.0,
+    "branch_coverage": 100.0,
+    "edge_pair_coverage": 90.0,
+    "target_met": false,
+    "num_statements": 10,
+    "num_branches": 8,
+    "num_edge_pairs": 10,
+    "missing_lines": [],
+    "missing_branches": [],
+    "missing_edge_pairs": [
+      [
+        5,
+        7,
+        10
+      ]
+    ]
+  },
+  "test_labels": {
+    "VALID": 25,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "testgen_errors": [],
+  "llm_calls": 4,
+  "llm_cached_calls": 4,
+  "llm_requests_sent": 0,
+  "models_used": [
+    "cohere/north-mini-code:free"
+  ],
+  "prompt_tokens": 2073,
+  "completion_tokens": 752,
+  "reasoning_tokens": 0
+}

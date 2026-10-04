@@ -1,0 +1,63 @@
+{
+  "labels": {
+    "test_bell_number_zero": "VALID",
+    "test_bell_number_one": "VALID",
+    "test_bell_number_two": "VALID",
+    "test_bell_number_three": "VALID",
+    "test_bell_number_four": "VALID",
+    "test_bell_number_five": "VALID",
+    "test_bell_number_six": "VALID",
+    "test_bell_number_seven": "VALID",
+    "test_bell_number_eight": "VALID",
+    "test_bell_number_nine": "VALID",
+    "test_bell_number_ten": "VALID",
+    "test_bell_number_eleven": "VALID",
+    "test_bell_number_twelve": "VALID",
+    "test_bell_number_thirteen": "VALID",
+    "test_bell_number_fourteen": "VALID",
+    "test_bell_number_fifteen": "VALID"
+  },
+  "counts": {
+    "VALID": 16,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_bell_number_zero": "passed",
+    "test_bell_number_one": "passed",
+    "test_bell_number_two": "passed",
+    "test_bell_number_three": "passed",
+    "test_bell_number_four": "passed",
+    "test_bell_number_five": "passed",
+    "test_bell_number_six": "passed",
+    "test_bell_number_seven": "passed",
+    "test_bell_number_eight": "passed",
+    "test_bell_number_nine": "passed",
+    "test_bell_number_ten": "passed",
+    "test_bell_number_eleven": "passed",
+    "test_bell_number_twelve": "passed",
+    "test_bell_number_thirteen": "passed",
+    "test_bell_number_fourteen": "passed",
+    "test_bell_number_fifteen": "passed"
+  },
+  "on_reference": {
+    "test_bell_number_zero": "passed",
+    "test_bell_number_one": "passed",
+    "test_bell_number_two": "passed",
+    "test_bell_number_three": "passed",
+    "test_bell_number_four": "passed",
+    "test_bell_number_five": "passed",
+    "test_bell_number_six": "passed",
+    "test_bell_number_seven": "passed",
+    "test_bell_number_eight": "passed",
+    "test_bell_number_nine": "passed",
+    "test_bell_number_ten": "passed",
+    "test_bell_number_eleven": "passed",
+    "test_bell_number_twelve": "passed",
+    "test_bell_number_thirteen": "passed",
+    "test_bell_number_fourteen": "passed",
+    "test_bell_number_fifteen": "passed"
+  }
+}

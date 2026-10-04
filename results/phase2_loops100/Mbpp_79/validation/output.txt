@@ -1,0 +1,13 @@
+..F....                                                                  [100%]
+=================================== FAILURES ===================================
+__________________________ test_word_len_empty_string __________________________
+
+    def test_word_len_empty_string():
+>       assert word_len("") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('')
+
+test_solution.py:10: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_word_len_empty_string - AssertionError: assert ...
+1 failed, 6 passed in 0.64s

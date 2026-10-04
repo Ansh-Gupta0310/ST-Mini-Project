@@ -1,0 +1,51 @@
+{
+  "created_at": "2026-10-04T16:09:38+00:00",
+  "request": {
+    "model": "cohere/north-mini-code:free",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a software tester who writes pytest unit tests.\nReply with exactly one Python code block containing a complete pytest file and nothing else.\nRules:\n- The function under test is in the module `solution`. Import it with: from solution import len_log\n- Write each test as a separate top-level function whose name starts with test_ and describes what it checks.\n- Use plain assert statements. Use pytest.raises only if the problem says an exception is raised.\n- Take every expected value from the problem description, not from the code under test.\n- Do not define or change len_log. Do not use randomness, files, the network, or print.\n- Use only pytest and the Python standard library."
+      },
+      {
+        "role": "user",
+        "content": "Problem description:\nWrite a python function to find the length of the longest word.\n\nExample of correct behaviour:\nassert len_log([\"python\",\"PHP\",\"bigdata\"]) == 7\n\nFunction under test (file solution.py; the line numbers on the left are not part of the code):\n  1 | def len_log(list1):\n  2 |     return max(len(word) for word in list1)\n\nCoverage goal: Reach 100% loop coverage: for every loop there must be a test that skips its body completely, a test that runs exactly one iteration, and a test that runs two or more iterations; and every pair of consecutive decision outcomes must occur in that order in some test.\nWrite between 3 and 10 tests."
+      }
+    ],
+    "temperature": 0.4,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "reasoning": {
+      "enabled": false
+    },
+    "seed": 42
+  },
+  "response": {
+    "content": "```python\nfrom solution import len_log\n\ndef test_empty_list():\n    assert len_log([]) == 0\n\ndef test_single_word():\n    assert len_log([\"hello\"]) == 5\n\ndef test_two_words():\n    assert len_log([\"hi\", \"world\"]) == 5\n\ndef test_three_words():\n    assert len_log([\"python\", \"PHP\", \"bigdata\"]) == 7\n\ndef test_longest_at_start():\n    assert len_log([\"supercalifragilisticexpialidocious\", \"a\"]) == 34\n\ndef test_longest_at_end():\n    assert len_log([\"a\", \"supercalifragilisticexpialidocious\"]) == 34\n\ndef test_all_same_length():\n    assert len_log([\"abc\", \"def\", \"ghi\"]) == 3\n\ndef test_mixed_case():\n    assert len_log([\"Python\", \"python\", \"PYTHON\"]) == 6\n\ndef test_with_empty_strings():\n    assert len_log([\"\", \"test\", \"\"]) == 4\n```",
+    "model": "cohere/north-mini-code:free",
+    "usage": {
+      "prompt_tokens": 289,
+      "completion_tokens": 210,
+      "total_tokens": 499,
+      "cost": 0,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0,
+        "video_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0,
+        "upstream_inference_prompt_cost": 0,
+        "upstream_inference_completions_cost": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    }
+  },
+  "latency_s": 3.09
+}

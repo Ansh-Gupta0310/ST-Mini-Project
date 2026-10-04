@@ -1,0 +1,32 @@
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+_______________________________ test_reference_1 _______________________________
+
+    def test_reference_1():
+>       assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]
+E       assert [5, 15, 37, 25, 79] == [5, 15, 25, 37, 79]
+E         
+E         At index 2 diff: 37 != 25
+E         Use -v to get more diff
+
+test_solution.py:5: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_reference_1 - assert [5, 15, 37, 25, 79] == [5,...
+1 failed, 2 passed in 0.57s
+
+[executor] traced pass for edge-pair coverage (no coverage.py)
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+_______________________________ test_reference_1 _______________________________
+
+    def test_reference_1():
+>       assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]
+E       assert [5, 15, 37, 25, 79] == [5, 15, 25, 37, 79]
+E         
+E         At index 2 diff: 37 != 25
+E         Use -v to get more diff
+
+test_solution.py:5: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_reference_1 - assert [5, 15, 37, 25, 79] == [5,...
+1 failed, 2 passed in 0.66s

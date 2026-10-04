@@ -1,0 +1,107 @@
+{
+  "task_id": 70,
+  "entry_point": "get_equal",
+  "codegen_ok": true,
+  "status": "COMPLETED",
+  "code_correct": true,
+  "baseline": {
+    "verdict": "COVERAGE_NOT_MET",
+    "status": "RAN",
+    "tests_total": 3,
+    "tests_passed": 3,
+    "statement_coverage": 87.5,
+    "branch_coverage": 83.33,
+    "edge_pair_coverage": 85.71,
+    "target_met": false,
+    "num_statements": 8,
+    "num_branches": 6,
+    "num_edge_pairs": 7,
+    "missing_lines": [
+      3
+    ],
+    "missing_branches": [
+      [
+        2,
+        3
+      ]
+    ],
+    "missing_edge_pairs": [
+      [
+        4,
+        5,
+        8
+      ]
+    ]
+  },
+  "criterion": "loops",
+  "target": 100.0,
+  "max_rounds": 3,
+  "rounds_used": 3,
+  "final_round": 3,
+  "round_1": {
+    "verdict": "COVERAGE_NOT_MET",
+    "status": "RAN",
+    "tests_total": 8,
+    "tests_passed": 8,
+    "statement_coverage": 100.0,
+    "branch_coverage": 100.0,
+    "edge_pair_coverage": 85.71,
+    "target_met": false,
+    "num_statements": 8,
+    "num_branches": 6,
+    "num_edge_pairs": 7,
+    "missing_lines": [],
+    "missing_branches": [],
+    "missing_edge_pairs": [
+      [
+        4,
+        5,
+        8
+      ]
+    ]
+  },
+  "final": {
+    "verdict": "COVERAGE_NOT_MET",
+    "status": "RAN",
+    "tests_total": 16,
+    "tests_passed": 16,
+    "statement_coverage": 100.0,
+    "branch_coverage": 100.0,
+    "edge_pair_coverage": 85.71,
+    "target_met": false,
+    "num_statements": 8,
+    "num_branches": 6,
+    "num_edge_pairs": 7,
+    "missing_lines": [],
+    "missing_branches": [],
+    "missing_edge_pairs": [
+      [
+        4,
+        5,
+        8
+      ]
+    ]
+  },
+  "test_labels": {
+    "VALID": 16,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "testgen_errors": [
+    {
+      "round": 2,
+      "error": "the reply contains no parseable Python code"
+    }
+  ],
+  "llm_calls": 4,
+  "llm_cached_calls": 4,
+  "llm_requests_sent": 0,
+  "models_used": [
+    "cohere/north-mini-code:free"
+  ],
+  "prompt_tokens": 2016,
+  "completion_tokens": 2854,
+  "reasoning_tokens": 0
+}

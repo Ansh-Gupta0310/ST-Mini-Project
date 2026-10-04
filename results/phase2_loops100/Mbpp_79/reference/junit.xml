@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="0.562" timestamp="2026-10-04T16:17:40.937517+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_reference_1" time="0.001"><failure message="AssertionError: assert True == False&#10; +  where True = word_len('Hadoop')">def test_reference_1():
+&gt;       assert word_len("Hadoop") == False
+E       AssertionError: assert True == False
+E        +  where True = word_len('Hadoop')
+
+test_solution.py:5: AssertionError</failure></testcase><testcase classname="test_solution" name="test_reference_2" time="0.001"><failure message="AssertionError: assert False == True&#10; +  where False = word_len('great')">def test_reference_2():
+&gt;       assert word_len("great") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('great')
+
+test_solution.py:8: AssertionError</failure></testcase><testcase classname="test_solution" name="test_reference_3" time="0.000"><failure message="AssertionError: assert False == True&#10; +  where False = word_len('structure')">def test_reference_3():
+&gt;       assert word_len("structure") == True
+E       AssertionError: assert False == True
+E        +  where False = word_len('structure')
+
+test_solution.py:11: AssertionError</failure></testcase></testsuite></testsuites>

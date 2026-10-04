@@ -1,0 +1,51 @@
+{
+  "created_at": "2026-10-04T16:06:22+00:00",
+  "request": {
+    "model": "cohere/north-mini-code:free",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a software tester who writes pytest unit tests.\nReply with exactly one Python code block containing a complete pytest file and nothing else.\nRules:\n- The function under test is in the module `solution`. Import it with: from solution import recursive_list_sum\n- Write each test as a separate top-level function whose name starts with test_ and describes what it checks.\n- Use plain assert statements. Use pytest.raises only if the problem says an exception is raised.\n- Take every expected value from the problem description, not from the code under test.\n- Do not define or change recursive_list_sum. Do not use randomness, files, the network, or print.\n- Use only pytest and the Python standard library."
+      },
+      {
+        "role": "user",
+        "content": "Problem description:\nWrite a function to flatten a list and sum all of its elements.\n\nFunction under test (file solution.py; the line numbers on the left are not part of the code):\n  1 | def recursive_list_sum(data_list):\n  2 |     total = 0\n  3 |     for element in data_list:\n  4 |         if isinstance(element, list):\n  5 |             total += recursive_list_sum(element)\n  6 |         else:\n  7 |             total += element\n  8 |     return total\n\nThese tests already exist:\nfrom solution import recursive_list_sum\n\n\ndef test_empty_list():\n    assert recursive_list_sum([]) == 0\n\n\ndef test_single_element():\n    assert recursive_list_sum([42]) == 42\n\n\ndef test_multiple_elements():\n    assert recursive_list_sum([1, 2, 3]) == 6\n\n\ndef test_nested_list():\n    assert recursive_list_sum([1, [2, 3], 4]) == 10\n\n\ndef test_deeply_nested():\n    assert recursive_list_sum([1, [2, [3, 4]], 5]) == 15\n\n\ndef test_skip_loop_body():\n    # Ensure loop body is skipped when list is empty\n    assert recursive_list_sum([]) == 0\n\n\ndef test_one_iteration():\n    # Loop runs exactly one iteration (no nested lists)\n    assert recursive_list_sum([7]) == 7\n\n\ndef test_two_or_more_iterations():\n    # Loop runs multiple iterations, including nested list\n    assert recursive_list_sum([1, 2, [3, 4]]) == 10\n\n\ndef test_consecutive_decision_outcomes():\n    # First element is list, second is not (consecutive outcomes)\n    assert recursive_list_sum([[5], 6]) == 11\n\n\ndef test_first_element_list_second_not():\n    # Ensure the loop body runs with first element being a list, second not\n    assert recursive_list_sum([[5], 6]) == 11\n\n\ndef test_first_element_not_list_second_list():\n    # Ensure the loop body runs with first element not a list, second a list\n    assert recursive_list_sum([7, [8, 9]]) == 24\n\n\ndef test_nested_list_with_return():\n    # Ensure the loop body runs with nested list and return total after loop\n    assert recursive_list_sum([1, [2, 3], 4, [5, 6]]) == 21\n\nCoverage after running them: statements 100%, branches 100%.\nCoverage goal: Reach 100% loop coverage: for every loop there must be a test that skips its body completely, a test that runs exactly one iteration, and a test that runs two or more iterations; and every pair of consecutive decision outcomes must occur in that order in some test.\n\nNot covered yet:\n- line 4 `if isinstance(element, list):` -> line 5 `total += recursive_list_sum(element)` -> line 3 `for element in data_list:` never ran in that order\n- line 5 `total += recursive_list_sum(element)` -> line 3 `for element in data_list:` -> line 4 `if isinstance(element, list):` never ran in that order\n- line 5 `total += recursive_list_sum(element)` -> line 3 `for element in data_list:` -> line 8 `return total` never ran in that order\n\nWrite only NEW test functions that make the uncovered lines and branches run.\nDo not repeat the existing tests. Start the file with: from solution import recursive_list_sum"
+      }
+    ],
+    "temperature": 0.4,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "reasoning": {
+      "enabled": false
+    },
+    "seed": 42
+  },
+  "response": {
+    "content": "from solution import recursive_list_sum\n\n\ndef test_if_isinstance_true_then_recursive_call():\n    # Ensure the if branch (element is list) is taken and recursive call happens\n    assert recursive_list_sum([[1, 2], 3]) == 6\n\n\ndef test_if_isinstance_false_then_add_element():\n    # Ensure the else branch (element not list) is taken and element added\n    assert recursive_list_sum([4, [5, 6]]) == 15\n\n\ndef test_recursive_call_then_loop_then_return():\n    # Ensure recursive call occurs, then loop continues, then return total\n    assert recursive_list_sum([1, [2, [3, 4]], 5]) == 15\n\n\ndef test_recursive_call_then_loop_then_if_false():\n    # Ensure recursive call, then loop, then if condition false (non-list)\n    assert recursive_list_sum([7, [8, 9]]) == 24\n\n\ndef test_if_true_then_loop_then_return():\n    # Ensure if true (list), then loop continues, then return total\n    assert recursive_list_sum([[1, 2], 3, 4]) == 10\n\n\ndef test_if_false_then_loop_then_if_true():\n    # Ensure if false (non-list), then loop, then if true (list) in next iteration\n    assert recursive_list_sum([5, [6, 7]]) == 18\n\n\ndef test_if_true_then_recursive_call_then_loop():\n    # Ensure if true, recursive call, then loop continues\n    assert recursive_list_sum([[1, 2], [3, 4], 5]) == 15\n\n\ndef test_if_true_then_recursive_call_then_return():\n    # Ensure if true, recursive call, then return total after loop\n    assert recursive_list_sum([[1, 2], 3]) == 6\n\n\ndef test_if_false_then_add_element_then_if_true():\n    # Ensure if false (add element), then next iteration if true (list)\n    assert recursive_list_sum([10, [11, 12]]) == 33\n\n\ndef test_if_false_then_add_element_then_if_false():\n    # Ensure if false (add element), then next iteration if false (add element)\n    assert recursive_list_sum([13, 14]) == 27\n\n\ndef test_if_true_then_recursive_call_then_if_false():\n    # Ensure if true (list), recursive call, then next iteration if false (add element)\n    assert recursive_list_sum([[15, 16], 17]) == 48\n\n\ndef test_if_true_then_recursive_call_then_if_true():\n    # Ensure if true (list), recursive call, then next iteration if true (list)\n    assert recursive_list_sum([[18, 19], [20, 21]]) == 78",
+    "model": "cohere/north-mini-code:free",
+    "usage": {
+      "prompt_tokens": 872,
+      "completion_tokens": 566,
+      "total_tokens": 1438,
+      "cost": 0,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0,
+        "video_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0,
+        "upstream_inference_prompt_cost": 0,
+        "upstream_inference_completions_cost": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    }
+  },
+  "latency_s": 6.51
+}

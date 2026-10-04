@@ -1,0 +1,46 @@
+{
+  "status": "RAN",
+  "tests_total": 16,
+  "tests_passed": 16,
+  "tests_failed": 0,
+  "test_outcomes": {
+    "test_bell_number_zero": "passed",
+    "test_bell_number_one": "passed",
+    "test_bell_number_two": "passed",
+    "test_bell_number_three": "passed",
+    "test_bell_number_four": "passed",
+    "test_bell_number_five": "passed",
+    "test_bell_number_six": "passed",
+    "test_bell_number_seven": "passed",
+    "test_bell_number_eight": "passed",
+    "test_bell_number_nine": "passed",
+    "test_bell_number_ten": "passed",
+    "test_bell_number_eleven": "passed",
+    "test_bell_number_twelve": "passed",
+    "test_bell_number_thirteen": "passed",
+    "test_bell_number_fourteen": "passed",
+    "test_bell_number_fifteen": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": false,
+  "verdict": "COVERAGE_NOT_MET",
+  "output_tail": "................                                                         [100%]\n16 passed in 0.07s",
+  "criterion": "loops",
+  "target": 100.0,
+  "num_statements": 12,
+  "num_branches": 6,
+  "exit_code": 0,
+  "duration_s": 2.63,
+  "edge_pair_coverage": 94.44,
+  "num_edge_pairs": 18,
+  "missing_edge_pairs": [
+    [
+      9,
+      10,
+      17
+    ]
+  ]
+}

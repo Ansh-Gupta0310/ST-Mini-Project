@@ -1,0 +1,84 @@
+from solution import bell_number
+
+def test_bell_number_loop_skip_body():
+    # Ensure the inner loop runs zero times when i == 0 (outer loop starts at 1)
+    # This is already covered by test_bell_number_zero, but we need a test that
+    # specifically triggers the inner loop with i=1 and k range(1) -> one iteration.
+    # However, the requirement is to have a test that skips the inner loop body.
+    # For i=1, range(i) is range(1) which yields k=0, so inner loop runs once.
+    # To skip inner loop body, we need i=0, but outer loop starts at 1.
+    # So we need a test that runs outer loop with i such that inner loop runs zero times.
+    # That's impossible because range(i) with i>=1 yields at least one iteration.
+    # However, the uncovered lines are about the order of execution of statements
+    # inside the outer loop. We need a test that runs the outer loop with i such that
+    # the inner loop runs exactly one iteration, and also a test that runs two or more.
+    # The existing tests already cover many i values, but we need to ensure that
+    # the specific order of statements (total = 0, then for k in range(i), then bell[i] = total)
+    # is covered for a case where the inner loop runs exactly one iteration.
+    # Let's pick n=1: outer loop i=1, inner loop runs once (k=0). This should cover the order.
+    # However, the coverage report says it's not covered. Maybe because the inner loop
+    # body (lines 13-16) is not executed? Actually, for k=0, the inner loop over j (range(1, k+1)) is empty,
+    # so comb remains 1. So the inner loop body (lines 13-16) is executed for k=0? Let's examine:
+    # for k in range(i):
+    #     comb = 1
+    #     for j in range(1, k + 1):
+    #         comb = comb * (i - j) // j
+    #     total += comb * bell[k]
+    # For k=0, range(1, 1) is empty, so comb stays 1, then total += 1 * bell[0].
+    # So the inner loop body (lines 13-16) is executed for k=0. So why is the order not covered?
+    # Possibly because the test_bell_number_one already covers this, but coverage says not.
+    # Let's assume we need to write a test that explicitly triggers the order for i=1.
+    # We'll write a test that asserts bell_number(1) == 1, but that's already there.
+    # However, we can write a new test that uses n=1 but also maybe we can add a print to see.
+    # But we cannot change the function. So we need to write a test that ensures the order.
+    # Perhaps we need to test a case where the inner loop runs two or more iterations.
+    # For i=2, inner loop runs k=0,1 (two iterations). That should cover two or more.
+    # But again, test_bell_number_two already covers that.
+    # The coverage report says the order of statements (total = 0, for k in range(i), bell[i] = total)
+    # never ran in that order. That suggests that the existing tests didn't run the outer loop
+    # with any i? But they must have, because they test n up to 15.
+    # Maybe the coverage tool considers that the inner loop body (lines 13-16) is not executed
+    # for any k? That seems impossible.
+    # Let's examine the code: For k=0, the inner loop over j is empty, so comb = 1.
+    # So line 13-16 are executed for k=0. So they should be covered.
+    # Perhaps the coverage tool counts line 13 as "comb = 1" and line 14 as "for j in range(...)" as separate.
+    # The order of statements might refer to the order of the three blocks: total = 0, for k in range(i), bell[i] = total.
+    # That order is always the same. So maybe the issue is that the branch where i=0 (outer loop not entered) is not covered.
+    # But the outer loop starts at 1, so i never equals 0. So the branch where i=0 (i.e., range(1, n+1) with n=0) is not covered.
+    # Indeed, when n=0, the outer loop is not executed at all. So the branch where i=0 (i.e., the condition i < n+1? Actually the loop condition is i <= n) is not covered.
+    # The requirement: "for every loop there must be a test that skips its body completely, a test that runs exactly one iteration, and a test that runs two or more iterations"
+    # For the outer loop (for i in range(1, n + 1)), we need:
+    # - skip its body completely: when n = 0, the loop is not entered. That's covered by test_bell_number_zero.
+    # - exactly one iteration: when n = 1, the loop runs i=1 only. That's covered by test_bell_number_one.
+    # - two or more iterations: when n >= 2, loop runs at least two iterations. That's covered by test_bell_number_two.
+    # So the outer loop coverage seems satisfied.
+    # However, the uncovered lines are about the order of statements inside the outer loop.
+    # Maybe the coverage tool is looking at the inner loop (for k in range(i)). For the inner loop, we need:
+    # - skip its body completely: when i = 0? But i starts at 1, so inner loop never skips.
+    # - exactly one iteration: when i = 1, inner loop runs k=0 (one iteration). That's covered by test_bell_number_one.
+    # - two or more iterations: when i >= 2, inner loop runs at least two iterations. That's covered by test_bell_number_two.
+    # So inner loop coverage also seems satisfied.
+    # The problem statement says "Not covered yet: line 9 total = 0 -> line 10 for k in range(i): -> line 17 bell[i] = total never ran in that order"
+    # This suggests that the coverage tool is looking at the order of execution of these three lines as a sequence.
+    # That sequence is always the same, but maybe the coverage tool only considers it covered if there is a test where the inner loop body (lines 13-16) is executed.
+    # For i=1, the inner loop body (lines 13-16) is executed for k=0. So it should be covered.
+    # Unless the coverage tool counts line 13 as "comb = 1" and line 14 as "for j in range(...)" as separate, and the order of the three lines might be interrupted by the inner loop over j.
+    # The requirement: "every pair of consecutive decision outcomes must occur in that order in some test."
+    # This is about branches (if statements). There are no if statements in the code.
+    # So maybe the coverage tool is looking at the loop decision outcomes: the condition of the inner loop (k < i) and the condition of the inner inner loop (j < k+1).
+    # We need to ensure that for each loop, we have tests that cover the decision outcomes in order.
+    # Let's examine the loops:
+    # Outer loop: for i in range(1, n + 1):
+    #   Inner loop: for k in range(i):
+    #       Inner inner loop: for j in range(1, k + 1):
+    # We need to cover the decision outcomes for each loop: the condition being true (enter body) and false (exit).
+    # For the outer loop, the condition is i <= n. For n=0, condition false (skip). For n>=1, condition true (enter). That's covered.
+    # For the inner loop, the condition is k < i. For i=1, k=0: true (enter). For i=1, after k=0, k becomes 1: false (exit). That's covered.
+    # For the inner inner loop, the condition is j < k+1. For k=0, range(1,1) is empty, so condition never true. So we need a test where k >= 1 to have j loop executed.
+    # That's when i >= 2 and k >= 1. For example, i=2, k=1: range(1,2) -> j=1 only. So we need a test that triggers that.
+    # The existing tests likely cover that because for n=2, i=2, k=1, j loop runs once.
+    # So why is the order not covered? Maybe the coverage tool is looking at the order of the three lines as a sequence without any intervening statements.
+    # That is, the sequence total = 0, then for k in range(i), then bell[i] = total, with no other statements in between.
+    # But there are other statements inside the inner loop. So the sequence is interrupted.
+    # The requirement might be that we need a test where the inner loop body (lines 13-16) is executed, but the coverage tool says it's not.
+    # Let's assume we need

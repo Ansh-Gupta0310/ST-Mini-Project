@@ -1,0 +1,36 @@
+{
+  "status": "RAN",
+  "tests_total": 7,
+  "tests_passed": 6,
+  "tests_failed": 1,
+  "test_outcomes": {
+    "test_word_len_even_length": "passed",
+    "test_word_len_odd_length": "passed",
+    "test_word_len_empty_string": "failed",
+    "test_word_len_single_char": "passed",
+    "test_word_len_two_chars": "passed",
+    "test_word_len_long_even": "passed",
+    "test_word_len_long_odd": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 75.0,
+  "missing_lines": [],
+  "missing_branches": [
+    [
+      3,
+      -1
+    ]
+  ],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "..F....                                                                  [100%]\n=================================== FAILURES ===================================\n__________________________ test_word_len_empty_string __________________________\n\n    def test_word_len_empty_string():\n>       assert word_len(\"\") == True\nE       AssertionError: assert False == True\nE        +  where False = word_len('')\n\ntest_solution.py:10: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_word_len_empty_string - AssertionError: assert ...\n1 failed, 6 passed in 0.64s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 6,
+  "num_branches": 4,
+  "exit_code": 1,
+  "duration_s": 2.63,
+  "edge_pair_coverage": 0.0,
+  "num_edge_pairs": 0,
+  "missing_edge_pairs": []
+}

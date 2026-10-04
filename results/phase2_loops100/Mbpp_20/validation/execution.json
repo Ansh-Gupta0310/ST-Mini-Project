@@ -1,0 +1,32 @@
+{
+  "status": "RAN",
+  "tests_total": 8,
+  "tests_passed": 5,
+  "tests_failed": 3,
+  "test_outcomes": {
+    "test_is_woodall_negative": "passed",
+    "test_is_woodall_zero": "passed",
+    "test_is_woodall_one": "passed",
+    "test_is_woodall_three": "failed",
+    "test_is_woodall_eleven": "failed",
+    "test_is_woodall_fortytwo": "failed",
+    "test_is_woodall_383": "passed",
+    "test_is_woodall_not_woodall": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "...FFF..                                                                 [100%]\n=================================== FAILURES ===================================\n____________________________ test_is_woodall_three _____________________________\n\n    def test_is_woodall_three() -> None:\n        \"\"\"Check that 3 (n=2) returns True.\"\"\"\n>       assert is_woodall(3) is True\nE       assert False is True\nE        +  where False = is_woodall(3)\n\ntest_solution.py:17: AssertionError\n____________________________ test_is_woodall_eleven ____________________________\n\n    def test_is_woodall_eleven() -> None:\n        \"\"\"Check that 11 (n=3) returns True.\"\"\"\n>       assert is_woodall(11) is True\nE       assert False is True\nE        +  where False = is_woodall(11)\n\ntest_solution.py:21: AssertionError\n___________________________ test_is_woodall_fortytwo ___________________________\n\n    def test_is_woodall_fortytwo() -> None:\n        \"\"\"Check that 42 (n=4) returns True.\"\"\"\n>       assert is_woodall(42) is True\nE       assert False is True\nE        +  where False = is_woodall(42)\n\ntest_solution.py:25: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_is_woodall_three - assert False is True\nFAILED test_solution.py::test_is_woodall_eleven - assert False is True\nFAILED test_solution.py::test_is_woodall_fortytwo - assert False is True\n3 failed, 5 passed in 0.86s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 13,
+  "num_branches": 8,
+  "exit_code": 1,
+  "duration_s": 2.9,
+  "edge_pair_coverage": 0.0,
+  "num_edge_pairs": 0,
+  "missing_edge_pairs": []
+}

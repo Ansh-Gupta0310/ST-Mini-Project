@@ -1,0 +1,48 @@
+{
+  "status": "RAN",
+  "tests_total": 18,
+  "tests_passed": 14,
+  "tests_failed": 4,
+  "test_outcomes": {
+    "test_comb_sort_already_sorted": "passed",
+    "test_comb_sort_reverse_sorted": "failed",
+    "test_comb_sort_single_element": "passed",
+    "test_comb_sort_empty_list": "passed",
+    "test_comb_sort_two_elements": "passed",
+    "test_comb_sort_three_elements_one_iteration": "passed",
+    "test_comb_sort_large_gap": "failed",
+    "test_comb_sort_partial_order": "passed",
+    "test_comb_sort_sorted_flag_false_to_true": "passed",
+    "test_comb_sort_sorted_flag_false_to_true_with_swap": "passed",
+    "test_comb_sort_sorted_flag_false_to_true_multiple_passes": "failed",
+    "test_comb_sort_sorted_flag_false_to_true_empty": "passed",
+    "test_comb_sort_sorted_flag_false_to_true_single_element": "passed",
+    "test_comb_sort_sorted_flag_false_to_true_order": "passed",
+    "test_comb_sort_sorted_flag_false_to_true_order_with_swap": "passed",
+    "test_comb_sort_sorted_flag_false_to_true_order_multiple_passes": "failed",
+    "test_comb_sort_sorted_flag_false_to_true_order_empty": "passed",
+    "test_comb_sort_sorted_flag_false_to_true_order_single_element": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": false,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "E       assert [2, 1, 5, 4, 3, 7, ...] == [1, 2, 3, 4, 5, 6, ...]\nE         \nE         At index 0 diff: 2 != 1\nE         Use -v to get more diff\n\ntest_solution.py:60: AssertionError\n___________ test_comb_sort_sorted_flag_false_to_true_multiple_passes ___________\n\n    def test_comb_sort_sorted_flag_false_to_true_multiple_passes() -> None:\n        \"\"\"Test that sorted_flag transitions from False to True over multiple passes.\"\"\"\n        # A list that needs multiple passes (e.g., reverse order) to ensure\n        # sorted_flag is toggled multiple times before finally becoming True.\n>       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]\nE       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]\nE         \nE         At index 0 diff: 2 != 1\nE         Use -v to get more diff\n\ntest_solution.py:87: AssertionError\n________ test_comb_sort_sorted_flag_false_to_true_order_multiple_passes ________\n\n    def test_comb_sort_sorted_flag_false_to_true_order_multiple_passes() -> None:\n        \"\"\"\n        Test the sequence across multiple passes. A reverse-sorted list ensures that\n        sorted_flag is set to False multiple times before finally becoming True,\n        covering the branch where the while condition is true multiple times.\n        \"\"\"\n>       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]\nE       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]\nE         \nE         At index 0 diff: 2 != 1\nE         Use -v to get more diff\n\ntest_solution.py:129: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_comb_sort_reverse_sorted - assert [2, 1, 3, 5, ...\nFAILED test_solution.py::test_comb_sort_large_gap - assert [2, 1, 5, 4, 3, 7,...\nFAILED test_solution.py::test_comb_sort_sorted_flag_false_to_true_multiple_passes\nFAILED test_solution.py::test_comb_sort_sorted_flag_false_to_true_order_multiple_passes\n4 failed, 14 passed in 0.74s",
+  "criterion": "loops",
+  "target": 100.0,
+  "num_statements": 13,
+  "num_branches": 6,
+  "exit_code": 1,
+  "duration_s": 2.89,
+  "edge_pair_coverage": 94.74,
+  "num_edge_pairs": 19,
+  "missing_edge_pairs": [
+    [
+      5,
+      7,
+      14
+    ]
+  ]
+}
