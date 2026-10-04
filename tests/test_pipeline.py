@@ -317,3 +317,65 @@ def test_statement_criterion_is_passed_through_to_the_prompt_and_the_verdict(ful
     assert (v["criterion"], v["target"]) == ("statement", 75.0)
     assert (v["final"]["statement_coverage"], v["final"]["target_met"]) == (75.0, True)
     assert v["final"]["verdict"] == "PASS"
+
+
+# --- --mode full --criterion loops: edge-pair coverage demands a round branch coverage would not ---
+
+# A loop-based remove_Occ that passes MBPP's 3 asserts. Its 12 edge pairs include two that a single
+# straightforward test cannot reach: skipping the loop entirely, and `continue` on the last iteration.
+LOOPY_11 = (
+    "def remove_Occ(s, ch):\n"
+    "    first = s.find(ch)\n"
+    "    last = s.rfind(ch)\n"
+    "    out = ''\n"
+    "    for i, c in enumerate(s):\n"
+    "        if i == first or i == last:\n"
+    "            continue\n"
+    "        out += c\n"
+    "    return out\n"
+)
+LOOPS_ROUND_1 = ("from solution import remove_Occ\n\n\n"
+                 "def test_removes_first_and_last():\n    assert remove_Occ('hello', 'l') == 'heo'\n")
+LOOPS_ROUND_2 = ("from solution import remove_Occ\n\n\n"
+                 "def test_empty_string_skips_the_loop():\n    assert remove_Occ('', 'x') == ''\n\n\n"
+                 "def test_last_character_is_removed():\n    assert remove_Occ('ab', 'b') == 'a'\n")
+
+
+def test_loops_criterion_needs_a_second_round_where_branch_coverage_would_stop(full_network, tmp_path):
+    replies, sent = full_network
+    replies.update(codegen=[code_reply(LOOPY_11)], testgen=[code_reply(LOOPS_ROUND_1)],
+                   feedback=[code_reply(LOOPS_ROUND_2)])
+    exit_code, out, summary = run_full(tmp_path, 11, criterion="loops")
+    v = summary["problems"][0]
+
+    assert exit_code == 0
+    assert (v["criterion"], v["code_correct"]) == ("loops", True)
+    # Round 1 already satisfies both weaker criteria, so a branch run would have stopped here...
+    assert (v["round_1"]["statement_coverage"], v["round_1"]["branch_coverage"]) == (100.0, 100.0)
+    # ...but two orderings are untested, so the loops criterion is not met and the loop runs again.
+    assert v["round_1"]["edge_pair_coverage"] == 83.33
+    assert v["round_1"]["target_met"] is False
+    assert (v["rounds_used"], v["final_round"]) == (2, 2)
+    assert (v["final"]["edge_pair_coverage"], v["final"]["num_edge_pairs"]) == (100.0, 12)
+    assert (v["final"]["target_met"], v["final"]["verdict"]) == (True, "PASS")
+
+
+def test_loops_feedback_prompt_names_the_missing_orderings(full_network, tmp_path):
+    replies, sent = full_network
+    replies.update(codegen=[code_reply(LOOPY_11)], testgen=[code_reply(LOOPS_ROUND_1)],
+                   feedback=[code_reply(LOOPS_ROUND_2)])
+    _, out, _ = run_full(tmp_path, 11, criterion="loops")
+    prompt = next(p for p in sent if "These tests already exist" in p)
+    assert "skips its body completely" in prompt            # the loops goal sentence
+    assert "never ran in that order" in prompt              # describe_missing's edge-pair lines
+    markdown = (out / "summary.md").read_text(encoding="utf-8")
+    assert "Final pairs %" in markdown and "100.0% of 12" in markdown
+
+
+def test_loops_run_records_edge_pairs_but_other_criteria_do_not(full_network, tmp_path):
+    replies, _ = full_network
+    replies.update(codegen=[code_reply(SOLUTION_11)], testgen=[code_reply(ROUND_1_TESTS)],
+                   feedback=[code_reply(ROUND_2_TESTS)])
+    _, _, summary = run_full(tmp_path, 11, max_rounds=1, criterion="branch")
+    assert summary["problems"][0]["final"]["num_edge_pairs"] == 0
+    assert "Final pairs %" not in (tmp_path / "out" / "summary.md").read_text(encoding="utf-8")

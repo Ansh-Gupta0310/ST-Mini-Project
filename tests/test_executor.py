@@ -9,7 +9,7 @@ import pytest
 import config
 from agents.models import Problem, load_problems
 from agents.test_executor import (TestExecutorAgent, classify_tests, count_labels,
-                                 reference_tests_to_pytest, remove_path)
+                                 coverage_target_met, reference_tests_to_pytest, remove_path)
 
 # The worked example from PROJECT_PLAN.md §2.3.
 SIGN = """\
@@ -187,3 +187,103 @@ def test_validate_runs_the_tests_against_the_reference_not_the_generated_code(ex
     """The validation folder must contain MBPP's reference solution, not the generated one."""
     executor.validate(FOUR_LABELS, sign_problem(), tmp_path / "validation", {})
     assert (tmp_path / "validation" / "solution.py").read_text(encoding="utf-8") == SIGN
+
+
+# --- the `loops` criterion: edge-pair coverage (PROJECT_PLAN.md §2.3) ---------------------
+
+CLASSIFY = """def classify(nums):
+    total = 0
+    for n in nums:
+        if n > 0:
+            total += n
+    return total
+"""
+CLASSIFY_ONE = "from solution import classify\n\n\ndef test_pos():\n    assert classify([1, 2]) == 3\n"
+CLASSIFY_MORE = CLASSIFY_ONE + (
+    "\n\ndef test_empty():\n    assert classify([]) == 0\n"
+    "\n\ndef test_negative_in_the_middle():\n    assert classify([1, -5, 2]) == 3\n"
+)
+
+
+def test_loops_criterion_measures_edge_pairs(executor, tmp_path):
+    r = executor.run(CLASSIFY, CLASSIFY_ONE, tmp_path, criterion="loops", target=100.0)
+    assert (r.num_edge_pairs, r.edge_pair_coverage) == (9, 55.56)
+    assert [2, 3, 6] in r.missing_edge_pairs          # the loop body is never skipped
+    assert (r.target_met, r.verdict) == (False, "COVERAGE_NOT_MET")
+
+
+def test_loops_criterion_is_stricter_than_branch(executor, tmp_path):
+    """The point of the third criterion: 100% branch coverage can still leave an ordering untested."""
+    r = executor.run(CLASSIFY, CLASSIFY_MORE, tmp_path, criterion="loops", target=100.0)
+    assert (r.statement_coverage, r.branch_coverage) == (100.0, 100.0)   # branch is satisfied
+    assert r.edge_pair_coverage == 88.89                                  # but one ordering is missing
+    assert r.missing_edge_pairs == [[4, 3, 6]]       # condition False, then the loop ends
+    assert (r.target_met, r.verdict) == (False, "COVERAGE_NOT_MET")
+
+
+def test_loops_criterion_passes_when_every_ordering_is_covered(executor, tmp_path):
+    tests = CLASSIFY_MORE + "\n\ndef test_negative_last():\n    assert classify([1, -5]) == 1\n"
+    r = executor.run(CLASSIFY, tests, tmp_path, criterion="loops", target=100.0)
+    assert (r.edge_pair_coverage, r.missing_edge_pairs) == (100.0, [])
+    assert (r.target_met, r.verdict) == (True, "PASS")
+
+
+def test_other_criteria_do_not_run_the_traced_pass(executor, tmp_path):
+    """Nothing about the existing two criteria changes: no tracer, no conftest, fields left at defaults."""
+    r = executor.run(CLASSIFY, CLASSIFY_MORE, tmp_path, criterion="branch", target=100.0)
+    assert (r.target_met, r.verdict) == (True, "PASS")
+    assert (r.edge_pair_coverage, r.num_edge_pairs, r.missing_edge_pairs) == (0.0, 0, [])
+    assert not (tmp_path / "conftest.py").exists()
+    assert not (tmp_path / "traces.json").exists()
+
+
+def test_a_stale_tracer_from_an_earlier_loops_run_is_removed(executor, tmp_path):
+    """A conftest.py left behind would hijack the coverage pass, so a re-run must delete it."""
+    executor.run(CLASSIFY, CLASSIFY_ONE, tmp_path, criterion="loops", target=100.0)
+    assert (tmp_path / "conftest.py").exists()
+    r = executor.run(CLASSIFY, CLASSIFY_MORE, tmp_path, criterion="branch", target=100.0)
+    assert not (tmp_path / "conftest.py").exists()
+    assert (r.statement_coverage, r.branch_coverage) == (100.0, 100.0)   # coverage.py still measured
+
+
+def test_loops_target_also_requires_branch_and_statement_coverage():
+    # Code without decisions has no edge pairs and no branches: 0 of 0 reads as 100% for both.
+    assert not coverage_target_met("loops", 100.0, statement=50.0, branch=100.0, edge_pair=100.0)
+    assert coverage_target_met("loops", 100.0, statement=100.0, branch=100.0, edge_pair=100.0)
+    assert not coverage_target_met("loops", 100.0, statement=100.0, branch=100.0, edge_pair=90.0)
+    # and the older criteria are unaffected by the new argument
+    assert coverage_target_met("branch", 100.0, statement=100.0, branch=100.0)
+    assert coverage_target_met("statement", 100.0, statement=100.0, branch=0.0)
+
+
+RECURSIVE = """def total(items):
+    out = 0
+    for item in items:
+        if isinstance(item, list):
+            out += total(item)
+        else:
+            out += item
+    return out
+"""
+RECURSIVE_TESTS = (
+    "from solution import total\n\n\n"
+    "def test_flat():\n    assert total([1, 2]) == 3\n\n\n"
+    "def test_empty():\n    assert total([]) == 0\n\n\n"
+    "def test_nested_then_more():\n    assert total([[1], 2]) == 3\n\n\n"
+    "def test_two_nested():\n    assert total([[1], [2]]) == 3\n\n\n"
+    "def test_only_nested():\n    assert total([[1]]) == 1\n\n\n"
+    "def test_plain_last_is_not_a_list():\n    assert total([[1], 2, 3]) == 6\n"
+)
+
+
+def test_edge_pairs_of_a_recursive_function_are_measured_per_call_frame(executor, tmp_path):
+    """Regression: a flat trace splices the inner call's lines in, so `4 -> 5 -> 3` looks untested.
+
+    Found by the first official loops run, which reported 70% for MBPP problem 65 (a recursive sum)
+    although its tests did cover every pair.
+    """
+    r = executor.run(RECURSIVE, RECURSIVE_TESTS, tmp_path, criterion="loops", target=100.0)
+    assert r.tests_passed == r.tests_total == 6
+    assert [4, 5, 3] not in r.missing_edge_pairs      # recursive call, then back to the loop header
+    assert (r.edge_pair_coverage, r.missing_edge_pairs) == (100.0, [])
+    assert (r.target_met, r.verdict) == (True, "PASS")
