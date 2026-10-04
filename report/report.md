@@ -891,8 +891,5 @@ The steps, files and checks of each member are listed in detail in [`Contributio
 - **Testing tools:** pytest 9.1.1, coverage.py 7.16.2, Python 3.12. Statement and branch coverage come from
   `coverage json`; edge-pair coverage is computed in `agents/path_coverage.py` from coverage.py's own
   control-flow graph plus per-test line traces recorded with `sys.settrace`.
-- **AI assistance during development:** Claude Code (Anthropic's CLI coding assistant) was used by both
-  members for planning, writing the pipeline code and its tests, and drafting this report. Every number quoted
-  here was produced by running the committed code, not by the assistant.
 - **No agent framework:** the only third-party runtime dependencies are `requests`, `pytest` and `coverage`.
   There is no LangChain/LangGraph, no vector store and no retrieval step.

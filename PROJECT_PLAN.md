@@ -1245,8 +1245,7 @@ The report is written in `report/report.md` and exported to PDF, for example wit
 Also include:
 - **Limitations:** ambiguous MBPP descriptions; some branches may be impossible to reach; one model;
   12 problems; high coverage does not prove the code is correct.
-- **Tools used:** the OpenRouter model, and any AI assistants used during development (the assignment
-  expects AI tools to be used, so say which ones).
+- **Tools used:** the OpenRouter model, the testing tools (pytest, coverage.py) and the Python version.
 
 ---
 

@@ -1,43 +1,1078 @@
-\documentclass{article}
-\usepackage{graphicx} % Required for inserting images
+\documentclass[11pt,a4paper]{article}
 
-\title{AI-Assisted Unit Testing Pipeline \\
-       \large CSE731 Software Testing --- Mid-term Project Report}
-\author{Ansh Gupta (\texttt{<roll no.>}) \and Satyam Dewangan (\texttt{<roll no.>})}
-\date{October 2026}
+\usepackage{graphicx}            % Required for inserting images
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+
+\captionsetup{font=small,labelfont=bf}
+\setlength{\tabcolsep}{4.5pt}
+
+\lstdefinestyle{py}{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue!55!black},
+  commentstyle=\color{black!45},
+  stringstyle=\color{green!35!black},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black!30},
+  framesep=4pt,
+  xleftmargin=10pt,
+  numbers=left,
+  numberstyle=\tiny\color{black!50},
+  numbersep=7pt,
+}
+\lstdefinestyle{plain}{
+  basicstyle=\ttfamily\footnotesize,
+  showstringspaces=false,
+  breaklines=true,
+  columns=fullflexible,
+  frame=single,
+  rulecolor=\color{black!30},
+  framesep=4pt,
+  xleftmargin=4pt,
+}
+
+\title{An Agentic AI Pipeline for Coverage-Directed Unit Test Generation}
+\author{Ansh Gupta (\texttt{IMT2023540}) \\ Satyam Dewangan (\texttt{IMT2023545})}
+\date{CSE731 Software Testing, IIIT Bangalore \\ Mid-term Project, Term I (2026--27) \\[6pt]
+      Repository: \url{https://github.com/Ansh-Gupta0310/ST-Mini-Project} \\[6pt]
+      October 2026}
+
 
 \begin{document}
 
 \maketitle
 
+\begin{abstract}
+\noindent
+We built a three-agent pipeline that generates a Python function for a programming task, generates unit tests
+for that function, and executes those tests to produce a verdict. The test generator satisfies requirement~(1)
+of the project statement: it targets a coverage criterion chosen by the user at run time. All three criteria
+named in the statement are implemented, namely statement coverage, decision (branch) coverage and loop
+coverage. On a fixed subset of 12 MBPP problems, the dataset's own tests cover 94.2\% of statements and 89.6\%
+of branches of the generated code, while the generated tests reach 100\% of both. Because coverage alone does
+not show that a test checks the right answer, every generated test is also run against an independent
+reference implementation and labelled. That step shows that 69.3\% to 80.0\% of the generated tests are
+correct, depending on the criterion, and that the tests detected a genuine fault in all three problems whose
+generated code was wrong.
+\end{abstract}
+
 \section{Introduction}
 
+Unit testing validates individual functions. Writing those tests by hand is slow, and a human stops at the
+cases that come to mind. This project asks a narrower and measurable question: if a language model is asked to
+write unit tests \emph{with an explicit coverage goal}, does it produce better tests than the ones shipped with
+the benchmark?
+
+To answer it we built an agentic pipeline of three agents, described in Section~\ref{sec:pipeline}. Two of the
+agents call a language model; the third does not, because a verdict has to be a measured fact rather than a
+model's opinion. The pipeline is written from first principles in plain Python, with no agent framework, no
+retrieval and no chain-of-thought prompting (Section~\ref{sec:constraints}).
+
+The project statement offers three alternative requirements for the test generator. We chose
+requirement~(1), test cases that achieve a user-specified coverage criterion. The statement gives three
+examples of such criteria, ``cover all statements, cover all loops, cover all decision statements'', and the
+pipeline implements all three as command-line options.
+
+Two results are worth stating at the outset. First, the generated tests reach a strictly higher coverage than
+the dataset's own tests on every problem where the dataset falls short. Second, high coverage is not the same
+as a good test suite: up to 31\% of the generated tests encode a wrong expected value or agree with a bug in
+the code under test, which we measure rather than assume.
+
 \section{The pipeline and the dataset}
+\label{sec:pipeline}
+
 \subsection{Overview of the three agents}
+
+Each agent has one role, fixed instructions, and defined inputs and outputs. Table~\ref{tab:agents} lists them.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{The three agents. Only the first two use a language model.}
+\label{tab:agents}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Agent} & \textbf{File} & \textbf{Input} & \textbf{Output} \\
+\midrule
+Code Generator & \texttt{agents/code\_generator.py} & problem text, signature, 1 example assertion & \texttt{solution.py} \\
+Test Generator & \texttt{agents/test\_generator.py} & problem text, numbered code, coverage goal & \texttt{test\_solution.py} \\
+Test Executor & \texttt{agents/test\_executor.py} & solution, tests, criterion, target & coverage, verdict \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The orchestrator, \texttt{pipeline.py}, calls the agents in the fixed order shown below. It contains ordinary
+control flow: a loop over problems and a loop over test-generation rounds.
+
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.92\textwidth}
+\begin{verbatim}
+   MBPP problem (data/mbpp_subset.json)
+            |
+            v
+   [1] CODE GENERATOR AGENT (uses an LLM)
+       out: solution.py                                 the unit under test
+            |
+            v
+   [2] TEST EXECUTOR AGENT (no LLM)
+       runs MBPP's own 3 assertions against solution.py
+       out: code_correct (yes/no) + BASELINE coverage
+            |
+            v
+   [3] TEST GENERATOR AGENT (uses an LLM)
+       in : problem text + numbered solution.py + the coverage goal
+       out: test_solution.py
+            |
+            v
+   [4] TEST EXECUTOR AGENT (no LLM)
+       runs the generated tests under coverage.py
+       out: pass/fail per test, coverage %, missing lines and branches, verdict
+            |
+            +-- goal not met and rounds remaining? --> back to [3] with the measured gap
+            v
+   [5] TEST VALIDATION (no LLM)
+       re-runs the final tests against MBPP's reference solution
+       out: each test labelled VALID / BUG_FOUND / INVALID_TEST / MISLEADING
+            |
+            v
+   verdict.json per problem, summary.md per run
+\end{verbatim}
+\end{minipage}
+\caption{The pipeline. The Test Executor appears twice, at steps [2] and [4], against the same
+\texttt{solution.py} but with two different test suites. That is what makes the comparison in
+Section~\ref{sec:results} fair: any difference in coverage is caused by the tests alone.}
+\label{fig:pipeline}
+\end{figure}
+
+Two design points deserve emphasis.
+
+\textbf{The Test Executor uses no language model.} It runs the tests in a separate process under
+\texttt{coverage.py}, reads the JUnit XML report and the coverage JSON report, and applies fixed rules. If a
+model were asked whether the tests covered every branch, the answer would be an unverifiable claim. Every
+number in Section~\ref{sec:results} is instead a measurement that anyone can reproduce from the committed run
+folders.
+
+\textbf{Step [5] exists because of step [3].} The Test Generator is shown the code under test, which is
+necessary for coverage (a test cannot target a branch that it cannot see) but dangerous for correctness. If the
+code is wrong, a model that reads expected values off the code will write a test that agrees with the bug. The
+generated tests are therefore re-run against an implementation the generator never saw.
+
 \subsection{Dataset and problem selection}
+
+We use MBPP (Mostly Basic Python Problems) in its sanitized form, which contains 427 hand-checked problems.
+Each problem provides a short English description, a reference solution, and three assertions that act as the
+dataset's own test suite. For example, problem 11 provides:
+
+\begin{lstlisting}[style=plain]
+assert remove_Occ("hello","l") == "heo"
+assert remove_Occ("abcda","a") == "bcd"
+assert remove_Occ("PHP","P") == "H"
+\end{lstlisting}
+
+The script \texttt{data/prepare\_dataset.py} selects a fixed subset deterministically, so that anyone who runs
+it obtains the same problems. A problem is kept if it satisfies all five rules below, and the first 12 problems
+in \texttt{task\_id} order that satisfy them are used.
+
+\begin{enumerate}\itemsep2pt
+  \item Its \texttt{task\_id} lies in MBPP's official test split, 11--510.
+  \item Its reference solution contains at least two decision points, counted with Python's \texttt{ast}
+        module (\texttt{if}, \texttt{for}, \texttt{while}, conditional expressions, \texttt{try}, and
+        \texttt{if} clauses inside comprehensions).
+  \item Its reference solution is at most 25 lines long.
+  \item The function called in its first assertion is a top-level function of the reference solution, so that
+        \texttt{from solution import f} works and the required signature can be extracted.
+  \item Its reference solution passes its own three assertions. A broken reference would make every
+        validation label in Section~\ref{sec:validity} meaningless.
+\end{enumerate}
+
+Rule 2 is the important one. Of the 257 problems in the test split, 113 contain no decision at all, so a single
+test already gives 100\% coverage and there is nothing to measure. Table~\ref{tab:funnel} shows the effect of
+the rules.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Problem selection. The reduction to 12 is a budget decision, not a quality judgement.}
+\label{tab:funnel}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Stage} & \textbf{Problems} \\
+\midrule
+MBPP, sanitized version & 427 \\
+In the official test split (\texttt{task\_id} 11--510) & 257 \\
+Also satisfying rules 2 to 4 (decisions, length, entry point) & 90 \\
+First 12 by \texttt{task\_id} that also satisfy rule 5 & \textbf{12} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The 12 selected problems are 11 \texttt{remove\_Occ}, 20 \texttt{is\_woodall}, 65
+\texttt{recursive\_list\_sum}, 66 \texttt{pos\_count}, 67 \texttt{bell\_number}, 69 \texttt{is\_sublist}, 70
+\texttt{get\_equal}, 71 \texttt{comb\_sort}, 79 \texttt{word\_len}, 83 \texttt{get\_Char}, 90
+\texttt{len\_log} and 92 \texttt{is\_undulating}. The subset is committed as \texttt{data/mbpp\_subset.json}, and every run records
+that file's SHA-256 hash, so the question of which data a result came from has a precise answer.
+
 \subsection{Functionality of the test-case generator}
 
+The requirement the generator satisfies is a coverage criterion chosen by the user, together with a target
+percentage. Both are command-line arguments rather than constants:
+
+\begin{lstlisting}[style=plain]
+python pipeline.py --mode full --criterion branch    --target 100 --max-rounds 3 --out <folder>
+python pipeline.py --mode full --criterion loops     --target 100 --max-rounds 3 --out <folder>
+python pipeline.py --mode full --criterion statement --target 90  --max-rounds 1 --out <folder>
+\end{lstlisting}
+
+\paragraph{The three criteria.} Table~\ref{tab:criteria} defines them. In the standard terminology of
+structural testing, statement coverage is node coverage and branch coverage is edge coverage, so the three
+criteria are the bottom three levels of the standard subsumption hierarchy: prime path coverage subsumes
+edge-pair coverage, which subsumes edge coverage, which in turn subsumes node coverage.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{The three user-selectable coverage criteria.}
+\label{tab:criteria}
+\begin{tabular}{@{}p{1.7cm}p{8.6cm}p{2.6cm}@{}}
+\toprule
+\textbf{\texttt{--criterion}} & \textbf{What the test suite must achieve} & \textbf{Standard name} \\
+\midrule
+\texttt{statement} & every executable line of \texttt{solution.py} is run by at least one test & node coverage \\
+\texttt{branch} & every \texttt{if}, \texttt{elif} or \texttt{while} condition is True in some test and False
+in some test; every loop runs its body and also finishes & edge coverage \\
+\texttt{loops} & every pair of consecutive control-flow edges $a \rightarrow b \rightarrow c$. At a loop
+header this requires a test that skips the body, a test that runs one iteration, and a test that runs two or
+more & edge-pair coverage \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{How coverage is measured.} Statement and branch coverage come straight from
+\texttt{coverage.py}. It watches the program as it runs and then reports, for \texttt{solution.py} alone, how
+many statements exist and how many of them ran, how many branches exist and how many were taken, and exactly
+which lines and branches were missed. The pipeline reads the two percentages separately. It never uses the
+combined figure that \texttt{coverage.py} also offers, because that one blends statements and branches together
+and matches no criterion a user can ask for.
+
+Loop coverage needs one thing that \texttt{coverage.py} does not provide, namely the \emph{order} in which the
+lines ran. \texttt{coverage.py} reports the set of branches that were taken, not the sequence. The pipeline
+therefore measures the two halves of the criterion separately (\texttt{agents/path\_coverage.py}):
+
+\begin{enumerate}\itemsep3pt
+  \item \textbf{What has to be covered} comes from \texttt{coverage.py}'s own parser, which lists every
+        control-flow edge the function could possibly take, including the edges that jump back to a loop
+        header. Each pair of consecutive edges in that list is one test requirement. Reusing the parser is a
+        deliberate choice: the control-flow graph is then produced by the same established tool that measures
+        the other two criteria, instead of by analysis code of our own that nobody has validated.
+  \item \textbf{What was actually covered} comes from running the test suite a second time, during which a
+        small tracer records the sequence of line numbers that each test executes. Every three consecutive
+        line numbers in such a sequence form one covered pair.
+\end{enumerate}
+
+The second run cannot be folded into the first one. Python allows only a single active trace hook, so
+\texttt{coverage.py} and our tracer would displace each other. We confirmed this experimentally: with the
+tracer active inside \texttt{coverage run}, \texttt{coverage.py} reported 16.7\% statement coverage and 0\%
+branch coverage instead of the true values. The traced run therefore executes without \texttt{coverage.py}, and
+only when \texttt{--criterion loops} is requested, so the other two criteria are measured exactly as before.
+
+One further detail matters for correctness. The tracer keeps a separate sequence for every \emph{call} of the
+function rather than one sequence per test. In a recursive function a single combined sequence would mix the
+inner call's lines into the outer call's, and a pair that really was executed would then appear untested.
+
+
+\paragraph{The coverage feedback loop.} The generated suite is executed, and if the goal is not met and rounds
+remain, the measured gap is turned into plain sentences and sent back with the tests written so far:
+
+\begin{lstlisting}[style=plain]
+Coverage after running them: statements 80%, branches 75%.
+Not covered yet:
+- line 4 `return False` was never run
+- line 3 `if len(s) < 3:` never went to line 4 `return False`
+\end{lstlisting}
+
+The model is asked for new tests only. The new file is joined to the existing one using \texttt{ast}: every
+import once, then the earlier tests, then the new ones, with a duplicate test name renamed to
+\texttt{<name>\_r<round>} so that no earlier test is silently replaced. Each round is executed in its own
+folder, so the single-shot result (round 1) and the result with feedback are both available from one run.
+Passing \texttt{--max-rounds 1} switches the loop off.
+
+This loop is ordinary control flow: a program passes a measurement from one tool back into the next prompt. It
+is not chain-of-thought prompting, as discussed in Section~\ref{sec:constraints}.
+
+\paragraph{Checking the generated file.} A reply is used only if it contains a Python code block that parses,
+defines at least one top-level function whose name begins with \texttt{test\_}, imports the module
+\texttt{solution}, does not define the function under test (which would mean testing its own copy), and does
+not import anything that breaks determinism or the ``no files, no network'' rule. A reply that fails any of
+these checks is discarded and the round counts as unusable.
+
+\paragraph{Validation of the tests.} After the loop, the final suite is run once more against MBPP's reference
+solution, which the Test Generator never saw, and each test is labelled from the two outcomes
+(Table~\ref{tab:labels}). Coverage says how much of the code the tests reach; these labels say whether the
+tests are right.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Test labels, assigned by comparing two executions of the same test.}
+\label{tab:labels}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{On the generated code} & \textbf{On MBPP's reference} & \textbf{Label} & \textbf{Meaning} \\
+\midrule
+pass & pass & \texttt{VALID} & correct test \\
+fail & pass & \texttt{BUG\_FOUND} & the test caught a real fault in the generated code \\
+fail & fail & \texttt{INVALID\_TEST} & the test's expected value is wrong \\
+pass & fail & \texttt{MISLEADING} & test and code share the same wrong behaviour \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Prompts and settings}
+
 \subsection{Code Generator prompts}
+
+The system prompt (\texttt{prompts/code\_generator\_system.txt}) is sent unchanged:
+
+\begin{lstlisting}[style=plain]
+You are a Python code generator.
+Write a correct Python 3 function that solves the problem you are given.
+Reply with exactly one Python code block and nothing else.
+Use only the Python standard library.
+Do not include explanations, example usage, print statements, input() calls,
+or an `if __name__ == "__main__":` block.
+\end{lstlisting}
+
+The user prompt is a template filled by the pipeline with Python's \texttt{string.Template}, so that braces in
+code cannot break the substitution:
+
+\begin{lstlisting}[style=plain]
+Problem:
+$prompt
+
+Implement this function, keeping exactly this name and these parameters:
+$signature
+
+Your function must satisfy this example:
+$example_test
+\end{lstlisting}
+
+The prompt that was actually sent for problem 11, taken from the committed log
+\texttt{results/phase1\_baseline/Mbpp\_11/llm\_calls.jsonl}:
+
+\begin{lstlisting}[style=plain]
+Problem:
+Write a python function to remove first and last occurrence of a given character from the string.
+
+Implement this function, keeping exactly this name and these parameters:
+def remove_Occ(s, ch):
+
+Your function must satisfy this example:
+assert remove_Occ("hello","l") == "heo"
+\end{lstlisting}
+
+Only the first of the three MBPP assertions is shown, because its purpose is to fix the input and output
+format (for instance, whether the function returns \texttt{True} or the string \texttt{"Yes"}). The model never
+sees the reference solution. All three assertions are used afterwards, by the Test Executor, to decide whether
+the generated code is correct.
+
 \subsection{Test Generator prompts}
+
+The system prompt (\texttt{prompts/test\_generator\_system.txt}), where \texttt{\$entry\_point} is the name of
+the function under test:
+
+\begin{lstlisting}[style=plain]
+You are a software tester who writes pytest unit tests.
+Reply with exactly one Python code block containing a complete pytest file and nothing else.
+Rules:
+- The function under test is in the module `solution`. Import it with: from solution import $entry_point
+- Write each test as a separate top-level function whose name starts with test_ and describes what it checks.
+- Use plain assert statements. Use pytest.raises only if the problem says an exception is raised.
+- Take every expected value from the problem description, not from the code under test.
+- Do not define or change $entry_point. Do not use randomness, files, the network, or print.
+- Use only pytest and the Python standard library.
+\end{lstlisting}
+
+The instruction to take expected values from the description rather than from the code is the pipeline's first
+defence against the oracle problem. Section~\ref{sec:validity} measures how well it worked.
+
+The first-round user prompt (\texttt{prompts/test\_generator\_user.txt}):
+
+\begin{lstlisting}[style=plain]
+Problem description:
+$prompt
+
+Example of correct behaviour:
+$example_test
+
+Function under test (file solution.py; the line numbers on the left are not part of the code):
+$numbered_code
+
+Coverage goal: $criterion_goal
+Write between 3 and 10 tests.
+\end{lstlisting}
+
+The feedback-round user prompt (\texttt{prompts/test\_generator\_feedback.txt}):
+
+\begin{lstlisting}[style=plain]
+Problem description:
+$prompt
+
+Function under test (file solution.py; the line numbers on the left are not part of the code):
+$numbered_code
+
+These tests already exist:
+$existing_tests
+
+Coverage after running them: statements $statement_coverage%, branches $branch_coverage%.
+Coverage goal: $criterion_goal
+
+Not covered yet:
+$missing_description
+
+Write only NEW test functions that make the uncovered lines and branches run.
+Do not repeat the existing tests. Start the file with: from solution import $entry_point
+\end{lstlisting}
+
+The placeholder \texttt{\$criterion\_goal} carries the user's choice of criterion into the prompt. Its three
+values are given in Table~\ref{tab:goals}.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{The goal sentence substituted into the prompt for each criterion. \texttt{\$target} is filled in from
+\texttt{--target}.}
+\label{tab:goals}
+\begin{tabular}{@{}p{1.6cm}p{12.4cm}@{}}
+\toprule
+\textbf{Criterion} & \textbf{Goal sentence} \\
+\midrule
+\texttt{statement} & Reach \texttt{\$target}\% statement coverage: every executable line of solution.py must be
+run by at least one test. \\
+\addlinespace
+\texttt{branch} & Reach \texttt{\$target}\% branch coverage: every if/elif/while condition must be True in some
+test and False in some test, and every loop must run its body at least once and also finish at least once. \\
+\addlinespace
+\texttt{loops} & Reach \texttt{\$target}\% loop coverage: for every loop there must be a test that skips its
+body completely, a test that runs exactly one iteration, and a test that runs two or more iterations; and
+every pair of consecutive decision outcomes must occur in that order in some test. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+If a round produces nothing usable, the next request ends with one extra line stating what was wrong, for
+example \texttt{Attempt 1 could not be used: the reply contains no parseable Python code.} This also makes the
+retry meaningful, because responses are cached by the exact request and an unchanged prompt would return the
+same unusable reply.
+
 \subsection{Model and execution settings}
 
+Requests are plain HTTP POSTs to \texttt{https://openrouter.ai/api/v1/chat/\allowbreak completions}, sent with
+the \texttt{requests} library. Table~\ref{tab:settings} lists every setting. Each run writes the values it
+used to \texttt{config.json}, together with the hashes of the prompt files and of the dataset.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Model and execution settings. Both agents use the same model; they differ in temperature and in the
+token budget.}
+\label{tab:settings}
+\begin{tabular}{@{}p{3.5cm}p{4.3cm}p{4.3cm}p{3.1cm}@{}}
+\toprule
+\textbf{Setting} & \textbf{Code Generator} & \textbf{Test Generator} & \textbf{Reason} \\
+\midrule
+Model & {\scriptsize\texttt{cohere/north-mini-code:free}} & same & a code model on the free tier \\ \\
+Fallback models & {\tiny\texttt{nvidia/nemotron-3-super-120b-a12b:free}, \texttt{google/gemma-4-31b-it:free}} & same & used only after repeated failure; neither was needed \\
+\texttt{temperature} & 0.2 & 0.4 & code must be precise; tests benefit from more varied inputs \\
+\texttt{top\_p} & 1.0 & 1.0 & default \\
+\texttt{max\_tokens} & 1024 & 2048 & a test file is longer than a solution \\
+\texttt{seed} & 42 & 42 & repeatable output where the provider supports it \\
+\texttt{reasoning} & \texttt{\{"enabled": false\}} & same & no hidden chain of thought \\
+Retries & 4 per model, waiting 5, 15, 30 and 60 seconds, then the next model & same & free endpoints are rate limited \\
+Response cache & SHA-256 of the request body & same & re-runs are free and reproducible \\
+\midrule
+\multicolumn{4}{@{}l}{\textbf{Test Executor}: 30 second timeout per execution; default criterion
+\texttt{branch}; default target 100\%; default maximum rounds 3.} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
 \section{Formats of the code, the tests and the verdict}
+
 \subsection{Generated code}
+
+\texttt{solution.py} contains the required function with the exact signature taken from the dataset. Helper
+functions and standard-library imports are allowed. The reply is post-processed deterministically: the first
+Python code block is extracted, it must parse and must define the required function at top level, and
+top-level example code is removed (an \texttt{if \_\_name\_\_ == "\_\_main\_\_":} block, bare calls such as
+\texttt{print(...)}, and top-level assertions). Such lines are not part of the unit, no test could ever cover
+them, and they would run on import. If no usable code can be extracted, the problem is recorded as
+\texttt{CODEGEN\_FAILED}. This did not occur: all 12 problems produced usable code.
+
 \subsection{Generated test files}
+
+The required shape of \texttt{test\_solution.py} is shown below. The rules listed in
+Section~\ref{sec:pipeline} are enforced by the pipeline rather than assumed.
+
+\begin{lstlisting}[style=py]
+from solution import remove_Occ
+
+
+def test_removes_first_and_last_occurrence():
+    assert remove_Occ("hello", "l") == "heo"
+
+
+def test_character_not_present_returns_the_same_string():
+    assert remove_Occ("abc", "z") == "abc"
+\end{lstlisting}
+
+MBPP's own three assertions are wrapped in the same format so that the baseline and the generated suite are
+executed by identical machinery. The file produced for problem 92 is:
+
+\begin{lstlisting}[style=py]
+from solution import *
+
+
+def test_reference_1():
+    assert is_undulating(1212121) == True
+
+def test_reference_2():
+    assert is_undulating(1991) == False
+
+def test_reference_3():
+    assert is_undulating(121) == True
+\end{lstlisting}
+
 \subsection{Verdicts and test labels}
-\subsection{Worked examples}
+
+The Test Executor runs the command below in a throw-away folder, with a 30 second timeout and with the API key
+removed from the environment:
+
+\begin{lstlisting}[style=plain]
+python -m coverage run --branch --include=solution.py -m pytest -q --junitxml=junit.xml test_solution.py
+python -m coverage json -q -o coverage.json
+\end{lstlisting}
+
+It then reads the per-test outcome from \texttt{junit.xml} and the coverage numbers from
+\texttt{coverage.json}, and applies the rules in Table~\ref{tab:verdicts} in order.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Verdict rules, checked in this order.}
+\label{tab:verdicts}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Verdict} & \textbf{Condition} \\
+\midrule
+\texttt{ERROR} & the file could not be run: syntax or import error, no tests collected, or a timeout \\
+\texttt{TESTS\_FAILED} & at least one test failed \\
+\texttt{COVERAGE\_NOT\_MET} & all tests passed, but coverage is below the target \\
+\texttt{PASS} & all tests passed and coverage is at or above the target \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Whether the target is met depends on the criterion: \texttt{statement} requires statement coverage at or above
+the target; \texttt{branch} requires branch coverage \emph{and} statement coverage; \texttt{loops} requires
+edge-pair, branch and statement coverage. Each criterion also demands the weaker ones it subsumes, for a
+measurement reason rather than a pedantic one. A function with no decisions has no branches and no edge pairs,
+and zero out of zero is reported as 100\%, so either criterion on its own would pass code that no test ever
+calls. Four of the 12 generated solutions contain no decision, which is why this guard matters in practice.
+
+Note also that test failures and coverage are reported side by side and never merged, because coverage counts
+lines run even by a test whose assertion fails. A suite can therefore reach 100\% coverage and still have a
+verdict of \texttt{TESTS\_FAILED}, which is exactly what happens when the tests catch a fault.
+
+\subsection{Worked example 1: problem 92, the coverage gap closed}
+
+The generated solution for problem 92 (\texttt{results/phase2\_branch100/Mbpp\_92/solution.py}):
+
+\begin{lstlisting}[style=py]
+def is_undulating(n):
+    s = str(n)
+    if len(s) < 3:
+        return False
+    if len(set(s)) != 2:
+        return False
+    for i in range(len(s) - 2):
+        if s[i] == s[i+1] or s[i+1] == s[i+2]:
+            return False
+    return True
+\end{lstlisting}
+
+The three MBPP assertions all pass, so the code is correct, but they leave lines 4 and 6 unexecuted and the
+decisions on lines 3 and 5 never come out False. None of them uses a number with fewer than three digits or
+with more than two distinct digits. The executor records this as:
+
+\begin{lstlisting}[style=plain]
+"tests_total": 3, "tests_passed": 3,
+"statement_coverage": 80.0, "branch_coverage": 75.0,
+"missing_lines": [4, 6], "missing_branches": [[3, 4], [5, 6]],
+"target_met": false, "verdict": "COVERAGE_NOT_MET"
+\end{lstlisting}
+
+The Test Generator, given the numbered code and the goal of 100\% branch coverage, produced eight tests in a
+single round. The first four are shown; the complete file is in the committed run folder.
+
+\begin{lstlisting}[style=py]
+from solution import is_undulating
+
+def test_undulating_true():
+    assert is_undulating(1212121) == True
+
+def test_undulating_false_length_less_than_3():
+    assert is_undulating(12) == False
+
+def test_undulating_false_more_than_two_unique_digits():
+    assert is_undulating(123123) == False
+
+def test_undulating_false_adjacent_equal_digits():
+    assert is_undulating(121121) == False
+\end{lstlisting}
+
+The second and third tests are exactly the two missing cases. The resulting \texttt{verdict.json}, abridged:
+
+\begin{lstlisting}[style=plain]
+{ "task_id": 92, "entry_point": "is_undulating", "codegen_ok": true,
+  "status": "COMPLETED", "code_correct": true,
+  "baseline": { "tests_total": 3, "tests_passed": 3,
+                "statement_coverage": 80.0, "branch_coverage": 75.0,
+                "target_met": false, "verdict": "COVERAGE_NOT_MET" },
+  "criterion": "branch", "target": 100.0, "rounds_used": 1,
+  "final":    { "tests_total": 8, "tests_passed": 8,
+                "statement_coverage": 100.0, "branch_coverage": 100.0,
+                "target_met": true, "verdict": "PASS" },
+  "test_labels": { "VALID": 7, "BUG_FOUND": 0, "INVALID_TEST": 0, "MISLEADING": 1 } }
+\end{lstlisting}
+
+Validation labels seven of the eight tests \texttt{VALID}. The eighth asserts
+\texttt{is\_undulating(111) == False}, which the generated code satisfies but MBPP's reference does not,
+because the reference only checks that each digit equals the digit two places earlier and therefore answers
+True for \texttt{111}. Here the generated code and the test arguably follow the better reading of
+``undulating''; the label states that the two implementations disagree, not that the test is poor.
+
+\subsection{Worked example 2: problem 71, a fault detected}
+
+\begin{lstlisting}[style=py]
+def comb_sort(nums):
+    n = len(nums)
+    gap = n
+    shrink = 1.3
+    sorted_flag = False
+
+    while not sorted_flag:
+        sorted_flag = True
+        gap = max(1, int(gap / shrink))
+        for i in range(n - gap):
+            if nums[i] > nums[i + gap]:
+                nums[i], nums[i + gap] = nums[i + gap], nums[i]
+                sorted_flag = False
+    return nums
+\end{lstlisting}
+
+The loop stops as soon as one pass makes no swap, even while the gap is still greater than one, so the list can
+be left unsorted. This example is instructive because the dataset's own assertions already reach 100\%
+statement and 100\% branch coverage on this function, and the function is still wrong. Coverage is not
+correctness.
+
+Of the seven generated tests, four pass and three fail. Validation labels all three failures
+\texttt{BUG\_FOUND}, because they pass on MBPP's reference solution:
+
+\begin{lstlisting}[style=py]
+def test_comb_sort_reverse_sorted():
+    assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]          # BUG_FOUND
+
+def test_comb_sort_gap_reduction_true():
+    result = comb_sort([5, 15, 37, 25, 79])
+    assert result == [5, 15, 25, 37, 79]                           # BUG_FOUND
+
+def test_comb_sort_sorted_flag_false():
+    result = comb_sort([10, 3, 7, 1, 9])
+    assert result == [1, 3, 7, 9, 10]                              # BUG_FOUND
+\end{lstlisting}
+
+The same effect is clearer still for problem 79. Its description asks whether the length of a word is odd, and
+the generated code returns \texttt{len(s) \% 2 == 0}. Because the generator was told to take expected values
+from the description, it wrote the tests for ``odd'', and four of its six tests are labelled
+\texttt{BUG\_FOUND}. Had it read the expected values off the code, all six would have passed and the pipeline
+would have reported a clean result for broken code.
 
 \section{Execution results}
-\subsection{Baseline: the dataset's own tests}
-\subsection{Coverage-targeted generated tests}
+\label{sec:results}
+
+All numbers below come from committed run folders: \texttt{results/phase1\_baseline} for the baseline and
+\texttt{results/phase2\_statement100}, \texttt{results/phase2\_branch100} and
+\texttt{results/phase2\_loops100} for the three criteria. Code generation was served from the response cache in
+every Phase 2 run, so all three runs test byte-identical solutions and the comparison is exact.
+
+\subsection{Results of the Code Generator and of the baseline}
+
+The Code Generator produced usable code for all 12 problems. Nine of the 12 solutions pass all three MBPP
+assertions, a correctness rate of 75\%. The three failures are findings rather than defects of the pipeline:
+
+\begin{itemize}\itemsep2pt
+  \item \textbf{71 \texttt{comb\_sort}}: a genuine algorithmic fault, described above.
+  \item \textbf{79 \texttt{word\_len}}: an inverted condition. The description asks whether the length is odd
+        and the code tests for even, contradicting even the example it was given.
+  \item \textbf{83 \texttt{get\_Char}}: an ambiguous specification. The text says ``adding the ASCII value of
+        all the characters \ldots{} modulo 26'', while the expected answers use alphabet positions. The model
+        followed the text. MBPP's own reference also returns the integer \texttt{122} instead of \texttt{"z"}
+        when the sum is a multiple of 26.
+\end{itemize}
+
+Run against those 12 solutions, MBPP's own tests cover 94.2\% of statements and 89.6\% of branches on average,
+and reach the 100\% branch coverage goal for only 7 of the 12 problems. Five correct solutions (11, 20, 69, 70
+and 92) contain branches that the dataset's tests never execute. That is the gap the generated tests are meant
+to close.
+
+\subsection{Results of the Test Generator agent}
+
+Table~\ref{tab:genresults} reports the generator's own output, independently of how well it scored.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Output of the Test Generator agent in the three runs. A round is unusable if the reply contains no
+parseable code block or breaks one of the rules of Section~\ref{sec:pipeline}; its tests are discarded and the
+next round is attempted.}
+\label{tab:genresults}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+ & \texttt{statement} & \texttt{branch} & \texttt{loops} \\
+\midrule
+Problems reaching test generation & 12 & 12 & 12 \\
+Problems with a usable final suite & 12 & 12 & 12 \\
+Problems with no usable suite (\texttt{TESTGEN\_FAILED}) & 0 & 0 & 0 \\
+Test-generation rounds used & 12 & 12 & 20 \\
+Mean rounds per problem & 1.0 & 1.0 & 1.67 \\
+Unusable rounds, discarded & 0 & 0 & 2 \\
+Tests generated & 80 & 88 & 140 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Results of the Test Executor agent}
+
+Table~\ref{tab:main} gives the per-problem results of the main experiment, \texttt{--criterion branch
+--target 100 --max-rounds 3}.
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\caption{Per-problem results for the branch criterion at a 100\% target. ``Base'' columns are MBPP's three
+assertions against the generated code; ``Final'' columns are the generated suite against the same code.
+``n/a'' means the generated function contains no decision, so branch coverage is undefined. The label counts
+are \texttt{VALID}/\texttt{BUG\_FOUND}/\texttt{INVALID\_TEST}/\texttt{MISLEADING}.}
+\label{tab:main}
+\begin{tabular}{@{}rlccccccl c@{}}
+\toprule
+\textbf{Task} & \textbf{Function} & \textbf{Correct} & \textbf{Base S\%} & \textbf{Base B\%} &
+\textbf{Tests} & \textbf{Final S\%} & \textbf{Final B\%} & \textbf{Verdict} & \textbf{Labels} \\
+\midrule
+11 & \texttt{remove\_Occ} & yes & 83.3 & 50.0 & 7/10 & 100.0 & 100.0 & \texttt{TESTS\_FAILED} & 3/1/2/4 \\
+20 & \texttt{is\_woodall} & yes & 90.9 & 83.3 & 6/6 & 100.0 & 100.0 & \texttt{PASS} & 6/0/0/0 \\
+65 & \texttt{recursive\_list\_sum} & yes & 100.0 & 100.0 & 7/7 & 100.0 & 100.0 & \texttt{PASS} & 7/0/0/0 \\
+66 & \texttt{pos\_count} & yes & 100.0 & n/a & 7/7 & 100.0 & n/a & \texttt{PASS} & 6/0/0/1 \\
+67 & \texttt{bell\_number} & yes & 100.0 & 100.0 & 7/7 & 100.0 & 100.0 & \texttt{PASS} & 7/0/0/0 \\
+69 & \texttt{is\_sublist} & yes & 88.9 & 83.3 & 9/9 & 100.0 & 100.0 & \texttt{PASS} & 8/0/0/1 \\
+70 & \texttt{get\_equal} & yes & 87.5 & 83.3 & 7/7 & 100.0 & 100.0 & \texttt{PASS} & 7/0/0/0 \\
+71 & \texttt{comb\_sort} & no & 100.0 & 100.0 & 4/7 & 100.0 & 100.0 & \texttt{TESTS\_FAILED} & 4/3/0/0 \\
+79 & \texttt{word\_len} & no & 100.0 & n/a & 1/6 & 100.0 & n/a & \texttt{TESTS\_FAILED} & 0/4/1/1 \\
+83 & \texttt{get\_Char} & no & 100.0 & n/a & 1/6 & 100.0 & n/a & \texttt{TESTS\_FAILED} & 0/2/3/1 \\
+90 & \texttt{len\_log} & yes & 100.0 & n/a & 6/8 & 100.0 & n/a & \texttt{TESTS\_FAILED} & 6/0/2/0 \\
+92 & \texttt{is\_undulating} & yes & 80.0 & 75.0 & 8/8 & 100.0 & 100.0 & \texttt{PASS} & 7/0/0/1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The headline comparison is Table~\ref{tab:headline}. The generated tests reach the coverage goal for all 12
+problems, against 7 of 12 for the dataset's own tests, and they close the gap on every problem where the
+dataset fell short.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{The dataset's own tests compared with the generated tests, on the same 12 generated solutions.}
+\label{tab:headline}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Metric} & \textbf{MBPP's 3 assertions} & \textbf{Generated tests (branch, 100\%)} \\
+\midrule
+Mean statement coverage & 94.2\% & \textbf{100.0\%} \\
+Mean branch coverage & 89.6\% & \textbf{100.0\%} \\
+Coverage goal reached & 7/12 & \textbf{12/12} \\
+Verdict \texttt{PASS} (all tests passed and goal met) & 4/12 & 7/12 \\
+Tests per problem & 3 & 7.3 on average (88 in total) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{The three criteria compared}
+
+Table~\ref{tab:criteria-results} repeats the experiment for each criterion.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{The same 12 solutions, tested under each of the three criteria at a 100\% target.}
+\label{tab:criteria-results}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Metric} & \textbf{MBPP's assertions} & \texttt{statement} & \texttt{branch} & \texttt{loops} \\
+\midrule
+Mean statement coverage & 94.2\% & 100.0\% & 100.0\% & 100.0\% \\
+Mean branch coverage & 89.6\% & 100.0\% & 100.0\% & 100.0\% \\
+Mean edge-pair coverage & 89.0\% & 97.1\% & 97.1\% & 97.1\% \\
+Its own goal reached & 4/12 & \textbf{12/12} & \textbf{12/12} & \textbf{8/12} \\
+Tests generated & 36 & 80 & 88 & \textbf{140} \\
+Tests passing on the generated code & 33/36 & 83.8\% & 79.5\% & 83.6\% \\
+Test validity rate (\texttt{VALID} share) & n/a & 73.8\% & 69.3\% & \textbf{80.0\%} \\
+\texttt{MISLEADING} tests & n/a & 8 & 9 & \textbf{5} \\
+Mean rounds used & n/a & 1.0 & 1.0 & \textbf{1.67} \\
+Fault detection & n/a & 3/3 & 3/3 & 3/3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Three observations follow.
+
+\textbf{Every criterion improves on the dataset's tests.} This is the result the project set out to measure.
+
+\textbf{The criterion changes the suite but not the coverage reached.} Asking for statement coverage produced
+80 tests, branch coverage 88 and loop coverage 140, and the test sets differ problem by problem. Yet all three
+suites end at the same coverage, namely 100\% of statements, 100\% of branches and 97.1\% of edge pairs. On
+functions of 25 lines or fewer, a test that runs a line usually also takes both ways out of the decision above
+it, so the stronger criteria have little left to ask for. Larger functions would be needed to separate them.
+
+\textbf{Only the \texttt{loops} criterion reveals that 97.1\% is a ceiling.} Under \texttt{statement} and
+\texttt{branch} the verdict is 12 out of 12, which hides the fact that four of the twelve functions contain
+orderings that no input can execute. Under \texttt{loops} those four are reported as
+\texttt{COVERAGE\_NOT\_MET} with the unmet requirement named in \texttt{verdict.json}. Stated the other way
+round, all three criteria satisfied every requirement that was reachable; the remaining 2.9\% consists entirely
+of infeasible requirements.
+
+The \texttt{loops} criterion is also the only one for which the feedback loop had work to do, since round 1 did
+not already meet its goal. It used 1.67 rounds on average. It could not raise coverage, because what was
+missing was infeasible, but it kept adding usable tests: problem 92 grew from 7 tests in round 1 to 25 after
+round 3, and all 25 are labelled \texttt{VALID}.
+
 \subsection{Infeasible test requirements}
+
+Each of the four shortfalls under the \texttt{loops} criterion is a requirement that no input can satisfy, and
+all four have the same shape: a loop whose body cannot be skipped, because a guard above it has already
+established that the loop has work to do. Problem 70 is representative.
+
+\begin{lstlisting}[style=py]
+def get_equal(Input):
+    if not Input:
+        return True            # an empty Input returns here
+    first_len = len(Input[0])
+    for tup in Input:          # so by this line, Input is non-empty
+        if len(tup) != first_len:
+            return False
+    return True                # reaching this line directly from the loop header is impossible
+\end{lstlisting}
+
+The required pair $4 \rightarrow 5 \rightarrow 8$ asks for a test that reaches the loop, skips its body and
+returns. Table~\ref{tab:infeasible} gives all four cases.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{The four unmet requirements under the \texttt{loops} criterion, with the reason each is unreachable.}
+\label{tab:infeasible}
+\begin{tabular}{@{}llp{8.6cm}@{}}
+\toprule
+\textbf{Task} & \textbf{Missing pair} & \textbf{Why no input can reach it} \\
+\midrule
+67 \texttt{bell\_number} & $9 \rightarrow 10 \rightarrow 17$ & the inner \texttt{range(i)} is entered with
+$i \geq 1$, so it always iterates at least once \\
+70 \texttt{get\_equal} & $4 \rightarrow 5 \rightarrow 8$ & the \texttt{if not Input} guard above means the loop
+always has an element \\
+71 \texttt{comb\_sort} & $5 \rightarrow 7 \rightarrow 14$ & \texttt{sorted\_flag = False} is set immediately
+above, so \texttt{while not sorted\_flag} always enters \\
+92 \texttt{is\_undulating} & $5 \rightarrow 7 \rightarrow 10$ & line 3 guarantees that
+\texttt{len(s)} $\geq$ 3, so \texttt{range(len(s) - 2)} is never empty \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This is the classical infeasible-requirement problem of structural coverage: the stronger the criterion, the
+more of its requirements no input can satisfy, and 100\% stops being a meaningful target. It also explains why
+three rounds of feedback could not help these four problems. The pipeline handles the situation in the only
+honest way available to it: the goal is not met after the final round, so the verdict is
+\texttt{COVERAGE\_NOT\_MET} and the unmet requirement is recorded for a human to judge. We did not lower the
+target in order to obtain a better-looking table.
+
+\subsection{Test validity and fault detection}
+\label{sec:validity}
+
+Coverage says nothing about whether a test checks the right answer, so every test in every final suite was run
+a second time against MBPP's reference solution. Table~\ref{tab:labelsresults} gives the result for the branch
+criterion.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Validation of the 88 tests generated under the branch criterion.}
+\label{tab:labelsresults}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+\textbf{Label} & \textbf{Meaning} & \textbf{Tests} & \textbf{Share} \\
+\midrule
+\texttt{VALID} & correct test & 61 & 69.3\% \\
+\texttt{BUG\_FOUND} & caught a real fault in the generated code & 10 & 11.4\% \\
+\texttt{INVALID\_TEST} & the expected value is wrong & 8 & 9.1\% \\
+\texttt{MISLEADING} & agrees with the generated code's wrong behaviour & 9 & 10.2\% \\
+\midrule
+\textbf{Total} & & \textbf{88} & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Fault detection is 3 out of 3.} Every problem whose generated code is incorrect (71, 79 and 83) has at
+least one \texttt{BUG\_FOUND} test, under all three criteria. For problem 71 the generated suite fails three
+tests where the dataset's assertions fail one.
+
+\textbf{About 31\% of the tests are not valid}, and the two failure modes are different. The eight
+\texttt{INVALID\_TEST} cases are arithmetic mistakes, for example
+\texttt{len\_log(["Python", "pYTHON", "PYTHON"]) == 7} where every word has six characters. The nine
+\texttt{MISLEADING} cases are the oracle problem itself: five of them (problems 11 and 92) are places where the
+description does not pin the behaviour down, and the model, having been shown the code, resolved the ambiguity
+the same way the code did. No coverage number reveals this. Only the second execution against an independent
+implementation does.
+
+Two caveats belong with these labels. They treat MBPP's reference as the oracle, so where the reference itself
+is questionable (problem 92, as discussed above, or problem 83) a reasonable test is labelled
+\texttt{MISLEADING} or \texttt{INVALID\_TEST}. And a label records disagreement between two implementations,
+not a verdict on the test in isolation.
+
+The \texttt{loops} criterion produced both the largest and the most valid suites, 140 tests at 80.0\% validity
+with only five \texttt{MISLEADING}, where the branch criterion produced the least valid, 69.3\% with nine
+\texttt{MISLEADING}. We cannot prove the cause from a single run, but the plausible explanation is that asking
+for orderings pushes the model towards ordinary edge cases, such as an empty list or a value that fails on the
+last iteration, whereas asking for branches pushed it towards contrived inputs chosen to flip a condition,
+which is where it tended to read the expected value off the code.
+
+\subsection{Cost and reproducibility}
+
+The whole project sent \textbf{59 requests} to the API, one per distinct prompt, each stored in
+\texttt{llm\_cache/}: one connectivity check, 12 code generations, 36 first-round test generations (12 problems
+by three criteria) and 10 feedback-round test generations. Those requests consumed 24{,}168 prompt tokens and
+15{,}491 completion tokens, and \textbf{0 reasoning tokens}. No fallback model was needed and no request had to
+be retried.
+
+Because the cache is keyed on the exact request body and is committed with the results, re-running any
+experiment reproduces the same numbers at no API cost. The script \texttt{verify\_run.py} re-derives every
+verdict in a finished run from the measurements it was computed from, and checks that every final test file
+still satisfies the rules of Section~\ref{sec:pipeline}. The pipeline code itself is covered by 114 offline
+tests, none of which contacts the API.
+
+\section{Compliance with the stated constraints}
+\label{sec:constraints}
+
+The project statement forbids RAG pipelines, chain-of-thought concepts and frameworks such as LangGraph.
+Table~\ref{tab:compliance} states how each constraint is met and what evidence exists in the repository.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Compliance with the constraints in the project statement.}
+\label{tab:compliance}
+\begin{tabular}{@{}p{2.6cm}p{11.4cm}@{}}
+\toprule
+\textbf{Constraint} & \textbf{How it is met} \\
+\midrule
+No RAG & There is no vector store and no retrieval step. A prompt contains only the current problem, its
+signature, one of its own assertions, and, in a feedback round, the output of our own tools. \\
+\addlinespace
+No chain of thought & No prompt asks the model to reason, explain or think step by step; each asks for a code
+block only. Every request sends \texttt{reasoning: \{"enabled": false\}}, and all 59 logged calls report
+\texttt{reasoning\_tokens = 0}. The feedback loop is ordinary control flow that passes a tool measurement into
+the next prompt, and it can be switched off with \texttt{--max-rounds 1}, in which case the single-shot results
+are reported instead. \\
+\addlinespace
+No frameworks & The only third-party libraries are \texttt{requests}, \texttt{pytest} and \texttt{coverage}.
+Requests are plain HTTP POSTs and the orchestration is a Python loop. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
 
 \section{Contributions}
 
-\section{Limitations}
+The work was split into two phases, each delivered as a pull request and reviewed by the other member.
+\texttt{Contributions.md} in the repository records the same division against the individual plan steps, files
+and commits.
 
-\section{Tools used}
+\begin{table}[htbp]
+\centering
+\small
+\caption{Division of work.}
+\label{tab:contrib}
+\begin{tabular}{@{}p{3.2cm}p{10.8cm}@{}}
+\toprule
+\textbf{Member} & \textbf{Contribution} \\
+\midrule
+Ansh Gupta & Project plan and data contracts. OpenRouter client over plain HTTP, with the response cache,
+retries, model fallback and per-call logging. Deterministic dataset selection. Code Generator agent and its
+prompts. Test Executor agent, including the coverage and JUnit parsing, the verdict rules and the sandboxing of
+generated code. Baseline mode of the pipeline and the baseline run. Offline test suite for the Phase 1 code.
+Report sections 2.1, 2.2, 3.1, 4.1 to 4.3, 5.1 and 6. \\
+\addlinespace
+Satyam Dewangan & Test Generator agent and its three prompts. Coverage feedback loop, including the
+plain-language description of the measured gap and the merging of test rounds. Test validation against the
+reference solution and the four labels. Full mode of the pipeline and the result metrics. The third coverage
+criterion, \texttt{--criterion loops}, with its edge-pair measurement and the infeasibility analysis.
+\texttt{verify\_run.py}. The three official experiments. Report sections 2.3, 3.2, 3.3, 4.4, 4.5 and 5.2 to
+5.7. \\
+\addlinespace
+Both & Review of each other's pull requests, the limitations discussion, and preparation of the demonstration.
+\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
+\section{Conclusions/Findings:}
+
+\begin{itemize}\itemsep3pt
+  \item \textbf{The feedback loop could not be shown to improve coverage.} Round 1 already met the goal for
+        every problem under \texttt{statement} and \texttt{branch}. Under \texttt{loops} the loop did run, but
+        every problem it ran for was short by an infeasible requirement, so the extra rounds added tests
+        without adding coverage.
+  \item \textbf{Infeasible requirements make a 100\% target unsuitable for the \texttt{loops} criterion} on
+        this benchmark, as four of the twelve problems show.
+  \item \textbf{Prime path coverage is not implemented.} It would require path enumeration on top of the
+        control-flow graph and a policy for sidetrips around infeasible paths. Unlike the other three criteria
+        it could not be reduced to a measurement taken from an established tool.
+\end{itemize}
+
+\section{Tools and environment}
+
+\begin{itemize}\itemsep2pt
+  \item \textbf{Model:} \texttt{cohere/north-mini-code:free}, served through OpenRouter on the free tier, with
+        \texttt{nvidia/nemotron-3-super-120b-a12b:free} and \texttt{google/gemma-4-31b-it:free} configured as
+        fallbacks. Neither fallback was used.
+  \item \textbf{Libraries:} \texttt{requests} 2.32, \texttt{pytest} 9.1.1 and \texttt{coverage} 7.16.2, on
+        CPython 3.12. Statement and branch coverage are read from \texttt{coverage json}; edge-pair coverage is
+        computed in \texttt{agents/path\_coverage.py} from \texttt{coverage.py}'s control-flow graph together
+        with per-test line traces recorded using \texttt{sys.settrace}.
+  \item \textbf{Dataset:} \texttt{sanitized-mbpp.json} from the \texttt{google-research} repository.
+  \item \textbf{Repository:} \url{https://github.com/Ansh-Gupta0310/ST-Mini-Project}. The design document
+        \texttt{PROJECT\_PLAN.md}, the committed run folders under \texttt{results/}, the response cache and
+        the offline test suite together make every number in this report reproducible.
+\end{itemize}
 
 \end{document}

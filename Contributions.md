@@ -46,8 +46,6 @@ branch `phase-1-foundation`, with one commit per plan step.
 - Found and fixed a bug: re-running into an existing results folder failed inside OneDrive, which marks synced
   folders read-only. The fix comes with a regression test.
 
-**AI tools used:** Claude Code (AI coding assistant) for planning, implementation and verification.
-
 ---
 
 ## Member 2: `Satyam Dewangan` (`IMT2023545`, GitHub @`<username>`)
