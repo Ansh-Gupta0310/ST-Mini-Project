@@ -1,0 +1,22 @@
+F........                                                                [100%]
+=================================== FAILURES ===================================
+_______________________________ test_empty_list ________________________________
+
+    def test_empty_list():
+>       assert len_log([]) == 0
+               ^^^^^^^^^^^
+
+test_solution.py:4: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+list1 = []
+
+    def len_log(list1):
+>       max=len(list1[0])
+                ^^^^^^^^
+E       IndexError: list index out of range
+
+solution.py:2: IndexError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_empty_list - IndexError: list index out of range
+1 failed, 8 passed in 1.15s

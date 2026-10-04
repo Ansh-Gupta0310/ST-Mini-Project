@@ -1,0 +1,34 @@
+...FFF..                                                                 [100%]
+=================================== FAILURES ===================================
+____________________________ test_is_woodall_three _____________________________
+
+    def test_is_woodall_three() -> None:
+        """Check that 3 (n=2) returns True."""
+>       assert is_woodall(3) is True
+E       assert False is True
+E        +  where False = is_woodall(3)
+
+test_solution.py:17: AssertionError
+____________________________ test_is_woodall_eleven ____________________________
+
+    def test_is_woodall_eleven() -> None:
+        """Check that 11 (n=3) returns True."""
+>       assert is_woodall(11) is True
+E       assert False is True
+E        +  where False = is_woodall(11)
+
+test_solution.py:21: AssertionError
+___________________________ test_is_woodall_fortytwo ___________________________
+
+    def test_is_woodall_fortytwo() -> None:
+        """Check that 42 (n=4) returns True."""
+>       assert is_woodall(42) is True
+E       assert False is True
+E        +  where False = is_woodall(42)
+
+test_solution.py:25: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_is_woodall_three - assert False is True
+FAILED test_solution.py::test_is_woodall_eleven - assert False is True
+FAILED test_solution.py::test_is_woodall_fortytwo - assert False is True
+3 failed, 5 passed in 0.86s

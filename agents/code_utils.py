@@ -98,7 +98,11 @@ def number_lines(code: str) -> str:
 
 # --- Phase 2 helpers ---------------------------------------------------------------------
 
-def describe_missing(code: str, missing_lines: list[int], missing_branches: list[list[int]]) -> str:
+MAX_DESCRIBED_PAIRS = 12  # a long list of edge pairs would crowd out the rest of the prompt
+
+
+def describe_missing(code: str, missing_lines: list[int], missing_branches: list[list[int]],
+                     missing_edge_pairs: list[list[int]] | None = None) -> str:
     """Turn coverage.py's numbers into plain sentences the Test Generator can act on.
 
     Example (the sign() function of PROJECT_PLAN.md §2.3, covered by sign(5) only):
@@ -107,6 +111,8 @@ def describe_missing(code: str, missing_lines: list[int], missing_branches: list
         - line 2 `if x > 0:` never went to line 4 `elif x < 0:`
 
     A negative `to_line` in missing_branches means "never left the function from that line".
+    `missing_edge_pairs` is only filled in for the `loops` criterion: each one is three line numbers
+    that never ran in that order (agents/path_coverage.py).
     """
     lines = code.splitlines()
 
@@ -122,6 +128,14 @@ def describe_missing(code: str, missing_lines: list[int], missing_branches: list
             out.append(f"- line {source} `{text(source)}` never exited the function from there")
         else:
             out.append(f"- line {source} `{text(source)}` never went to line {target} `{text(target)}`")
+
+    pairs = [pair for pair in (missing_edge_pairs or []) if len(pair) == 3]
+    for first, second, third in pairs[:MAX_DESCRIBED_PAIRS]:
+        last = f"back to line {third}" if third == first else f"line {third} `{text(third)}`"
+        out.append(f"- line {first} `{text(first)}` -> line {second} `{text(second)}` -> {last} "
+                   "never ran in that order")
+    if len(pairs) > MAX_DESCRIBED_PAIRS:
+        out.append(f"- ... and {len(pairs) - MAX_DESCRIBED_PAIRS} more orderings like the ones above")
     return "\n".join(out) or "- nothing: every line and branch is already covered"
 
 

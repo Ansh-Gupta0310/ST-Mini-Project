@@ -156,3 +156,25 @@ def test_check_test_file_rejects_the_other_broken_rules():
     randomised = ("import random\nfrom solution import sign\n\n\n"
                   "def test_a():\n    assert sign(random.randint(1, 9)) == 1\n")
     assert "random" in check_test_file(randomised, "sign")
+
+
+def test_describe_missing_explains_an_uncovered_ordering():
+    loop = ("def classify(nums):\n    total = 0\n    for n in nums:\n        if n > 0:\n"
+            "            total += n\n    return total\n")
+    described = describe_missing(loop, [], [], [[4, 3, 6], [3, 4, 3]])
+    assert described.splitlines() == [
+        "- line 4 `if n > 0:` -> line 3 `for n in nums:` -> line 6 `return total` never ran in that order",
+        "- line 3 `for n in nums:` -> line 4 `if n > 0:` -> back to line 3 never ran in that order",
+    ]
+
+
+def test_describe_missing_caps_a_long_list_of_orderings():
+    pairs = [[1, 2, 3]] * 20
+    described = describe_missing(SIGN, [], [], pairs)
+    assert len(described.splitlines()) == 13          # 12 orderings plus the "and N more" line
+    assert "and 8 more orderings" in described
+
+
+def test_describe_missing_ignores_edge_pairs_when_there_are_none():
+    assert describe_missing(SIGN, [4], [], []) == "- line 4 `elif x < 0:` was never run"
+    assert describe_missing(SIGN, [4], [], None) == "- line 4 `elif x < 0:` was never run"

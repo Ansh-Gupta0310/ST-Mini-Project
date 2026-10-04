@@ -1,0 +1,49 @@
+{
+  "status": "RAN",
+  "tests_total": 19,
+  "tests_passed": 19,
+  "tests_failed": 0,
+  "test_outcomes": {
+    "test_undulating_true": "passed",
+    "test_undulating_false_length_less_than_3": "passed",
+    "test_undulating_false_more_than_two_unique_digits": "passed",
+    "test_undulating_false_adjacent_equal_digits": "passed",
+    "test_undulating_loop_body_skipped": "passed",
+    "test_undulating_loop_one_iteration": "passed",
+    "test_undulating_loop_two_or_more_iterations": "passed",
+    "test_undulating_set_condition_true_loop_skipped": "passed",
+    "test_undulating_set_condition_true_loop_one_iteration": "passed",
+    "test_undulating_set_condition_true_loop_two_or_more_iterations": "passed",
+    "test_undulating_set_condition_false_loop_skipped": "passed",
+    "test_undulating_set_condition_false_loop_one_iteration": "passed",
+    "test_undulating_set_condition_false_loop_two_or_more_iterations": "passed",
+    "test_undulating_adjacent_equal_digits_loop_skipped": "passed",
+    "test_undulating_adjacent_equal_digits_loop_one_iteration": "passed",
+    "test_undulating_adjacent_equal_digits_loop_two_or_more_iterations": "passed",
+    "test_undulating_adjacent_equal_digits_set_condition_false_loop_skipped": "passed",
+    "test_undulating_adjacent_equal_digits_set_condition_false_loop_one_iteration": "passed",
+    "test_undulating_adjacent_equal_digits_set_condition_false_loop_two_or_more_iterations": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": false,
+  "verdict": "COVERAGE_NOT_MET",
+  "output_tail": "...................                                                      [100%]\n19 passed in 0.09s",
+  "criterion": "loops",
+  "target": 100.0,
+  "num_statements": 10,
+  "num_branches": 8,
+  "exit_code": 0,
+  "duration_s": 1.96,
+  "edge_pair_coverage": 90.0,
+  "num_edge_pairs": 10,
+  "missing_edge_pairs": [
+    [
+      5,
+      7,
+      10
+    ]
+  ]
+}

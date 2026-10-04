@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="7" time="0.805" timestamp="2026-10-04T16:18:05.616598+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_empty_string" time="0.001"><failure message="AssertionError: assert 122 == 'a'&#10; +  where 122 = get_Char('')">def test_empty_string():
+&gt;       assert get_Char("") == "a"
+E       AssertionError: assert 122 == 'a'
+E        +  where 122 = get_Char('')
+
+test_solution.py:4: AssertionError</failure></testcase><testcase classname="test_solution" name="test_single_char" time="0.001"><failure message="AssertionError: assert 'a' == 'b'&#10;  &#10;  - b&#10;  + a">def test_single_char():
+&gt;       assert get_Char("a") == "b"
+E       AssertionError: assert 'a' == 'b'
+E         
+E         - b
+E         + a
+
+test_solution.py:7: AssertionError</failure></testcase><testcase classname="test_solution" name="test_two_chars" time="0.000" /><testcase classname="test_solution" name="test_three_chars" time="0.000" /><testcase classname="test_solution" name="test_loop_skip_body" time="0.000"><failure message="AssertionError: assert 'd' == 'a'&#10;  &#10;  - a&#10;  + d">def test_loop_skip_body():
+&gt;       assert get_Char("aaaa") == "a"
+E       AssertionError: assert 'd' == 'a'
+E         
+E         - a
+E         + d
+
+test_solution.py:16: AssertionError</failure></testcase><testcase classname="test_solution" name="test_loop_one_iteration" time="0.000"><failure message="AssertionError: assert 122 == 'z'&#10; +  where 122 = get_Char('z')">def test_loop_one_iteration():
+&gt;       assert get_Char("z") == "z"
+E       AssertionError: assert 122 == 'z'
+E        +  where 122 = get_Char('z')
+
+test_solution.py:19: AssertionError</failure></testcase><testcase classname="test_solution" name="test_loop_multiple_iterations" time="0.001"><failure message="AssertionError: assert 'w' == 'd'&#10;  &#10;  - d&#10;  + w">def test_loop_multiple_iterations():
+&gt;       assert get_Char("xyz") == "d"
+E       AssertionError: assert 'w' == 'd'
+E         
+E         - d
+E         + w
+
+test_solution.py:22: AssertionError</failure></testcase></testsuite></testsuites>

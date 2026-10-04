@@ -1,0 +1,33 @@
+{
+  "status": "RAN",
+  "tests_total": 9,
+  "tests_passed": 8,
+  "tests_failed": 1,
+  "test_outcomes": {
+    "test_empty_list": "failed",
+    "test_single_word": "passed",
+    "test_two_words": "passed",
+    "test_three_words": "passed",
+    "test_longest_at_start": "passed",
+    "test_longest_at_end": "passed",
+    "test_all_same_length": "passed",
+    "test_mixed_case": "passed",
+    "test_with_empty_strings": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "F........                                                                [100%]\n=================================== FAILURES ===================================\n_______________________________ test_empty_list ________________________________\n\n    def test_empty_list():\n>       assert len_log([]) == 0\n               ^^^^^^^^^^^\n\ntest_solution.py:4: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nlist1 = []\n\n    def len_log(list1):\n>       max=len(list1[0])\n                ^^^^^^^^\nE       IndexError: list index out of range\n\nsolution.py:2: IndexError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_empty_list - IndexError: list index out of range\n1 failed, 8 passed in 1.15s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 6,
+  "num_branches": 4,
+  "exit_code": 1,
+  "duration_s": 3.56,
+  "edge_pair_coverage": 0.0,
+  "num_edge_pairs": 0,
+  "missing_edge_pairs": []
+}

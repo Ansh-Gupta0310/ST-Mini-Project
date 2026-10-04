@@ -1,0 +1,36 @@
+{
+  "labels": {
+    "test_empty_string": "MISLEADING",
+    "test_single_char": "INVALID_TEST",
+    "test_two_chars": "BUG_FOUND",
+    "test_three_chars": "BUG_FOUND",
+    "test_loop_skip_body": "INVALID_TEST",
+    "test_loop_one_iteration": "INVALID_TEST",
+    "test_loop_multiple_iterations": "INVALID_TEST"
+  },
+  "counts": {
+    "VALID": 0,
+    "BUG_FOUND": 2,
+    "INVALID_TEST": 4,
+    "MISLEADING": 1,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_empty_string": "passed",
+    "test_single_char": "failed",
+    "test_two_chars": "failed",
+    "test_three_chars": "failed",
+    "test_loop_skip_body": "failed",
+    "test_loop_one_iteration": "failed",
+    "test_loop_multiple_iterations": "failed"
+  },
+  "on_reference": {
+    "test_empty_string": "failed",
+    "test_single_char": "failed",
+    "test_two_chars": "passed",
+    "test_three_chars": "passed",
+    "test_loop_skip_body": "failed",
+    "test_loop_one_iteration": "failed",
+    "test_loop_multiple_iterations": "failed"
+  }
+}

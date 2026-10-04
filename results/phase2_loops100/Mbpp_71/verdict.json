@@ -1,0 +1,100 @@
+{
+  "task_id": 71,
+  "entry_point": "comb_sort",
+  "codegen_ok": true,
+  "status": "COMPLETED",
+  "code_correct": false,
+  "baseline": {
+    "verdict": "TESTS_FAILED",
+    "status": "RAN",
+    "tests_total": 3,
+    "tests_passed": 2,
+    "statement_coverage": 100.0,
+    "branch_coverage": 100.0,
+    "edge_pair_coverage": 89.47,
+    "target_met": false,
+    "num_statements": 13,
+    "num_branches": 6,
+    "num_edge_pairs": 19,
+    "missing_lines": [],
+    "missing_branches": [],
+    "missing_edge_pairs": [
+      [
+        5,
+        7,
+        14
+      ],
+      [
+        9,
+        10,
+        7
+      ]
+    ]
+  },
+  "criterion": "loops",
+  "target": 100.0,
+  "max_rounds": 3,
+  "rounds_used": 3,
+  "final_round": 3,
+  "round_1": {
+    "verdict": "TESTS_FAILED",
+    "status": "RAN",
+    "tests_total": 8,
+    "tests_passed": 6,
+    "statement_coverage": 100.0,
+    "branch_coverage": 100.0,
+    "edge_pair_coverage": 94.74,
+    "target_met": false,
+    "num_statements": 13,
+    "num_branches": 6,
+    "num_edge_pairs": 19,
+    "missing_lines": [],
+    "missing_branches": [],
+    "missing_edge_pairs": [
+      [
+        5,
+        7,
+        14
+      ]
+    ]
+  },
+  "final": {
+    "verdict": "TESTS_FAILED",
+    "status": "RAN",
+    "tests_total": 18,
+    "tests_passed": 14,
+    "statement_coverage": 100.0,
+    "branch_coverage": 100.0,
+    "edge_pair_coverage": 94.74,
+    "target_met": false,
+    "num_statements": 13,
+    "num_branches": 6,
+    "num_edge_pairs": 19,
+    "missing_lines": [],
+    "missing_branches": [],
+    "missing_edge_pairs": [
+      [
+        5,
+        7,
+        14
+      ]
+    ]
+  },
+  "test_labels": {
+    "VALID": 14,
+    "BUG_FOUND": 4,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "testgen_errors": [],
+  "llm_calls": 4,
+  "llm_cached_calls": 4,
+  "llm_requests_sent": 0,
+  "models_used": [
+    "cohere/north-mini-code:free"
+  ],
+  "prompt_tokens": 4051,
+  "completion_tokens": 2026,
+  "reasoning_tokens": 0
+}

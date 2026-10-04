@@ -193,8 +193,10 @@ def passes_all(result: ExecutionResult, problem: Problem) -> bool:
 def execution_summary(r: ExecutionResult) -> dict:
     return {"verdict": r.verdict, "status": r.status, "tests_total": r.tests_total, "tests_passed": r.tests_passed,
             "statement_coverage": r.statement_coverage, "branch_coverage": r.branch_coverage,
-            "target_met": r.target_met, "num_statements": r.num_statements, "num_branches": r.num_branches,
-            "missing_lines": r.missing_lines, "missing_branches": r.missing_branches}
+            "edge_pair_coverage": r.edge_pair_coverage, "target_met": r.target_met,
+            "num_statements": r.num_statements, "num_branches": r.num_branches,
+            "num_edge_pairs": r.num_edge_pairs, "missing_lines": r.missing_lines,
+            "missing_branches": r.missing_branches, "missing_edge_pairs": r.missing_edge_pairs}
 
 
 def retry_note(errors: list[dict], round_no: int) -> str | None:
@@ -210,8 +212,9 @@ def retry_note(errors: list[dict], round_no: int) -> str | None:
 
 
 def round_line(r: ExecutionResult) -> str:
+    pairs = f" edge pairs {r.edge_pair_coverage:.1f}%" if r.criterion == "loops" else ""
     return (f"{r.tests_passed}/{r.tests_total} tests passed | statements {r.statement_coverage:.1f}% "
-            f"branches {r.branch_coverage:.1f}% | {r.verdict}")
+            f"branches {r.branch_coverage:.1f}%{pairs} | {r.verdict}")
 
 
 def llm_usage(log_path: Path) -> dict:
@@ -321,6 +324,9 @@ def generated_aggregate(verdicts: list[dict], measured: list[dict]) -> dict:
         "suites_produced": len(finals),
         "generated_mean_statement_coverage": mean([v["final"]["statement_coverage"] for v in finals]),
         "generated_mean_branch_coverage": mean([v["final"]["branch_coverage"] for v in finals]),
+        "generated_mean_edge_pair_coverage": mean([v["final"].get("edge_pair_coverage", 0.0) for v in finals]),
+        "baseline_mean_edge_pair_coverage": mean([v["baseline"].get("edge_pair_coverage", 0.0)
+                                                  for v in measured]),
         "generated_target_met_round_1": met_round_1,
         "generated_target_met_round_1_rate": rate(met_round_1, len(measured)),
         "generated_target_met_final": met_final,
@@ -392,7 +398,7 @@ def summary_markdown(summary: dict) -> str:
         f"(verdict PASS): {agg['baseline_pass']}/{agg['baseline_problems_measured']}",
     ]
     if full:
-        lines += generated_aggregate_lines(agg, goal, cfg['max_rounds'])
+        lines += generated_aggregate_lines(agg, goal, cfg['max_rounds'], cfg['criterion'])
     lines += [
         f"- LLM calls: {agg['llm_calls']} ({agg['llm_cached_calls']} from the cache); HTTP requests sent: "
         f"{agg['llm_requests_sent']}; tokens: {agg['prompt_tokens']} prompt, {agg['completion_tokens']} completion, "
@@ -422,40 +428,63 @@ def baseline_problem_table(summary: dict) -> list[str]:
 
 
 def full_problem_table(summary: dict) -> list[str]:
-    """One row per problem: MBPP's own tests on the left, the generated suite on the right."""
+    """One row per problem: MBPP's own tests on the left, the generated suite on the right.
+
+    The edge-pair columns appear only for a `loops` run, where they are the criterion being judged; for the
+    other two criteria they are not measured, so printing them would just add two columns of zeroes.
+    """
+    loops = summary["config"]["criterion"] == "loops"
+    pair_headers = " Baseline pairs % |" if loops else ""
+    final_pair_headers = " Final pairs % |" if loops else ""
     lines = [
-        "| Task | Function | Status | Code correct | Baseline stmt % | Baseline branch % | Rounds | Tests passed "
-        "| Final stmt % | Final branch % | Goal met | Verdict | Test labels V/B/I/M | LLM calls (cached) |",
-        "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
+        "| Task | Function | Status | Code correct | Baseline stmt % | Baseline branch % |" + pair_headers
+        + " Rounds | Tests passed | Final stmt % | Final branch % |" + final_pair_headers
+        + " Goal met | Verdict | Test labels V/B/I/M | LLM calls (cached) |",
+        "|---" * (14 + 2 * loops) + "|",
     ]
     for v in summary["problems"]:
         b, f = v.get("baseline"), v.get("final")
         cells = [yes_no(v.get("code_correct"))]
         cells += [f"{b['statement_coverage']:.1f}%", fmt_branches(b)] if b else ["-", "-"]
+        if loops:
+            cells.append(fmt_pairs(b) if b else "-")
         cells.append(str(v.get("rounds_used", "-") or "-"))
         if f:
             labels = v.get("test_labels") or {}
             cells += [f"{f['tests_passed']}/{f['tests_total']}", f"{f['statement_coverage']:.1f}%",
-                      fmt_branches(f), yes_no(f["target_met"]), f["verdict"],
+                      fmt_branches(f)]
+            if loops:
+                cells.append(fmt_pairs(f))
+            cells += [yes_no(f["target_met"]), f["verdict"],
                       "/".join(str(labels.get(label, 0)) for label in
                                ("VALID", "BUG_FOUND", "INVALID_TEST", "MISLEADING"))]
         else:
-            cells += ["-", "-", "-", "-", v.get("error", "-"), "-"]
+            cells += ["-", "-", "-"] + (["-"] if loops else []) + ["-", v.get("error", "-"), "-"]
         lines.append(f"| {v['task_id']} | `{v['entry_point']}` | {v['status']} | " + " | ".join(cells)
                      + f" | {v.get('llm_calls', 0)} ({v.get('llm_cached_calls', 0)}) |")
     return lines
 
 
-def generated_aggregate_lines(agg: dict, goal: str, max_rounds: int) -> list[str]:
+def fmt_pairs(execution: dict) -> str:
+    if not execution.get("num_edge_pairs"):
+        return "no edge pairs"
+    return f"{execution['edge_pair_coverage']:.1f}% of {execution['num_edge_pairs']}"
+
+
+def generated_aggregate_lines(agg: dict, goal: str, max_rounds: int, criterion: str) -> list[str]:
     """The §3.11 Phase 2 metrics, written so the baseline vs generated comparison is the headline."""
     problems, labels = agg["testgen_problems"], agg["test_labels"]
+    loops = criterion == "loops"   # the other criteria do not measure edge pairs at all
     labelled = sum(labels.values())
     return [
         f"- **Mean coverage of the generated code by the LLM's own tests: statements "
         f"{fmt_pct(agg['generated_mean_statement_coverage'])}, branches "
-        f"{fmt_pct(agg['generated_mean_branch_coverage'])}** (over {agg['suites_produced']} suite(s); "
+        f"{fmt_pct(agg['generated_mean_branch_coverage'])}"
+        + (f", edge pairs {fmt_pct(agg['generated_mean_edge_pair_coverage'])}" if loops else "")
+        + f"** (over {agg['suites_produced']} suite(s); "
         f"baseline was {fmt_pct(agg['baseline_mean_statement_coverage'])} / "
-        f"{fmt_pct(agg['baseline_mean_branch_coverage'])})",
+        f"{fmt_pct(agg['baseline_mean_branch_coverage'])}"
+        + (f" / {fmt_pct(agg['baseline_mean_edge_pair_coverage'])}" if loops else "") + ")",
         f"- **Coverage goal ({goal}) reached: {agg['generated_target_met_final']}/{problems} "
         f"({fmt_pct(agg['generated_target_met_final_rate'])}) with feedback, "
         f"{agg['generated_target_met_round_1']}/{problems} "

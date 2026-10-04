@@ -1,0 +1,46 @@
+{
+  "status": "RAN",
+  "tests_total": 16,
+  "tests_passed": 16,
+  "tests_failed": 0,
+  "test_outcomes": {
+    "test_empty_input": "passed",
+    "test_single_tuple": "passed",
+    "test_two_equal_length_tuples": "passed",
+    "test_three_equal_length_tuples": "passed",
+    "test_first_tuple_longer": "passed",
+    "test_second_tuple_longer": "passed",
+    "test_mixed_lengths": "passed",
+    "test_all_same_length_three_tuples": "passed",
+    "test_first_len_assignment_and_return_true": "passed",
+    "test_first_len_assignment_and_loop_one_iteration": "passed",
+    "test_first_len_assignment_and_loop_two_iterations": "passed",
+    "test_first_len_assignment_and_loop_three_iterations": "passed",
+    "test_first_len_assignment_and_loop_skipped": "passed",
+    "test_first_len_assignment_and_loop_early_exit_false": "passed",
+    "test_first_len_assignment_and_loop_early_exit_true": "passed",
+    "test_first_len_assignment_and_loop_mixed_early_exit": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": false,
+  "verdict": "COVERAGE_NOT_MET",
+  "output_tail": "................                                                         [100%]\n16 passed in 0.08s",
+  "criterion": "loops",
+  "target": 100.0,
+  "num_statements": 8,
+  "num_branches": 6,
+  "exit_code": 0,
+  "duration_s": 1.97,
+  "edge_pair_coverage": 85.71,
+  "num_edge_pairs": 7,
+  "missing_edge_pairs": [
+    [
+      4,
+      5,
+      8
+    ]
+  ]
+}

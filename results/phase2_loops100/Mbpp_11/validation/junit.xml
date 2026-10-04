@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="9" time="0.980" timestamp="2026-10-04T16:15:46.475063+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_remove_Occ_no_occurrence" time="0.001" /><testcase classname="test_solution" name="test_remove_Occ_single_occurrence" time="0.001"><failure message="AssertionError: assert 'hllo' == 'hello'&#10;  &#10;  - hello&#10;  ?  -&#10;  + hllo">def test_remove_Occ_single_occurrence():
+&gt;       assert remove_Occ("hello", "e") == "hello"
+E       AssertionError: assert 'hllo' == 'hello'
+E         
+E         - hello
+E         ?  -
+E         + hllo
+
+test_solution.py:7: AssertionError</failure></testcase><testcase classname="test_solution" name="test_remove_Occ_two_occurrences" time="0.000" /><testcase classname="test_solution" name="test_remove_Occ_multiple_occurrences_more_than_two" time="0.001"><failure message="AssertionError: assert 'bracadabr' == 'brcdbr'&#10;  &#10;  - brcdbr&#10;  + bracadabr&#10;  ?   + + +">def test_remove_Occ_multiple_occurrences_more_than_two():
+&gt;       assert remove_Occ("abracadabra", "a") == "brcdbr"
+E       AssertionError: assert 'bracadabr' == 'brcdbr'
+E         
+E         - brcdbr
+E         + bracadabr
+E         ?   + + +
+
+test_solution.py:13: AssertionError</failure></testcase><testcase classname="test_solution" name="test_remove_Occ_empty_string" time="0.000" /><testcase classname="test_solution" name="test_remove_Occ_character_at_start_and_end" time="0.000" /><testcase classname="test_solution" name="test_remove_Occ_character_at_start_only" time="0.000"><failure message="AssertionError: assert 'bc' == 'bca'&#10;  &#10;  - bca&#10;  ?   -&#10;  + bc">def test_remove_Occ_character_at_start_only():
+&gt;       assert remove_Occ("abca", "a") == "bca"
+E       AssertionError: assert 'bc' == 'bca'
+E         
+E         - bca
+E         ?   -
+E         + bc
+
+test_solution.py:22: AssertionError</failure></testcase><testcase classname="test_solution" name="test_remove_Occ_character_at_end_only" time="0.000"><failure message="AssertionError: assert 'bc' == 'bca'&#10;  &#10;  - bca&#10;  ?   -&#10;  + bc">def test_remove_Occ_character_at_end_only():
+&gt;       assert remove_Occ("abca", "a") == "bca"
+E       AssertionError: assert 'bc' == 'bca'
+E         
+E         - bca
+E         ?   -
+E         + bc
+
+test_solution.py:25: AssertionError</failure></testcase><testcase classname="test_solution" name="test_remove_Occ_all_same_characters" time="0.000" /></testsuite></testsuites>

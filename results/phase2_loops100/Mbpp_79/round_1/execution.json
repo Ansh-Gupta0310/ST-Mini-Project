@@ -1,0 +1,31 @@
+{
+  "status": "RAN",
+  "tests_total": 7,
+  "tests_passed": 1,
+  "tests_failed": 6,
+  "test_outcomes": {
+    "test_word_len_even_length": "failed",
+    "test_word_len_odd_length": "failed",
+    "test_word_len_empty_string": "passed",
+    "test_word_len_single_char": "failed",
+    "test_word_len_two_chars": "failed",
+    "test_word_len_long_even": "failed",
+    "test_word_len_long_odd": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "__________________________ test_word_len_single_char ___________________________\n\n    def test_word_len_single_char():\n>       assert word_len(\"a\") == True\nE       AssertionError: assert False == True\nE        +  where False = word_len('a')\n\ntest_solution.py:13: AssertionError\n___________________________ test_word_len_two_chars ____________________________\n\n    def test_word_len_two_chars():\n>       assert word_len(\"ab\") == False\nE       AssertionError: assert True == False\nE        +  where True = word_len('ab')\n\ntest_solution.py:16: AssertionError\n___________________________ test_word_len_long_even ____________________________\n\n    def test_word_len_long_even():\n>       assert word_len(\"abcdef\") == False\nE       AssertionError: assert True == False\nE        +  where True = word_len('abcdef')\n\ntest_solution.py:19: AssertionError\n____________________________ test_word_len_long_odd ____________________________\n\n    def test_word_len_long_odd():\n>       assert word_len(\"abcdefg\") == True\nE       AssertionError: assert False == True\nE        +  where False = word_len('abcdefg')\n\ntest_solution.py:22: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_word_len_even_length - AssertionError: assert T...\nFAILED test_solution.py::test_word_len_odd_length - AssertionError: assert Fa...\nFAILED test_solution.py::test_word_len_single_char - AssertionError: assert F...\nFAILED test_solution.py::test_word_len_two_chars - AssertionError: assert Tru...\nFAILED test_solution.py::test_word_len_long_even - AssertionError: assert Tru...\nFAILED test_solution.py::test_word_len_long_odd - AssertionError: assert Fals...\n6 failed, 1 passed in 0.67s",
+  "criterion": "loops",
+  "target": 100.0,
+  "num_statements": 2,
+  "num_branches": 0,
+  "exit_code": 1,
+  "duration_s": 2.7,
+  "edge_pair_coverage": 100.0,
+  "num_edge_pairs": 0,
+  "missing_edge_pairs": []
+}

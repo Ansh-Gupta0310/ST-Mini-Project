@@ -1,0 +1,52 @@
+.F.F..FF.                                                                [100%]
+=================================== FAILURES ===================================
+______________________ test_remove_Occ_single_occurrence _______________________
+
+    def test_remove_Occ_single_occurrence():
+>       assert remove_Occ("hello", "e") == "hello"
+E       AssertionError: assert 'hllo' == 'hello'
+E         
+E         - hello
+E         ?  -
+E         + hllo
+
+test_solution.py:7: AssertionError
+______________ test_remove_Occ_multiple_occurrences_more_than_two ______________
+
+    def test_remove_Occ_multiple_occurrences_more_than_two():
+>       assert remove_Occ("abracadabra", "a") == "brcdbr"
+E       AssertionError: assert 'bracadabr' == 'brcdbr'
+E         
+E         - brcdbr
+E         + bracadabr
+E         ?   + + +
+
+test_solution.py:13: AssertionError
+___________________ test_remove_Occ_character_at_start_only ____________________
+
+    def test_remove_Occ_character_at_start_only():
+>       assert remove_Occ("abca", "a") == "bca"
+E       AssertionError: assert 'bc' == 'bca'
+E         
+E         - bca
+E         ?   -
+E         + bc
+
+test_solution.py:22: AssertionError
+____________________ test_remove_Occ_character_at_end_only _____________________
+
+    def test_remove_Occ_character_at_end_only():
+>       assert remove_Occ("abca", "a") == "bca"
+E       AssertionError: assert 'bc' == 'bca'
+E         
+E         - bca
+E         ?   -
+E         + bc
+
+test_solution.py:25: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_remove_Occ_single_occurrence - AssertionError: ...
+FAILED test_solution.py::test_remove_Occ_multiple_occurrences_more_than_two
+FAILED test_solution.py::test_remove_Occ_character_at_start_only - AssertionE...
+FAILED test_solution.py::test_remove_Occ_character_at_end_only - AssertionErr...
+4 failed, 5 passed in 0.98s

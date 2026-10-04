@@ -1,0 +1,120 @@
+.F....F...F....F..                                                       [100%]
+=================================== FAILURES ===================================
+________________________ test_comb_sort_reverse_sorted _________________________
+
+    def test_comb_sort_reverse_sorted():
+>       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]
+E       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:9: AssertionError
+___________________________ test_comb_sort_large_gap ___________________________
+
+    def test_comb_sort_large_gap():
+        # Use a list where the initial gap is large enough to cause multiple swaps in one pass.
+        # For n=7, initial gap=7, after shrink gap=5 (int(7/1.3)=5), for loop runs 2 times.
+        # So this test ensures the for loop runs at least two iterations.
+>       assert comb_sort([7, 6, 5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5, 6, 7]
+E       assert [2, 1, 5, 4, 3, 7, ...] == [1, 2, 3, 4, 5, 6, ...]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:60: AssertionError
+___________ test_comb_sort_sorted_flag_false_to_true_multiple_passes ___________
+
+    def test_comb_sort_sorted_flag_false_to_true_multiple_passes() -> None:
+        """Test that sorted_flag transitions from False to True over multiple passes."""
+        # A list that needs multiple passes (e.g., reverse order) to ensure
+        # sorted_flag is toggled multiple times before finally becoming True.
+>       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]
+E       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:87: AssertionError
+________ test_comb_sort_sorted_flag_false_to_true_order_multiple_passes ________
+
+    def test_comb_sort_sorted_flag_false_to_true_order_multiple_passes() -> None:
+        """
+        Test the sequence across multiple passes. A reverse-sorted list ensures that
+        sorted_flag is set to False multiple times before finally becoming True,
+        covering the branch where the while condition is true multiple times.
+        """
+>       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]
+E       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:129: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_comb_sort_reverse_sorted - assert [2, 1, 3, 5, ...
+FAILED test_solution.py::test_comb_sort_large_gap - assert [2, 1, 5, 4, 3, 7,...
+FAILED test_solution.py::test_comb_sort_sorted_flag_false_to_true_multiple_passes
+FAILED test_solution.py::test_comb_sort_sorted_flag_false_to_true_order_multiple_passes
+4 failed, 14 passed in 0.74s
+
+[executor] traced pass for edge-pair coverage (no coverage.py)
+.F....F...F....F..                                                       [100%]
+=================================== FAILURES ===================================
+________________________ test_comb_sort_reverse_sorted _________________________
+
+    def test_comb_sort_reverse_sorted():
+>       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]
+E       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:9: AssertionError
+___________________________ test_comb_sort_large_gap ___________________________
+
+    def test_comb_sort_large_gap():
+        # Use a list where the initial gap is large enough to cause multiple swaps in one pass.
+        # For n=7, initial gap=7, after shrink gap=5 (int(7/1.3)=5), for loop runs 2 times.
+        # So this test ensures the for loop runs at least two iterations.
+>       assert comb_sort([7, 6, 5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5, 6, 7]
+E       assert [2, 1, 5, 4, 3, 7, ...] == [1, 2, 3, 4, 5, 6, ...]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:60: AssertionError
+___________ test_comb_sort_sorted_flag_false_to_true_multiple_passes ___________
+
+    def test_comb_sort_sorted_flag_false_to_true_multiple_passes() -> None:
+        """Test that sorted_flag transitions from False to True over multiple passes."""
+        # A list that needs multiple passes (e.g., reverse order) to ensure
+        # sorted_flag is toggled multiple times before finally becoming True.
+>       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]
+E       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:87: AssertionError
+________ test_comb_sort_sorted_flag_false_to_true_order_multiple_passes ________
+
+    def test_comb_sort_sorted_flag_false_to_true_order_multiple_passes() -> None:
+        """
+        Test the sequence across multiple passes. A reverse-sorted list ensures that
+        sorted_flag is set to False multiple times before finally becoming True,
+        covering the branch where the while condition is true multiple times.
+        """
+>       assert comb_sort([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]
+E       assert [2, 1, 3, 5, 4] == [1, 2, 3, 4, 5]
+E         
+E         At index 0 diff: 2 != 1
+E         Use -v to get more diff
+
+test_solution.py:129: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_comb_sort_reverse_sorted - assert [2, 1, 3, 5, ...
+FAILED test_solution.py::test_comb_sort_large_gap - assert [2, 1, 5, 4, 3, 7,...
+FAILED test_solution.py::test_comb_sort_sorted_flag_false_to_true_multiple_passes
+FAILED test_solution.py::test_comb_sort_sorted_flag_false_to_true_order_multiple_passes
+4 failed, 14 passed in 0.79s

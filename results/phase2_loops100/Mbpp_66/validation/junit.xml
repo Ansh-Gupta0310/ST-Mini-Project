@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="9" time="0.794" timestamp="2026-10-04T16:16:26.167784+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_empty_list" time="0.000" /><testcase classname="test_solution" name="test_all_negative" time="0.001" /><testcase classname="test_solution" name="test_all_positive" time="0.000" /><testcase classname="test_solution" name="test_mixed_one_positive" time="0.001"><failure message="assert 2 == 1&#10; +  where 2 = pos_count([-5, 0, 10])">def test_mixed_one_positive():
+&gt;       assert pos_count([-5, 0, 10]) == 1
+E       assert 2 == 1
+E        +  where 2 = pos_count([-5, 0, 10])
+
+test_solution.py:13: AssertionError</failure></testcase><testcase classname="test_solution" name="test_mixed_two_positives" time="0.000" /><testcase classname="test_solution" name="test_single_positive" time="0.000" /><testcase classname="test_solution" name="test_single_negative" time="0.000" /><testcase classname="test_solution" name="test_single_zero" time="0.000"><failure message="assert 1 == 0&#10; +  where 1 = pos_count([0])">def test_single_zero():
+&gt;       assert pos_count([0]) == 0
+E       assert 1 == 0
+E        +  where 1 = pos_count([0])
+
+test_solution.py:25: AssertionError</failure></testcase><testcase classname="test_solution" name="test_large_list" time="0.000" /></testsuite></testsuites>

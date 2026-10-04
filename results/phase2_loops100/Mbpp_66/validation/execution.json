@@ -1,0 +1,33 @@
+{
+  "status": "RAN",
+  "tests_total": 9,
+  "tests_passed": 7,
+  "tests_failed": 2,
+  "test_outcomes": {
+    "test_empty_list": "passed",
+    "test_all_negative": "passed",
+    "test_all_positive": "passed",
+    "test_mixed_one_positive": "failed",
+    "test_mixed_two_positives": "passed",
+    "test_single_positive": "passed",
+    "test_single_negative": "passed",
+    "test_single_zero": "failed",
+    "test_large_list": "passed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "...F...F.                                                                [100%]\n=================================== FAILURES ===================================\n___________________________ test_mixed_one_positive ____________________________\n\n    def test_mixed_one_positive():\n>       assert pos_count([-5, 0, 10]) == 1\nE       assert 2 == 1\nE        +  where 2 = pos_count([-5, 0, 10])\n\ntest_solution.py:13: AssertionError\n_______________________________ test_single_zero _______________________________\n\n    def test_single_zero():\n>       assert pos_count([0]) == 0\nE       assert 1 == 0\nE        +  where 1 = pos_count([0])\n\ntest_solution.py:25: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_mixed_one_positive - assert 2 == 1\nFAILED test_solution.py::test_single_zero - assert 1 == 0\n2 failed, 7 passed in 0.80s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 6,
+  "num_branches": 4,
+  "exit_code": 1,
+  "duration_s": 2.88,
+  "edge_pair_coverage": 0.0,
+  "num_edge_pairs": 0,
+  "missing_edge_pairs": []
+}

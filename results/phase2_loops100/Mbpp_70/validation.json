@@ -1,0 +1,63 @@
+{
+  "labels": {
+    "test_empty_input": "VALID",
+    "test_single_tuple": "VALID",
+    "test_two_equal_length_tuples": "VALID",
+    "test_three_equal_length_tuples": "VALID",
+    "test_first_tuple_longer": "VALID",
+    "test_second_tuple_longer": "VALID",
+    "test_mixed_lengths": "VALID",
+    "test_all_same_length_three_tuples": "VALID",
+    "test_first_len_assignment_and_return_true": "VALID",
+    "test_first_len_assignment_and_loop_one_iteration": "VALID",
+    "test_first_len_assignment_and_loop_two_iterations": "VALID",
+    "test_first_len_assignment_and_loop_three_iterations": "VALID",
+    "test_first_len_assignment_and_loop_skipped": "VALID",
+    "test_first_len_assignment_and_loop_early_exit_false": "VALID",
+    "test_first_len_assignment_and_loop_early_exit_true": "VALID",
+    "test_first_len_assignment_and_loop_mixed_early_exit": "VALID"
+  },
+  "counts": {
+    "VALID": 16,
+    "BUG_FOUND": 0,
+    "INVALID_TEST": 0,
+    "MISLEADING": 0,
+    "NOT_RUN": 0
+  },
+  "on_generated": {
+    "test_empty_input": "passed",
+    "test_single_tuple": "passed",
+    "test_two_equal_length_tuples": "passed",
+    "test_three_equal_length_tuples": "passed",
+    "test_first_tuple_longer": "passed",
+    "test_second_tuple_longer": "passed",
+    "test_mixed_lengths": "passed",
+    "test_all_same_length_three_tuples": "passed",
+    "test_first_len_assignment_and_return_true": "passed",
+    "test_first_len_assignment_and_loop_one_iteration": "passed",
+    "test_first_len_assignment_and_loop_two_iterations": "passed",
+    "test_first_len_assignment_and_loop_three_iterations": "passed",
+    "test_first_len_assignment_and_loop_skipped": "passed",
+    "test_first_len_assignment_and_loop_early_exit_false": "passed",
+    "test_first_len_assignment_and_loop_early_exit_true": "passed",
+    "test_first_len_assignment_and_loop_mixed_early_exit": "passed"
+  },
+  "on_reference": {
+    "test_empty_input": "passed",
+    "test_single_tuple": "passed",
+    "test_two_equal_length_tuples": "passed",
+    "test_three_equal_length_tuples": "passed",
+    "test_first_tuple_longer": "passed",
+    "test_second_tuple_longer": "passed",
+    "test_mixed_lengths": "passed",
+    "test_all_same_length_three_tuples": "passed",
+    "test_first_len_assignment_and_return_true": "passed",
+    "test_first_len_assignment_and_loop_one_iteration": "passed",
+    "test_first_len_assignment_and_loop_two_iterations": "passed",
+    "test_first_len_assignment_and_loop_three_iterations": "passed",
+    "test_first_len_assignment_and_loop_skipped": "passed",
+    "test_first_len_assignment_and_loop_early_exit_false": "passed",
+    "test_first_len_assignment_and_loop_early_exit_true": "passed",
+    "test_first_len_assignment_and_loop_mixed_early_exit": "passed"
+  }
+}

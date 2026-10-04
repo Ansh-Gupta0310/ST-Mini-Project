@@ -51,7 +51,7 @@ A Python program that, for each programming problem in our MBPP subset:
 | Assignment requirement | How we meet it |
 |---|---|
 | Code generator agent | `CodeGeneratorAgent`: MBPP problem → `solution.py` |
-| Test case generator agent that satisfies **one** requirement | `TestGeneratorAgent` targets a **user-specified coverage criterion**: `--criterion statement\|branch --target 100` |
+| Test case generator agent that satisfies **one** requirement | `TestGeneratorAgent` targets a **user-specified coverage criterion**: `--criterion statement\|branch\|loops --target 100`. The assignment's own examples are "cover all statements, cover all loops, cover all decision statements", and all three are implemented. |
 | Test case executor agent that gives a verdict | `TestExecutorAgent`: runs pytest + coverage.py and returns `PASS` / `TESTS_FAILED` / `COVERAGE_NOT_MET` / `ERROR` |
 | Dataset: MBPP or HumanEval | MBPP sanitized, 12 problems from its official test split (§3.4) |
 | Free tokens | OpenRouter free model `cohere/north-mini-code:free` (§3.3) |
@@ -62,8 +62,8 @@ A Python program that, for each programming problem in our MBPP subset:
 
 | Decision | Choice | Reason |
 |---|---|---|
-| Testing goal | Coverage: statement or branch, with a target % | Objective and measurable with a standard tool (coverage.py); easy to demo |
-| Default criterion / target | Branch coverage, 100% | Stronger than statement coverage; statement coverage is also supported |
+| Testing goal | Coverage: statement, branch (decision) or loops, with a target % | Objective and measurable: the first two directly by coverage.py, the third from coverage.py's own control-flow graph (§2.3) |
+| Default criterion / target | Branch coverage, 100% | The middle of the three; `--criterion` selects `statement`, `branch` or `loops` (**[Third criterion]** added after the Phase 2 run, §2.3) |
 | Dataset | MBPP sanitized, 12 problems | Plain-English problems, a reference solution and 3 reference asserts per problem; 12 fits the free quota |
 | LLM access | Plain HTTP calls to OpenRouter using `requests` | "First principles": no agent framework |
 | Model | `cohere/north-mini-code:free`, with two fallbacks | Code model; worked in testing with 0 reasoning tokens |
@@ -111,6 +111,61 @@ Worked example (verified with coverage.py 7.16.2):
 | `sign(5)`, `sign(-5)`, `sign(0)` | 100% | 100% | nothing |
 
 The 4 branches are 2→3 (x > 0 is True), 2→4 (x > 0 is False), 4→5 (x < 0 is True) and 4→6 (x < 0 is False).
+
+### 2.3.1 Loop coverage, measured as edge-pair coverage (the `loops` criterion)
+
+**[Third criterion]** The assignment's first requirement names three example criteria: "cover all statements,
+cover all loops, cover all decision statements". The first is statement coverage and the third is branch
+coverage. "Cover all loops" is the `loops` criterion, measured as **edge-pair coverage**: every path of **two
+consecutive edges** in the control-flow graph, written as a line triple `a -> b -> c`.
+
+Why that measures loops: at a loop header, the pairs are exactly the classic loop cases.
+
+```python
+1  def classify(nums):
+2      total = 0
+3      for n in nums:
+4          if n > 0:
+5              total += n
+6      return total
+```
+
+The 6 arcs are 2->3, 3->4, 3->6, 4->3, 4->5, 5->3, which give **9 edge pairs**. Three of them are loop
+requirements that branch coverage does not ask for:
+
+| Pair | What a test has to do |
+|---|---|
+| `2 -> 3 -> 6` | reach the loop and **skip the body entirely** (an empty list) |
+| `5 -> 3 -> 4` | run the body and **come round again** (two or more iterations) |
+| `4 -> 3 -> 6` | take the False branch and then **leave the loop** (last element fails the condition) |
+
+| Tests | Statement | Branch | Edge pairs |
+|---|---|---|---|
+| `classify([1, 2])` | 100% | 75% | 55.6% (5 of 9) |
+| `+ classify([])`, `classify([1, -5, 2])` | 100% | **100%** | 88.9% (8 of 9) |
+| `+ classify([1, -5])` | 100% | 100% | **100%** |
+
+The middle row is the point of the criterion: branch coverage is already satisfied, yet one ordering has never
+been tested -- the condition being False on the **last** iteration. All numbers verified with coverage.py
+7.16.2 (`tests/test_path_coverage.py`, `tests/test_executor.py`).
+
+**Subsumption.** In the course's vocabulary, statement coverage is **node coverage**, branch coverage is **edge
+coverage**, and this is **edge-pair coverage**: `prime path > edge-pair > edge > node`. The project therefore
+implements the bottom three levels of the hierarchy. Prime path coverage is not implemented (§13).
+
+**How it is measured** (`agents/path_coverage.py`):
+1. the set of *possible* arcs comes from coverage.py's own parser (`PythonParser.arcs()`), so the control-flow
+   graph is not ours to get wrong; arcs to negative line numbers (coverage.py's "leaves this scope") are
+   dropped, because a pair `(a, b, exit)` asks for nothing beyond the edge `(a, b)`;
+2. required pairs = every `(a, b, c)` where `a->b` and `b->c` are both possible arcs;
+3. coverage.py reports a *set* of arcs, not the order they ran in, so the tests are run **a second time** with
+   a `sys.settrace` hook that records the line sequence of each test;
+4. covered pairs = the consecutive triples of those sequences.
+
+**Why a second pytest pass is unavoidable:** `coverage run` and our tracer both install a `sys.settrace` hook,
+and whichever installs second wins. Measured: running the tracer inside `coverage run` left coverage.py
+reporting 16.7% statements and 0% branches. The traced pass therefore runs without coverage.py, and only for
+`--criterion loops`, so the other two criteria are measured exactly as they were before.
 
 ### 2.4 The test oracle problem
 
@@ -193,7 +248,9 @@ verdict.json for each problem + summary.md for the whole run
   git-ignored `.env` into the environment at start-up, without overwriting a variable that is already set. This
   only changes where the variable comes from; the key still never reaches the repository, the logs or the cache.
 - **Executor settings:** 30 s timeout per run; default criterion `branch`; default target `100`; default
-  max rounds `3`.
+  max rounds `3`. **[Third criterion]** `--criterion loops` adds one more pytest run per execution (the
+  traced pass, §2.3.1) under the same timeout; tracing makes the tests slower, so a timeout there leaves
+  the statement and branch numbers untouched and reports edge pairs as 0.
 - All of these values live in `config.py`. Every run saves the values it used in `config.json`, which is
   where report item 2 gets its numbers. **[Phase 2 decision]** `config.TESTGEN_SETTINGS` was filled in with the
   planned values (`temperature` 0.4, `top_p` 1.0, `max_tokens` 2048, `seed` 42), and `config.criterion_goal
@@ -282,6 +339,10 @@ class ExecutionResult:
     num_branches: int = 0
     exit_code: int | None = None         # pytest's exit code; None after a timeout
     duration_s: float = 0.0
+    # [Third criterion] filled in only for criterion="loops" (§2.3.1); the defaults keep every other run as it was
+    edge_pair_coverage: float = 0.0       # 0-100 (100 if the code has no decisions at all)
+    num_edge_pairs: int = 0
+    missing_edge_pairs: list[list[int]] = field(default_factory=list)   # [line_a, line_b, line_c]
 
 def load_problems(path) -> list[Problem]  # reads data/mbpp_subset.json
 ```
@@ -303,8 +364,8 @@ def extract_python_code(text: str) -> str | None     # first ```python block (or
 def remove_example_usage(code: str) -> str           # drops top-level main blocks, bare calls, asserts
 def defines_function(code: str, name: str) -> bool   # is there a top-level def with this name?
 def number_lines(code: str) -> str                   # "  1 | def f(x):" ...
-def describe_missing(code: str, missing_lines: list[int],
-                     missing_branches: list[list[int]]) -> str                              # Phase 2
+def describe_missing(code: str, missing_lines: list[int], missing_branches: list[list[int]],
+                     missing_edge_pairs: list[list[int]] | None = None) -> str              # Phase 2
 def merge_test_files(existing: str, new: str, round_no: int) -> str                         # Phase 2
 def check_test_file(test_code: str, entry_point: str) -> str | None   # error message or None  # Phase 2
 
@@ -315,7 +376,7 @@ class CodeGeneratorAgent:
 
 # agents/test_executor.py                                      (Phase 1, Phase 2 adds the last two)
 def reference_tests_to_pytest(problem: Problem) -> str
-def coverage_target_met(criterion, target, statement, branch) -> bool     # §3.7
+def coverage_target_met(criterion, target, statement, branch, edge_pair=100.0) -> bool   # §3.7
 def decide_verdict(status, tests_total, tests_failed, target_met) -> str  # §3.7
 def remove_path(path: Path) -> None          # deletes a file/folder, including OneDrive's read-only folders
 class TestExecutorAgent:
@@ -327,6 +388,18 @@ class TestExecutorAgent:
     def validate(self, test_code: str, problem: Problem, work_dir: Path,
                  on_generated: dict[str, str]) -> dict[str, str]                             # Phase 2
 def classify_tests(on_generated: dict[str, str], on_reference: dict[str, str]) -> dict[str, str]  # Phase 2
+
+# agents/path_coverage.py                                      [Third criterion]
+class EdgePairUnavailable(RuntimeError)              # the CFG could not be read: loops cannot be measured
+def possible_arcs(code: str) -> set[tuple[int, int]]            # the CFG, from coverage.py's parser
+def required_pairs(code: str) -> set[tuple[int, int, int]]      # every (a, b, c) with arcs a->b and b->c
+def covered_pairs(traces: dict[str, list[int]]) -> set[tuple[int, int, int]]
+def measure(code: str, traces: dict[str, list[int]]) -> dict    # the three ExecutionResult fields
+def prepare(work_dir: Path) -> None                  # writes conftest.py (the tracer) for the traced pass
+def read_traces(work_dir: Path) -> dict[str, list[int]]
+TRACE_CONFTEST: str                                  # the tracer written into the execution folder
+# python -m agents.path_coverage --run <folder> [--suite final|reference]
+#   edge-pair coverage of a finished run, measured in a temporary folder (it never writes into the run)
 
 # agents/test_generator.py                                     (Phase 2)
 class TestGeneratorAgent:
@@ -439,8 +512,10 @@ Phase 1 writes the fields from `task_id` to `baseline`, plus the LLM usage field
 | `PASS` | all tests passed and coverage is at or above the target |
 
 - **What "coverage meets the target" means:** for `statement`, statement % ≥ target. For `branch`, branch % ≥
-  target **and** statement % ≥ target. Branch coverage subsumes statement coverage, but coverage.py reports
-  100% branch coverage for a function with no decisions even when no test calls it.
+  target **and** statement % ≥ target. **[Third criterion]** for `loops`, edge-pair % ≥ target **and** branch %
+  ≥ target **and** statement % ≥ target. Each criterion also demands the weaker ones it subsumes, because of a
+  measurement quirk rather than pedantry: code with no decisions has no branches and no edge pairs, and 0 of 0
+  reads as 100%, so either criterion on its own would pass code that no test ever calls.
 - **Pipeline-level statuses** (`status` in `verdict.json`):
   - `COMPLETED`: the problem was processed normally.
   - `CODEGEN_FAILED`: the LLM gave no usable solution; the raw reply is in `codegen_reply.txt`.
@@ -512,6 +587,7 @@ ST-Mini-Project/
 │   ├── code_utils.py                  code extraction and helpers                        P1 (P2 adds 3 helpers)
 │   ├── code_generator.py                                                                 P1
 │   ├── test_executor.py               pytest + coverage runner, verdicts                 P1 (P2 adds validation)
+│   ├── path_coverage.py               edge-pair coverage for --criterion loops         [Third criterion]
 │   └── test_generator.py                                                                 P2
 ├── prompts/
 │   ├── code_generator_system.txt                                                         P1
@@ -589,6 +665,7 @@ target met, verdict, and the count of each test label.
 |---|---|
 | Code correctness rate | Problems whose solution passes all 3 MBPP asserts ÷ problems |
 | Mean statement / branch coverage | Averaged over problems: **baseline (MBPP asserts) vs generated tests** |
+| Mean edge-pair coverage | The same, for a `loops` run only (**[Third criterion]**; the other criteria do not measure it) |
 | Target-met rate, round 1 | Problems that meet the target with the first test suite (single-shot) |
 | Target-met rate, final | The same, after the feedback loop |
 | Mean rounds used | |
@@ -1216,6 +1293,8 @@ Both members must be able to explain every part.
 | Running LLM-written code on a laptop | Run it in a separate process, in a throw-away folder, with a timeout. The functions are small and use only the standard library; glance at the `solution.py` files after the baseline run. (A Docker sandbox is possible but out of scope.) |
 | Tests with wrong expected values | Validation labels against the reference (§3.7) |
 | Some branches cannot be reached | The target is not met after max rounds → reported as `COVERAGE_NOT_MET` and discussed |
+| **[Third criterion]** Some edge pairs cannot be reached | Expected and measured: 4 of the 12 problems have an unreachable "loop body never runs" pair, because a guard above the loop forces at least one iteration. Reported as `COVERAGE_NOT_MET` with the reason, not hidden by lowering the target |
+| **[Third criterion]** Prime path / edge-pair coverage needs a control-flow graph | Edge pairs reuse coverage.py's own parser, so we do not write (or have to trust) our own CFG analysis. Prime path coverage is not implemented: it also needs path enumeration and a decision about sidetrips for infeasible paths |
 | The model is unavailable during the demo | Demo from the cache |
 | Merge conflicts between the two phases | File-freeze rule (§8) |
 | OneDrive slows down the venv or git | Pause OneDrive sync while working if needed |
@@ -1334,3 +1413,4 @@ Do not repeat the existing tests. Start the file with: from solution import $ent
 |---|---|
 | `statement` | `Reach $target% statement coverage: every executable line of solution.py must be run by at least one test.` |
 | `branch` | `Reach $target% branch coverage: every if/elif/while condition must be True in some test and False in some test, and every loop must run its body at least once and also finish at least once.` |
+| `loops` | **[Third criterion]** `Reach $target% loop coverage: for every loop there must be a test that skips its body completely, a test that runs exactly one iteration, and a test that runs two or more iterations; and every pair of consecutive decision outcomes must occur in that order in some test.` |

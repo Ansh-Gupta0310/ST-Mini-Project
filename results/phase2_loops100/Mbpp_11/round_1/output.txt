@@ -1,0 +1,82 @@
+...F..FF.                                                                [100%]
+=================================== FAILURES ===================================
+______________ test_remove_Occ_multiple_occurrences_more_than_two ______________
+
+    def test_remove_Occ_multiple_occurrences_more_than_two():
+>       assert remove_Occ("abracadabra", "a") == "brcdbr"
+E       AssertionError: assert 'bracadabr' == 'brcdbr'
+E         
+E         - brcdbr
+E         + bracadabr
+E         ?   + + +
+
+test_solution.py:13: AssertionError
+___________________ test_remove_Occ_character_at_start_only ____________________
+
+    def test_remove_Occ_character_at_start_only():
+>       assert remove_Occ("abca", "a") == "bca"
+E       AssertionError: assert 'bc' == 'bca'
+E         
+E         - bca
+E         ?   -
+E         + bc
+
+test_solution.py:22: AssertionError
+____________________ test_remove_Occ_character_at_end_only _____________________
+
+    def test_remove_Occ_character_at_end_only():
+>       assert remove_Occ("abca", "a") == "bca"
+E       AssertionError: assert 'bc' == 'bca'
+E         
+E         - bca
+E         ?   -
+E         + bc
+
+test_solution.py:25: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_remove_Occ_multiple_occurrences_more_than_two
+FAILED test_solution.py::test_remove_Occ_character_at_start_only - AssertionE...
+FAILED test_solution.py::test_remove_Occ_character_at_end_only - AssertionErr...
+3 failed, 6 passed in 0.82s
+
+[executor] traced pass for edge-pair coverage (no coverage.py)
+...F..FF.                                                                [100%]
+=================================== FAILURES ===================================
+______________ test_remove_Occ_multiple_occurrences_more_than_two ______________
+
+    def test_remove_Occ_multiple_occurrences_more_than_two():
+>       assert remove_Occ("abracadabra", "a") == "brcdbr"
+E       AssertionError: assert 'bracadabr' == 'brcdbr'
+E         
+E         - brcdbr
+E         + bracadabr
+E         ?   + + +
+
+test_solution.py:13: AssertionError
+___________________ test_remove_Occ_character_at_start_only ____________________
+
+    def test_remove_Occ_character_at_start_only():
+>       assert remove_Occ("abca", "a") == "bca"
+E       AssertionError: assert 'bc' == 'bca'
+E         
+E         - bca
+E         ?   -
+E         + bc
+
+test_solution.py:22: AssertionError
+____________________ test_remove_Occ_character_at_end_only _____________________
+
+    def test_remove_Occ_character_at_end_only():
+>       assert remove_Occ("abca", "a") == "bca"
+E       AssertionError: assert 'bc' == 'bca'
+E         
+E         - bca
+E         ?   -
+E         + bc
+
+test_solution.py:25: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_remove_Occ_multiple_occurrences_more_than_two
+FAILED test_solution.py::test_remove_Occ_character_at_start_only - AssertionE...
+FAILED test_solution.py::test_remove_Occ_character_at_end_only - AssertionErr...
+3 failed, 6 passed in 0.76s

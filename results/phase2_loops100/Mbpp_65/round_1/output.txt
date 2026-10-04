@@ -1,0 +1,6 @@
+.........                                                                [100%]
+9 passed in 0.07s
+
+[executor] traced pass for edge-pair coverage (no coverage.py)
+.........                                                                [100%]
+9 passed in 0.07s

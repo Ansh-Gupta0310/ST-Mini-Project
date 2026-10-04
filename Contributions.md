@@ -73,7 +73,7 @@ report.
 
 **Checks and results**
 
-- `pytest -q`: 88 passed, 1 skipped (a Windows-only test), no API calls.
+- `pytest -q`: 114 passed, 1 skipped (a Windows-only test), no API calls.
 - `python verify_run.py results/phase2_branch100` and the same for `results/phase2_statement100`: every verdict
   follows from the measured numbers, and every final test file follows the §3.6 rules.
 - Official run ([summary](results/phase2_branch100/summary.md)), criterion branch, target 100%: mean coverage
@@ -88,5 +88,35 @@ report.
 - Found while building the loop: retrying after an unusable round only works if the prompt changes, because the
   request cache is keyed on the exact request body. The retry now carries the reason the previous reply was
   rejected, and a pipeline test asserts it.
+
+### Third coverage criterion: `--criterion loops` (edge-pair coverage)
+
+Added after the Phase 2 run: the assignment's requirement (1) names three example criteria ("cover all
+statements, cover all loops, cover all decision statements") and only two of them were implemented.
+
+| What I did | Files |
+|---|---|
+| Edge-pair coverage. The control-flow graph comes from coverage.py's own parser, so there is no CFG analysis of ours to trust; required pairs are every `(a, b, c)` with arcs `a->b` and `b->c`; covered pairs come from per-test line traces | `agents/path_coverage.py` |
+| Found that a `sys.settrace` tracer cannot share a process with `coverage run` — measured: coverage.py dropped to 16.7% statements and 0% branches — so the traced measurement is a second pytest pass, run only for `--criterion loops` | `agents/test_executor.py` |
+| `loops` in `CRITERIA` and `CRITERION_GOALS`; the target rule `edge-pair >= t and branch >= t and statement >= t`; the new `ExecutionResult` fields; missing orderings described for the feedback loop; the edge-pair columns in `summary.md` | `config.py`, `agents/models.py`, `agents/code_utils.py`, `pipeline.py` |
+| 26 more offline tests, including one that shows the criterion earning its place: a suite at 100% statement **and** 100% branch coverage sits at 83.3% edge-pair coverage, so the feedback loop runs a second round where a branch run would have stopped | `tests/test_path_coverage.py`, `tests/test_executor.py`, `tests/test_code_utils.py`, `tests/test_pipeline.py` |
+| Checked for regressions: `summary.md` for the Phase 1 baseline and for the Phase 2 branch run both still reproduce byte for byte | `verify_run.py` |
+
+**Checks and results**
+
+- Official run ([summary](results/phase2_loops100/summary.md)), `--criterion loops --target 100`: **140 tests**
+  (against 88 for branch), mean edge-pair coverage **97.1%** against **89.0%** for MBPP's own asserts, and the
+  highest test validity of the three criteria (**80.0%**, with only 5 `MISLEADING`). Goal reached 8/12. 22 HTTP
+  requests.
+- The four problems below 100% (67, 70, 71, 92) are short by a **provably infeasible** pair: each needs a loop
+  body to be skipped, and in each case a guard above the loop forces at least one iteration. All *reachable*
+  requirements were met, by all three criteria.
+- This criterion is the only one for which the feedback loop had anything to do: 1.67 rounds on average against
+  1.0 for the other two. It could not raise coverage (what was missing was infeasible) but it kept adding
+  usable tests — problem 92 went from 7 tests to 25, all 25 labelled `VALID`.
+- Found and fixed a bug in my own measurement before trusting the numbers: the first run reported 70% for the
+  recursive problem 65, because the tracer kept one line sequence per test, so a recursive call's lines were
+  spliced into the caller's sequence. Keeping one sequence per call frame — which is what coverage.py does for
+  arcs — put problem 65 at 100% with the same tests. Two regression tests cover it.
 
 ---

@@ -1,0 +1,142 @@
+.FFFFFF                                                                  [100%]
+=================================== FAILURES ===================================
+_______________________________ test_single_char _______________________________
+
+    def test_single_char():
+>       assert get_Char("a") == "b"
+E       AssertionError: assert 't' == 'b'
+E         
+E         - b
+E         + t
+
+test_solution.py:7: AssertionError
+________________________________ test_two_chars ________________________________
+
+    def test_two_chars():
+>       assert get_Char("ab") == "c"
+E       AssertionError: assert 'n' == 'c'
+E         
+E         - c
+E         + n
+
+test_solution.py:10: AssertionError
+_______________________________ test_three_chars _______________________________
+
+    def test_three_chars():
+>       assert get_Char("abc") == "f"
+E       AssertionError: assert 'i' == 'f'
+E         
+E         - f
+E         + i
+
+test_solution.py:13: AssertionError
+_____________________________ test_loop_skip_body ______________________________
+
+    def test_loop_skip_body():
+>       assert get_Char("aaaa") == "a"
+E       AssertionError: assert 'y' == 'a'
+E         
+E         - a
+E         + y
+
+test_solution.py:16: AssertionError
+___________________________ test_loop_one_iteration ____________________________
+
+    def test_loop_one_iteration():
+>       assert get_Char("z") == "z"
+E       AssertionError: assert 's' == 'z'
+E         
+E         - z
+E         + s
+
+test_solution.py:19: AssertionError
+________________________ test_loop_multiple_iterations _________________________
+
+    def test_loop_multiple_iterations():
+>       assert get_Char("xyz") == "d"
+E       AssertionError: assert 'z' == 'd'
+E         
+E         - d
+E         + z
+
+test_solution.py:22: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_single_char - AssertionError: assert 't' == 'b'
+FAILED test_solution.py::test_two_chars - AssertionError: assert 'n' == 'c'
+FAILED test_solution.py::test_three_chars - AssertionError: assert 'i' == 'f'
+FAILED test_solution.py::test_loop_skip_body - AssertionError: assert 'y' == 'a'
+FAILED test_solution.py::test_loop_one_iteration - AssertionError: assert 's'...
+FAILED test_solution.py::test_loop_multiple_iterations - AssertionError: asse...
+6 failed, 1 passed in 0.67s
+
+[executor] traced pass for edge-pair coverage (no coverage.py)
+.FFFFFF                                                                  [100%]
+=================================== FAILURES ===================================
+_______________________________ test_single_char _______________________________
+
+    def test_single_char():
+>       assert get_Char("a") == "b"
+E       AssertionError: assert 't' == 'b'
+E         
+E         - b
+E         + t
+
+test_solution.py:7: AssertionError
+________________________________ test_two_chars ________________________________
+
+    def test_two_chars():
+>       assert get_Char("ab") == "c"
+E       AssertionError: assert 'n' == 'c'
+E         
+E         - c
+E         + n
+
+test_solution.py:10: AssertionError
+_______________________________ test_three_chars _______________________________
+
+    def test_three_chars():
+>       assert get_Char("abc") == "f"
+E       AssertionError: assert 'i' == 'f'
+E         
+E         - f
+E         + i
+
+test_solution.py:13: AssertionError
+_____________________________ test_loop_skip_body ______________________________
+
+    def test_loop_skip_body():
+>       assert get_Char("aaaa") == "a"
+E       AssertionError: assert 'y' == 'a'
+E         
+E         - a
+E         + y
+
+test_solution.py:16: AssertionError
+___________________________ test_loop_one_iteration ____________________________
+
+    def test_loop_one_iteration():
+>       assert get_Char("z") == "z"
+E       AssertionError: assert 's' == 'z'
+E         
+E         - z
+E         + s
+
+test_solution.py:19: AssertionError
+________________________ test_loop_multiple_iterations _________________________
+
+    def test_loop_multiple_iterations():
+>       assert get_Char("xyz") == "d"
+E       AssertionError: assert 'z' == 'd'
+E         
+E         - d
+E         + z
+
+test_solution.py:22: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_single_char - AssertionError: assert 't' == 'b'
+FAILED test_solution.py::test_two_chars - AssertionError: assert 'n' == 'c'
+FAILED test_solution.py::test_three_chars - AssertionError: assert 'i' == 'f'
+FAILED test_solution.py::test_loop_skip_body - AssertionError: assert 'y' == 'a'
+FAILED test_solution.py::test_loop_one_iteration - AssertionError: assert 's'...
+FAILED test_solution.py::test_loop_multiple_iterations - AssertionError: asse...
+6 failed, 1 passed in 0.82s

@@ -26,12 +26,14 @@ from dataclasses import asdict
 from pathlib import Path
 
 import config
+from agents import path_coverage
 from agents.models import ExecutionResult, Problem, load_problems
 
 SOLUTION_FILE = "solution.py"
 TEST_FILE = "test_solution.py"
 # Results of an earlier execution in the same folder are deleted first, so they can never be mixed up.
-OLD_ARTIFACTS = ("junit.xml", "coverage.json", ".coverage", "output.txt", "execution.json", "coverage_html")
+OLD_ARTIFACTS = ("junit.xml", "coverage.json", ".coverage", "output.txt", "execution.json", "coverage_html",
+                 path_coverage.CONFTEST_FILE, path_coverage.TRACE_FILE)
 PYTEST_INI = "[pytest]\n# Keeps pytest from picking up the repository's own pytest.ini.\n"
 TOOL_TIMEOUT_S = 60  # for `coverage json` / `coverage html`
 
@@ -49,13 +51,17 @@ def reference_tests_to_pytest(problem: Problem) -> str:
     return "\n".join(lines) + "\n"
 
 
-def coverage_target_met(criterion: str, target: float, statement: float, branch: float) -> bool:
-    """Branch coverage subsumes statement coverage, so the branch criterion needs both.
+def coverage_target_met(criterion: str, target: float, statement: float, branch: float,
+                        edge_pair: float = 100.0) -> bool:
+    """Each criterion also demands the weaker ones it subsumes: loops > branch > statement.
 
-    (coverage.py reports 100% branch coverage for a function without decisions even if no test calls it.)
+    The reason is a measurement quirk rather than pedantry: code without decisions has no branches and no
+    edge pairs, and 0 of 0 reads as 100%, so either criterion alone would pass code that no test ever calls.
     """
     if criterion == "statement":
         return statement >= target
+    if criterion == "loops":
+        return edge_pair >= target and branch >= target and statement >= target
     return branch >= target and statement >= target
 
 
@@ -107,10 +113,12 @@ class TestExecutorAgent:
             if self.html and (work_dir / "coverage.json").exists():
                 _run([sys.executable, "-m", "coverage", "html", "-q", "-d", "coverage_html"], work_dir, TOOL_TIMEOUT_S)
         cov = _read_coverage(work_dir / "coverage.json")
+        pairs = self._measure_edge_pairs(solution_code, work_dir, criterion, status)
 
         tests_passed = sum(1 for outcome in outcomes.values() if outcome == "passed")
         tests_failed = len(outcomes) - tests_passed
-        target_met = coverage_target_met(criterion, target, cov["statement_coverage"], cov["branch_coverage"])
+        target_met = coverage_target_met(criterion, target, cov["statement_coverage"], cov["branch_coverage"],
+                                        pairs["edge_pair_coverage"])
         result = ExecutionResult(
             status=status,
             tests_total=len(outcomes),
@@ -130,11 +138,35 @@ class TestExecutorAgent:
             num_branches=cov["num_branches"],
             exit_code=exit_code,
             duration_s=duration,
+            **pairs,
         )
         (work_dir / "execution.json").write_text(json.dumps(asdict(result), indent=2, ensure_ascii=False),
                                                  encoding="utf-8")
         return result
 
+
+    def _measure_edge_pairs(self, solution_code: str, work_dir: Path, criterion: str, status: str) -> dict:
+        """Edge-pair coverage, for criterion="loops" only (PROJECT_PLAN.md §2.3).
+
+        It needs the order in which lines ran, which coverage.py does not report, so the tests run a second
+        time with our own tracer -- and that pass must not be under `coverage run`, because the two
+        sys.settrace hooks evict each other. Nothing here touches the numbers measured above.
+        """
+        empty = {"edge_pair_coverage": 0.0, "num_edge_pairs": 0, "missing_edge_pairs": []}
+        if criterion != "loops" or status != "RAN":
+            return empty
+        path_coverage.prepare(work_dir)
+        traced_cmd = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", TEST_FILE]
+        _, output, timed_out = _run(traced_cmd, work_dir, self.timeout_s)
+        with (work_dir / "output.txt").open("a", encoding="utf-8") as handle:
+            handle.write("\n[executor] traced pass for edge-pair coverage (no coverage.py)\n" + output)
+        if timed_out:
+            return empty  # tracing makes the tests slower; a timeout here leaves the other numbers alone
+        try:
+            return path_coverage.measure(solution_code, path_coverage.read_traces(work_dir))
+        except path_coverage.EdgePairUnavailable as exc:
+            print(f"    [executor] edge-pair coverage unavailable: {exc}", file=sys.stderr, flush=True)
+            return empty
 
     def validate(self, test_code: str, problem: Problem, work_dir: Path | str,
                  on_generated: dict[str, str]) -> dict[str, str]:

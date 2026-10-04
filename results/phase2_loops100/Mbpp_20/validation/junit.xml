@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="8" time="0.859" timestamp="2026-10-04T16:16:01.067927+00:00" hostname="Satyam-ASUSZenbook"><testcase classname="test_solution" name="test_is_woodall_negative" time="0.001" /><testcase classname="test_solution" name="test_is_woodall_zero" time="0.000" /><testcase classname="test_solution" name="test_is_woodall_one" time="0.000" /><testcase classname="test_solution" name="test_is_woodall_three" time="0.001"><failure message="assert False is True&#10; +  where False = is_woodall(3)">def test_is_woodall_three() -&gt; None:
+        """Check that 3 (n=2) returns True."""
+&gt;       assert is_woodall(3) is True
+E       assert False is True
+E        +  where False = is_woodall(3)
+
+test_solution.py:17: AssertionError</failure></testcase><testcase classname="test_solution" name="test_is_woodall_eleven" time="0.000"><failure message="assert False is True&#10; +  where False = is_woodall(11)">def test_is_woodall_eleven() -&gt; None:
+        """Check that 11 (n=3) returns True."""
+&gt;       assert is_woodall(11) is True
+E       assert False is True
+E        +  where False = is_woodall(11)
+
+test_solution.py:21: AssertionError</failure></testcase><testcase classname="test_solution" name="test_is_woodall_fortytwo" time="0.000"><failure message="assert False is True&#10; +  where False = is_woodall(42)">def test_is_woodall_fortytwo() -&gt; None:
+        """Check that 42 (n=4) returns True."""
+&gt;       assert is_woodall(42) is True
+E       assert False is True
+E        +  where False = is_woodall(42)
+
+test_solution.py:25: AssertionError</failure></testcase><testcase classname="test_solution" name="test_is_woodall_383" time="0.000" /><testcase classname="test_solution" name="test_is_woodall_not_woodall" time="0.000" /></testsuite></testsuites>

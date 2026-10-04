@@ -1,0 +1,31 @@
+{
+  "status": "RAN",
+  "tests_total": 7,
+  "tests_passed": 2,
+  "tests_failed": 5,
+  "test_outcomes": {
+    "test_empty_string": "failed",
+    "test_single_char": "failed",
+    "test_two_chars": "passed",
+    "test_three_chars": "passed",
+    "test_loop_skip_body": "failed",
+    "test_loop_one_iteration": "failed",
+    "test_loop_multiple_iterations": "failed"
+  },
+  "statement_coverage": 100.0,
+  "branch_coverage": 100.0,
+  "missing_lines": [],
+  "missing_branches": [],
+  "target_met": true,
+  "verdict": "TESTS_FAILED",
+  "output_tail": "E         \nE         - b\nE         + a\n\ntest_solution.py:7: AssertionError\n_____________________________ test_loop_skip_body ______________________________\n\n    def test_loop_skip_body():\n>       assert get_Char(\"aaaa\") == \"a\"\nE       AssertionError: assert 'd' == 'a'\nE         \nE         - a\nE         + d\n\ntest_solution.py:16: AssertionError\n___________________________ test_loop_one_iteration ____________________________\n\n    def test_loop_one_iteration():\n>       assert get_Char(\"z\") == \"z\"\nE       AssertionError: assert 122 == 'z'\nE        +  where 122 = get_Char('z')\n\ntest_solution.py:19: AssertionError\n________________________ test_loop_multiple_iterations _________________________\n\n    def test_loop_multiple_iterations():\n>       assert get_Char(\"xyz\") == \"d\"\nE       AssertionError: assert 'w' == 'd'\nE         \nE         - d\nE         + w\n\ntest_solution.py:22: AssertionError\n=========================== short test summary info ============================\nFAILED test_solution.py::test_empty_string - AssertionError: assert 122 == 'a'\nFAILED test_solution.py::test_single_char - AssertionError: assert 'a' == 'b'\nFAILED test_solution.py::test_loop_skip_body - AssertionError: assert 'd' == 'a'\nFAILED test_solution.py::test_loop_one_iteration - AssertionError: assert 122...\nFAILED test_solution.py::test_loop_multiple_iterations - AssertionError: asse...\n5 failed, 2 passed in 0.81s",
+  "criterion": "statement",
+  "target": 100.0,
+  "num_statements": 8,
+  "num_branches": 4,
+  "exit_code": 1,
+  "duration_s": 2.9,
+  "edge_pair_coverage": 0.0,
+  "num_edge_pairs": 0,
+  "missing_edge_pairs": []
+}

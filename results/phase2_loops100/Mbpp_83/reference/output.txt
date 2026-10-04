@@ -1,0 +1,76 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_______________________________ test_reference_1 _______________________________
+
+    def test_reference_1():
+>       assert get_Char("abc") == "f"
+E       AssertionError: assert 'i' == 'f'
+E         
+E         - f
+E         + i
+
+test_solution.py:5: AssertionError
+_______________________________ test_reference_2 _______________________________
+
+    def test_reference_2():
+>       assert get_Char("gfg") == "t"
+E       AssertionError: assert 'w' == 't'
+E         
+E         - t
+E         + w
+
+test_solution.py:8: AssertionError
+_______________________________ test_reference_3 _______________________________
+
+    def test_reference_3():
+>       assert get_Char("ab") == "c"
+E       AssertionError: assert 'n' == 'c'
+E         
+E         - c
+E         + n
+
+test_solution.py:11: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_reference_1 - AssertionError: assert 'i' == 'f'
+FAILED test_solution.py::test_reference_2 - AssertionError: assert 'w' == 't'
+FAILED test_solution.py::test_reference_3 - AssertionError: assert 'n' == 'c'
+3 failed in 0.61s
+
+[executor] traced pass for edge-pair coverage (no coverage.py)
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_______________________________ test_reference_1 _______________________________
+
+    def test_reference_1():
+>       assert get_Char("abc") == "f"
+E       AssertionError: assert 'i' == 'f'
+E         
+E         - f
+E         + i
+
+test_solution.py:5: AssertionError
+_______________________________ test_reference_2 _______________________________
+
+    def test_reference_2():
+>       assert get_Char("gfg") == "t"
+E       AssertionError: assert 'w' == 't'
+E         
+E         - t
+E         + w
+
+test_solution.py:8: AssertionError
+_______________________________ test_reference_3 _______________________________
+
+    def test_reference_3():
+>       assert get_Char("ab") == "c"
+E       AssertionError: assert 'n' == 'c'
+E         
+E         - c
+E         + n
+
+test_solution.py:11: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_reference_1 - AssertionError: assert 'i' == 'f'
+FAILED test_solution.py::test_reference_2 - AssertionError: assert 'w' == 't'
+FAILED test_solution.py::test_reference_3 - AssertionError: assert 'n' == 'c'
+3 failed in 0.73s

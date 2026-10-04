@@ -1,0 +1,55 @@
+FF..FFF                                                                  [100%]
+=================================== FAILURES ===================================
+______________________________ test_empty_string _______________________________
+
+    def test_empty_string():
+>       assert get_Char("") == "a"
+E       AssertionError: assert 122 == 'a'
+E        +  where 122 = get_Char('')
+
+test_solution.py:4: AssertionError
+_______________________________ test_single_char _______________________________
+
+    def test_single_char():
+>       assert get_Char("a") == "b"
+E       AssertionError: assert 'a' == 'b'
+E         
+E         - b
+E         + a
+
+test_solution.py:7: AssertionError
+_____________________________ test_loop_skip_body ______________________________
+
+    def test_loop_skip_body():
+>       assert get_Char("aaaa") == "a"
+E       AssertionError: assert 'd' == 'a'
+E         
+E         - a
+E         + d
+
+test_solution.py:16: AssertionError
+___________________________ test_loop_one_iteration ____________________________
+
+    def test_loop_one_iteration():
+>       assert get_Char("z") == "z"
+E       AssertionError: assert 122 == 'z'
+E        +  where 122 = get_Char('z')
+
+test_solution.py:19: AssertionError
+________________________ test_loop_multiple_iterations _________________________
+
+    def test_loop_multiple_iterations():
+>       assert get_Char("xyz") == "d"
+E       AssertionError: assert 'w' == 'd'
+E         
+E         - d
+E         + w
+
+test_solution.py:22: AssertionError
+=========================== short test summary info ============================
+FAILED test_solution.py::test_empty_string - AssertionError: assert 122 == 'a'
+FAILED test_solution.py::test_single_char - AssertionError: assert 'a' == 'b'
+FAILED test_solution.py::test_loop_skip_body - AssertionError: assert 'd' == 'a'
+FAILED test_solution.py::test_loop_one_iteration - AssertionError: assert 122...
+FAILED test_solution.py::test_loop_multiple_iterations - AssertionError: asse...
+5 failed, 2 passed in 0.81s
